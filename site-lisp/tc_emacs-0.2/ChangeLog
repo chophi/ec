@@ -1,0 +1,14 @@
+2006-01-06  Tomasz Malesinski   <tmal@mimuw.edu.pl>
+
+	* more compact C++ test code
+	* Java test code generation
+	* version 0.2 released
+
+2005-06-01  Tomasz Malesinski  <tmal@mimuw.edu.pl>
+
+	* fixed C++ test code generation when the return type is
+	vector<double>
+
+2005-05-31  Tomasz Malesinski  <tmal@mimuw.edu.pl>
+
+	* initial release (0.1)

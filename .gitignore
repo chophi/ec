@@ -1,0 +1,15 @@
+.bookmarks.el
+.emacs.desktop
+.emacs.desktop.lock
+.emacs.term.desktop
+.emacs.term.desktop.lock
+/.python-environments
+/.session
+/session.*
+ac-comphist.dat
+/auto-save-file/*
+/auto-save-list/*
+/emacs-server-nw
+smex-items
+tramp
+lisp-snippets/az-common-env.el

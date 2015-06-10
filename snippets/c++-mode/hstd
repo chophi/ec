@@ -1,0 +1,27 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: hstd
+# key: hstd
+# binding: direct-keybinding
+# --
+// c headers
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+// c++ headers
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <deque>
+#include <memory>
+
+using namespace std;
+
+int main()
+{
+        $0
+        return 0;
+}

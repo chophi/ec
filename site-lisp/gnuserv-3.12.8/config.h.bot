@@ -1,0 +1,28 @@
+#define CONST const
+
+#if (defined(linux) && defined(HAVE_BSD_SGTTY)) || (!defined(linux) && defined(HAVE_SGTTY))
+#define USE_LITOUT
+#else
+#define DONT_USE_LITOUT
+#endif
+
+/* From XEmacs config.h.in */
+#ifndef BITS_PER_CHAR
+#define BITS_PER_CHAR 8
+#endif
+#define LONGBITS (SIZEOF_LONG * BITS_PER_CHAR)
+
+/* Define the return type of signal handlers if the s/xxx.h file
+   did not already do so. */
+#define RETSIGTYPE void
+
+#ifndef XCDECL
+#define XCDECL
+#endif
+
+/* SIGTYPE is the macro we actually use. */
+#ifndef SIGTYPE
+#define SIGTYPE RETSIGTYPE XCDECL
+#define SIGRETURN return
+#endif
+

@@ -1,0 +1,104 @@
+tc_emacs: use Emacs in the TopCoder Arena
+=========================================
+
+Introduction
+------------
+
+This package allows closer integration of Emacs with the TopCoder
+Arena than that provided by plugins like FileEdit. When you open a
+problem in the Arena, a file in Emacs is automaticaly opened. When you
+press the Compile button in the Arena, the file is fetched from
+Emacs. There is no need to save a file in Emacs prior to submitting
+it.
+
+The Java plugin is basicaly an interface between TopCoder Java classes
+and Emacs Lisp. Most of the work, including program template
+generation and code postprocessing is done on the Emacs side.  This
+way Emacs fans have greater control over the plugin operation.
+
+The plugin is in an early stage of development. It has been tested
+with GNU Emacs 21.2.1 on GNU/Linux only. Supported programming languages
+are C++ and Java. The standard disclaimer apply. I do not take any
+responsibility for this plugin. Use it at your own risk.
+
+Installation
+------------
+
+Install gnuserv. You can download it from
+http://meltin.net/hacks/emacs/ or just use a package if your GNU/Linux
+distribution provides one. The gnuserv must be working before
+launching the Arena. The easiest way is to put
+
+(gnuserv-start)
+
+in your .emacs file. The gnuserv will then be started together with
+Emacs.
+
+Make sure that you have Emacs/W3 Browser installed in Emacs. You can
+check it by typing `M-x w3 <RET>'.
+
+Put topcoder.el and TCEmacs.jar in some directory. The topcoder.el
+file should be loaded before using Emacs in the Arena. You can do that
+by typing `M-x load-library <RET> /path/to/topcoder.el <RET>' or you
+can just place
+
+(load-library "/path/to/topcoder.el")
+
+or, to load the file only when it is needed:
+
+(autoload 'topcoder-set-problem "/path/to/topcoder.el")
+
+in your .emacs file. I had some problems with autoloading, though.
+The keymap in the TopCoder mode did not sometimes work and I had to
+reload topcoder.el manually.
+
+Make a work directory and set the topcoder-directory variable to its
+name. By default it points to a directory named topcoder in your home
+directory.
+
+Launch the Arena applet and choose Options/Editor/Add. Type in a name
+(e.g. Emacs), TCEmacs as the entry point and a path to the TCEmacs.jar
+file in the ClassPath field.
+
+Now choose a problem to solve. If everything went fine, you should see
+two new Emacs windows, one with a problem statement and the second one
+with a source code template.
+
+Usage
+-----
+
+In the coding window you can type `C-c C-c' to compile your program
+and `C-c C-t' to run it.
+
+At any time you can press the Compile button in the Arena applet. The
+source code will be fetched from Emacs. You do not have to save the
+source before submission. The generated testing code will be removed
+automaticaly. Do not delete begin_tests and end_tests tags or the code
+will not be removed which may violate the unused code rule.
+
+Remember that pressing the Submit button submits the latest version
+that was compiled in the applet.
+
+The plugin generates a template of a source code only if a visited
+file named <class_name>.<ext> is empty.
+
+The plugin supports a code library. The code library consists of code
+snippets. Each of the snippets is associated with a keyword (e.g. a
+name of a function). Whenever you type `C-c C-i' in the coding window
+the plugin scans the source code for the keywords. If it finds one, it
+adds an associated code snippet and repeats the process until no new
+keywords are found. Every time you press `C-c C-i', the previously
+added coded is removed, so only the required snippets are included.
+
+The W3 browser, at least in the version used by me, ignores super- and
+subscripts, so compare any formulas that appear in the problem statement
+with a version displayed in the applet.
+
+Contact
+-------
+
+The project web page is:
+
+http://www.mimuw.edu.pl/~tmal/tc_emacs/index.html
+
+Send any comments, wishes or bug reports to tmal@mimuw.edu.pl

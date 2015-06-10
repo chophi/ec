@@ -1,0 +1,305 @@
+2007-10-22  Martin Schwenke  <martin@meltin.net>
+
+	* aclocal.m4: Fix more $x_libraries  breakage.
+
+	* Makefile.in: Version 3.12.8.  Added compiler.h.  Fix dependencies.
+
+	* aclocal.m4:
+	Fix problem where empty $x_includes and $x_libraries causes
+	./configure breakage.
+
+2007-10-21  Martin Schwenke  <martin@meltin.net>
+
+	* gnuclient.c, gnuslib.c: Merge this:
+
+	2006-08-08  Jerry James  <james@xemacs.org>
+
+		* gnuslib.c (disconnect_from_server): shutdown() has been fine on
+		Linux for a long time now; use it.  Also, don't use length to
+		access the buffer unless it is positive, not just nonzero.
+		* gnuclient.c (filename_expand): Initialize the last array element
+		to get a valid C string in case of overflow.  Use strncat to avoid
+		buffer overruns.
+		* gnuclient.c (main): Use strncpy to avoid buffer overruns.
+
+	* gnuclient.c: Sync with xemacs-21.5.27.
+
+	* gnuserv.c, sysfile.h, syssignal.h: Version from xemacs-21.5.27.
+
+2004-10-20  Martin Schwenke  <martin@meltin.net>
+
+	* README:
+	Updated to say tested under GNU Emacs 21.3, updated gnuserv sources
+	from XEmacs 21.5.17, commented that SYSV_IPC works again under Linux,
+	explained weirdness resulting from missing X development files at
+	compile time.
+
+	* configure.in:
+	Added error message for when HAVE_X_WINDOWS doesn't get defined.
+	Lifted check for HAVE_SOCKADDR_SUN_LEN from XEmacs 21.5.17.
+
+	* Makefile.in: Added ChangeLog generation.
+
+	* Makefile.in: Bumped version to 3.12.7.
+
+2004-10-19  Martin Schwenke  <martin@meltin.net>
+
+	* acconfig.h: Added HAVE_SOCKADDR_SUN_LEN.
+
+	* sysfile.h, gnuserv.el: Updated to version from XEmacs 21.5.17.
+
+2003-05-09  Martin Schwenke  <martin@meltin.net>
+
+	* gnuserv-compat.el:
+	Add eval-and-compile around a bunch of code to facilitate
+	byte-compiling.  Minor whitespace cleanups.  Thanks to Le Wang
+	<lewang@yahoo.com>.  (add-minor-mode): fixed so it actually uses its
+	arguments instead of hardcoded stuff from gnuserv.el - oops.
+
+	* Makefile.in:
+	Cleaned up byte-compile of gnuserv-compat.el.  Bumped version number.
+
+	* gnuserv-compat.el:
+	No longer tested under emacs-19.x.  I don't have one of those
+	anymore...  :-)
+
+	* gnuserv-compat.el:
+	Added function add-minor-mode, which is not in emacs-20.7 and earlier.
+
+2002-09-24  Martin Schwenke  <martin@meltin.net>
+
+	* README:
+	Added note that this is tested under Emacs 21.2.  Updated XEmacs
+	version from which this comes.  Commented that I've borrowed some
+	configure stuff from XEmacs.  Added known problem about SYSV_IPC
+	version crashing.
+
+2002-09-15  Martin Schwenke  <martin@meltin.net>
+
+	* configure.in: Added check for _GNU_SOURCE from XEmacs configure.in.
+
+	* acconfig.h: Added _GNU_SOURCE.
+
+	* gnuclient.c (main):
+	Moved declaration of msgp back out to global scope so that
+	tell_emacs_to_resume can see it.
+
+2002-09-14  Martin Schwenke  <martin@meltin.net>
+
+	* Makefile.in: Added syssignal.h to DIST_HDRS.
+
+	* config.h.bot: Removed hardcoded #define for HAVE_X_WINDOWS.
+
+	* acconfig.h: Added HAVE_X_WINDOWS.
+
+	* configure.in: Actually check for X.
+
+	* Makefile.in: Updated VERSION to 3.12.5.
+
+	* configure.in: Added AC_DECL_SYS_SIGLIST and AC_CHECK_FUNCS(strerror).
+
+2002-09-13  Martin Schwenke  <martin@meltin.net>
+
+	* config.h.bot:
+	Added signal related stuff from xemacs-21.5.cvs-20020913 config.h.in.
+	Added hardcoded #define for HAVE_X_WINDOWS.  This might be a mistake,
+	but it seems OK.
+
+	* gnuserv.h, gnuslib.c, gnuclient.c:
+	Updated to xemacs-21.5.cvs-20020913.
+
+	* syssignal.h: New file.
+
+	* sysfile.h: Updated to xemacs-21.5.cvs-20020913.
+
+	* sysfile.h: New file.
+
+	* gnuserv.el, gnuserv.c, gnuserv.1:
+	Updated to xemacs-21.5.cvs-20020913.
+
+2002-09-03  Martin Schwenke  <martin@meltin.net>
+
+	* Makefile.in:
+	installdirs target now includes $(man1dir) instead of $(mandir), which
+	was not defined.  Thanks to Francisco Borges <borges@let.rug.nl>.
+
+2001-06-19  Martin Schwenke  <martin@meltin.net>
+
+	* README:
+	Added note about "make distclean" if running with LDFLAGS=...  Thanks
+	yet again to Geert Kloosterman <geertk@ai.rug.nl>.
+
+2001-05-07  Martin Schwenke  <martin@meltin.net>
+
+	* configure.in:
+	Also added check for SIZEOF_LONG (in previous check-in).  Thanks
+	to Gilles Peskine <Gilles.Peskine@ens.fr> for reporting that this
+	was needed on a 64-bit machine (Alpha).
+
+	* Makefile.in: Releasing version 3.12.4.
+
+	* configure.in:
+	Added socklen_t check from XEmacs.  Thanks to Geert Kloosterman
+	<geertk@ai.rug.nl> for reporting the need for this on HP-UX.
+
+	* acconfig.h: Added socklen_t.
+
+	* aclocal.m4: New file.
+
+	* README:
+	- Added section on linking problems.  Thanks to Geert Kloosterman
+	  <geertk@ai.rug.nl> for helping to figure out exactly what was going
+	  wrong on HP-UX.
+
+	- Took out known problem about LONGBITS under Solaris 2.6.  This
+	  should now be fixed.
+
+2001-04-23  Martin Schwenke  <martin@meltin.net>
+
+	* config.h.bot: New file.
+
+2001-03-30  Martin Schwenke  <martin@meltin.net>
+
+	* acconfig.h, configure.in: New file.
+
+2001-03-15  Martin Schwenke  <martin@meltin.net>
+
+	* Makefile.in: Bumped version number.
+
+	* README: Fixed XEmacs version number.
+
+2001-02-12  Martin Schwenke  <martin@meltin.net>
+
+	* Makefile.in: Now uses $(INSTALL_SCRIPT) to install scripts.
+	Thanks to Ilya Martynov <m_ilya@agava.com>.
+
+	* Makefile.in: Change of version because of changed e-mail address.
+
+	* README, gnuserv-compat.el: Changed e-mail address.
+
+2001-01-31  Martin Schwenke  <martin@meltin.net>
+
+	* Makefile.in: Added sysfile.h to DIST_HDRS.
+
+	* Makefile.in:
+	Bumped up the version number to reflect that this is the version from
+	xemacs-21.2.43.
+
+	* README: Changed version number.
+
+	* gnuclient.c:
+	Upgraded to version from xemacs-21.2.43 and re-patched to handle the
+	configure options relating to sockets and IPC.
+
+	* getopt.h: Upgraded to version from xemacs-21.2.43.
+
+	* getopt.h: New file.
+
+	* getopt.c: Upgraded to version from xemacs-21.2.43.
+
+	* getopt.c: New file.
+
+	* gnuserv.1: Upgraded to version from xemacs-21.2.43.
+
+	* gnuserv.1: New file.
+
+	* gnuserv.c, gnuserv.el: Upgraded to version from xemacs-21.2.43.
+
+	* gnuserv.h:
+	Upgraded to version from xemacs-21.2.43 and re-patched to handle the
+	configure options relating to sockets and IPC.
+
+	* gnuslib.c:
+	Upgraded to version from xemacs-21.2.43 and re-patched to move #endif
+	for sockets above read_line function, since this is needed for
+	IPC-only version to link.
+
+	* gnudoit, gnuserv.c, gnuserv.el: New file.
+
+2000-10-20  Martin Schwenke  <martin@meltin.net>
+
+	* README:
+	Added delete-frame hack and extra credit for xauth work-around.
+
+2000-10-19  Martin Schwenke  <martin@meltin.net>
+
+	* README:
+	Documented work-around for SSH problems.  Thanks to Martin Thornquist
+	<martint@ifi.uio.no>.
+
+2000-08-28  Martin Schwenke  <martin@meltin.net>
+
+	* README:
+	Added comment about lack of tty (-nw) functionality.  Reported again,
+	this time by Steve Ihde <sihde@CS.Stanford.EDU>.
+
+	* README: Indicate that 19.34 - 20.7 have been tested.
+
+	* Makefile.in: Changed version number to reflect minor changes.
+
+	* gnuserv-compat.el:
+	- Changed comment to indicate that 19.34 - 20.7 have been tested.
+	- Added docstring and interactive flag to autoload instructions.
+
+2000-08-25  Martin Schwenke  <martin@meltin.net>
+
+	* Makefile.in: Added ChangeLog to dist files.
+
+	* README: Fixed comment about customisation.
+
+	* gnuserv-compat.el:
+	- Added Emacs 19.34 changes by Ronan Waide <waider@scope.ie>.
+	- Changed my e-mail address.
+
+	* Makefile.in: Fixed copyright years.
+
+	* README: Changed to Linuxcare address.
+
+	* README: Removed comment about gnuserv-compat.el not compiling.
+
+	* Makefile.in: Added compile of gnuserv-compat.el thanks to
+	  Geert Kloosterman <geertk@tcw3.ppsw.rug.nl>.
+
+	* Makefile.in: New file.
+
+2000-06-05  Martin Schwenke  <martin@meltin.net>
+
+	* README: Reflect code changes.
+
+	* gnuserv.h:
+	Removed default communication scheme selection.  If user didn't want
+	any of them, then they won't get any...
+
+	* gnuslib.c:
+	Moved #endif above read_line to make it unconditionally available.
+
+	* gnuclient.c: Moved definition of msgp to global scope.
+
+	* gnuslib.c, README: New file.
+
+2000-06-02  Martin Schwenke  <martin@meltin.net>
+
+	* gnuserv.h:
+	Cleaned up choice of INTERNET_DOMAIN_SOCKETS, UNIX_DOMAIN_SOCKETS and
+	SYSV_IPC stuff so that it depends on the config.h.
+
+	* gnuclient.c: Made things work without Internet domain sockets.
+
+	* gnuclient.c, gnuserv.h: New file.
+
+1999-11-24  Martin Schwenke  <martin@meltin.net>
+
+	* gnuserv-compat.el: Fixed typo in autoload doco.
+
+	* gnuserv-compat.el:
+	Added definition of temp-directory.  Is this for 20.4 or 19.34?
+
+1999-07-25  Martin Schwenke  <martin@meltin.net>
+
+	* gnuserv-compat.el: - Changed e-mail address.
+	- Cleanups.
+
+1999-02-28  Martin Schwenke  <martin@meltin.net>
+
+	* gnuserv-compat.el: New file.
+

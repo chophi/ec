@@ -1,0 +1,16 @@
+(when (file-exists-p "~/.emacs.d/lisp-snippets/az-common-env.el")
+  (load-file "~/.emacs.d/lisp-snippets/az-common-env.el")
+  
+  (buffer-file-name (car (buffer-list)))
+
+  (dolist (buf (buffer-list))
+    (let ((fname (buffer-file-name buf))
+          newname)
+      (when (and fname (string-match "fireos/main/dev" fname))
+        (setq newname (replace-regexp-in-string "fireos/main/dev" "fmd" fname))
+        (when (file-exists-p newname)
+          ;; (message "from %s to %s" fname newname)
+          (kill-buffer buf)
+          (find-file newname)
+          ))))
+  )
