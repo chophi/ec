@@ -92,3 +92,9 @@
 
 (require 'init-load-snippets)
 (require 'init-sort-dired)
+
+;; import the multi-term function to linux.
+(when *is-linux-system-p*
+  (add-to-list 'load-path (concat user-emacs-directory "term"))
+  (require 'term-inside-ide-init))
+
