@@ -46,6 +46,13 @@
 (require 'init-smart-compile)
 (require 'init-smart-run)
 
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load-file custom-file)
+(set-background-color "#2E3436")
+;; (set-foreground-color "medium spring green")
+;; (set-foreground-color "medium sea green")
+
 ;; org-mode configuration
 (require 'init-org)
 (require 'init-org-publish-settings)
@@ -72,11 +79,6 @@
 (require 'init-js)
 (require 'init-ruhoh)
 
-(setq custom-file "~/.emacs.d/custom.el")
- (load-file custom-file)
-(set-background-color "#2E3436")
-;; (set-foreground-color "medium spring green")
-;; (set-foreground-color "medium sea green")
 
 (require 'init-topcoder)
 
