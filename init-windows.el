@@ -21,9 +21,6 @@
       (funcall s-f)
       (set-window-buffer (next-window) (other-buffer)))))
 
-(global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
-(global-set-key "\C-x3" (split-window-func-with-other-buffer (lambda() (split-window-right 83))))
-
 
 ;;----------------------------------------------------------------------------
 ;; Rearrange split windows
@@ -34,13 +31,15 @@
     (delete-other-windows)
     (funcall (split-window-func-with-other-buffer 'split-window-vertically))))
 
-(defun split-right-at-83-column(arg)
+(defconst  split-at-n-column 83)
+
+(when *is-amazon-linux-window*
+  (setq split-at-n-column 87))
+
+(defun split-right-at-n-column(arg)
   (interactive "P")
   (delete-other-windows)
-  (let ((width 83))
-    (when (and *is-amazon-machine*
-               (window-system))
-      (setq width 95))
+  (let ((width split-at-n-column))
     (if arg
         (split-window-right (- width))
       (split-window-right width))))
@@ -50,7 +49,7 @@
   (save-excursion
     (delete-other-windows)
     (funcall
-     (split-window-func-with-other-buffer (lambda() (split-window-right 83))))))
+     (split-window-func-with-other-buffer (lambda() (split-window-right split-at-n-column))))))
 
 (defconst alpha-list '((85 50) (100 100)))
 (defun window-cycle-alpha-parameter ()
@@ -63,5 +62,8 @@
 (global-set-key "\C-x|" 'split-window-horizontally-instead)
 (global-set-key "\C-x_" 'split-window-vertically-instead)
 
-(global-set-key "\C-x9" 'split-right-at-83-column)
+(global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
+(global-set-key "\C-x3" (split-window-func-with-other-buffer (lambda() (split-window-right split-at-n-column))))
+
+(global-set-key "\C-x9" 'split-right-at-n-column)
 (provide 'init-windows)
