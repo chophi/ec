@@ -11,6 +11,11 @@
             (c-toggle-auto-newline 1)
             ))
 
+;;; use the // comment in c code.
+(add-hook 'c-mode-hook
+          (lambda () (setq comment-start "// "
+                           comment-end "")))
+
 ;;; automatic insert matched pairs
 (add-hook 'c-mode-common-hook
           (lambda ()
