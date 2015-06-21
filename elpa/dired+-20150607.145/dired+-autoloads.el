@@ -77,7 +77,7 @@
 ;;;;;;  diredp-prompt-for-bookmark-prefix-flag diff-switches diredp-image-show-this-file-use-frame-flag
 ;;;;;;  diredp-image-preview-in-tooltip diredp-dwim-any-frame-flag
 ;;;;;;  diredp-auto-focus-frame-for-thumbnail-tooltip-flag) "dired+"
-;;;;;;  "dired+.el" (21894 37301 156805 200000))
+;;;;;;  "dired+.el" (21895 6633 746360 804000))
 ;;; Generated autoloads from dired+.el
 
 (defvar diredp-auto-focus-frame-for-thumbnail-tooltip-flag nil "\
@@ -1944,7 +1944,7 @@ Send a bug report about a Dired+ problem.
 
 ;;;***
 
-;;;### (autoloads nil nil ("dired+-pkg.el") (21894 37301 237309 319000))
+;;;### (autoloads nil nil ("dired+-pkg.el") (21895 6633 854193 577000))
 
 ;;;***
 
