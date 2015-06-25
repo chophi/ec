@@ -102,3 +102,7 @@
   (require 'term-inside-ide-init))
 
 (require 'init-dired)
+(require 'init-uniform-env)
+(require 'init-system-default-frame-alist)
+
+
