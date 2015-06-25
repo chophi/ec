@@ -66,4 +66,27 @@
 (global-set-key "\C-x3" (split-window-func-with-other-buffer (lambda() (split-window-right split-at-n-column))))
 
 (global-set-key "\C-x9" 'split-right-at-n-column)
+
+;;; multi-window modes
+(defun my-four-grid-windows ()
+  (interactive)
+  (execute-kbd-macro "\C-x1\C-x9\C-x2\C-xoc\C-x2\C-xoa"))
+(defun my-three-left-windows ()
+  (interactive)
+  (execute-kbd-macro "\C-x1\C-x9\C-xo\C-x2\C-xoa"))
+(defun my-three-right-windows ()
+  (interactive)
+  (execute-kbd-macro "\C-x1\C-x9\C-x2\C-xoa"))
+
+(defun my-multi-windows ()
+  (interactive)
+  (let ((mode (ido-completing-read "W Mode: " '("four-grid" "three-left" "three-right"))))
+    (when (> (length mode) 0)
+      (let (command)
+        (setq command (concat "my-" mode "-windows"))
+        (when (functionp (intern command))
+          (command-execute (intern command)))))))
+
+(global-set-key "\C-x?" 'my-multi-windows)
+
 (provide 'init-windows)
