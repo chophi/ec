@@ -3,7 +3,7 @@
 (defconst emacs-env-file "~/.emacs-env")
 
 (defun read-env-alist-from-file ()
-  (interactive)
+  ;; (interactive)
   (let ((start 0)
         (str (with-current-buffer (find-file-noselect emacs-env-file)
                (buffer-substring-no-properties (point-min) (point-max))))
@@ -21,16 +21,6 @@
   '()
   "environment strings")
 
-(defun update-env-alist()
-  (interactive)
-  (dolist (env-li my-env-alist)
-    ;;; unset all environment in env-alist
-    (setenv (car env-li)))
-  (dolist (env-li (read-env-alist-from-file))
-    (setenv (car env-li) (cadr env-li)))
-  (setq my-env-alist (read-env-alist-from-file)))
-
-
 (defun read-env-and-push (env)
   (let (value)
     (setq value (read-string (format "%s: " env)))
@@ -46,9 +36,8 @@
     (setq env (read-string "ENV: "))
     (if (getenv env)
       (error "ENV exists: [%s]=[%s]" env (getenv env))
-      (read-env-and-push env))))
-
-(update-env-alist)
+      (read-env-and-push env)
+      (setenv env (my-env-expand env)))))
 
 (defun my-env-expand (env)
   ;;(message "ENV:%s" env)
@@ -62,7 +51,7 @@
       value)))
 
 (defun my-env-find-file ()
-  (interactive)
+  ;; (interactive)
   (let ((choices '())
         env
         value)
@@ -75,6 +64,17 @@
             (find-file (ido-read-file-name "File Name: " value))
           (find-file value))
       (error "Path {%s} doesn't exist" value))))
+
+(defun update-env-alist()
+  (interactive)
+  (dolist (env-li my-env-alist)
+    ;;; unset all environment in env-alist
+    (setenv (car env-li)))
+  (setq my-env-alist (read-env-alist-from-file))
+  (dolist (env-li my-env-alist)
+    (setenv (car env-li) (my-env-expand (car env-li)))))
+
+(update-env-alist)
 
 ;; (global-set-key (kbd "C-x C-f") 'ido-find-file)
 (global-set-key (kbd "C-S-x C-S-f") 'my-env-find-file)
