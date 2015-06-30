@@ -198,6 +198,9 @@ which was bad for me")
 (require 'cedet-contrib)
 (require 'cogre)
 
+(add-to-list 'eassist-header-switches '("hh" "cpp" "cc"))
+(add-to-list 'eassist-header-switches '("cc" "h" "hh"))
+
 (defun my-eassist-switch-h-cpp ()
   (interactive)
   (when (equal (eassist-switch-h-cpp) "There is no corresponding pair (header or body) file.")

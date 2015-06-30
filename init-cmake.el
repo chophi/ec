@@ -13,107 +13,105 @@
       "-G \"MSYS Makefiles\""
     ""))
 
+
+(defun no-comment-content (buf comment-prefix)
+  (let (str-list
+        (content ""))
+    (when (not buf)
+      (setq buf (current-buffer)))
+    (setq str-list
+          (with-current-buffer buf
+            (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")))
+    (dolist (str str-list content)
+      (when (or (< (length str) (length comment-prefix))
+                (not (equal comment-prefix
+                            (substring str 0 (length comment-prefix))))) 
+        (setq content (concat content "\n" str))))
+    content))
+
+(defun extract-list(buf comment-prefix regex part)
+  (let ((pos 1)
+        (result '())
+        (str (no-comment-content buf comment-prefix)))
+    (while (and (< pos (point-max))
+                (string-match regex str pos))
+      (add-to-list 'result (match-string part str))
+      (setq pos (match-end part)))
+    result))
+
 (defun my-cmake-compile (arg)
   (interactive "P")
-  (let (choose-list choice (dir (file-name-directory (buffer-file-name))) mode)
+
+  (let ((dir (file-name-directory (buffer-file-name)))
+        choose-list
+        choice
+        mode)
+
     (if arg (setq mode "release") (setq mode "debug"))
-    (when (not (file-exists-p (concat dir mode)))
-      (make-directory (concat dir mode)))
+
+    ;; redefine the compile command to be executed in dir
+    (defmacro my--compile (string &rest objects)
+      `(compile (concat "cd " ,dir ,mode " && " (format ,string ,@objects))))
+
+    (when (not (file-exists-p (concat dir mode))) (make-directory (concat dir mode)))
     (when (not (file-exists-p (concat dir mode "/Makefile")))
-      (compile (format "cd %s && cmake .. %s" (concat dir mode) makefile-system-string)))
+      (my--compile "cmake .. %s" makefile-system-string))
+
     (setq choose-list
-          (let ((pos 1) (result '()) (str (buffer-substring-no-properties (point-min) (point-max))))
-            (while (and (< pos (point-max)) (string-match "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" str pos))
-              (add-to-list 'result (match-string 1 str))
-              (setq pos (match-end 1)))
-            result))
+          (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1))
     (setq choose-list (append choose-list '("all" "clean" "generate")))
-    (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list ))
+    
+    (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list))
+    
     (cond ((equal choice "generate")
-           (compile (format "cd %s && cmake %s .. %s"
-                    (concat dir mode)
-                    (if (equal mode "debug")
-                        "-DCMAKE_BUILD_TYPE=Debug"
-                      "-DCMAKE_BUILD_TYPE=Release")
-                    makefile-system-string)))
+           (my--compile "cmake %s .. %s"
+                       (if (equal mode "debug")
+                           "-DCMAKE_BUILD_TYPE=Debug"
+                         "-DCMAKE_BUILD_TYPE=Release")
+                       makefile-system-string))
           ((or (equal choice "all")
                (equal choice "clean"))
-           (compile (format "cd %s && make %s"
-                            (concat dir mode)
-                            choice)))
+           (my--compile  "make %s"
+                        choice))
           (t
-           (compile (format "cd %s && make %s"
-                            (concat dir mode)
-                            choice))))))
+           (my--compile "make %s"
+                       choice)))))
 
+(defun directory-executable-files (dir)
+  (let ((ret '()))
+    (dolist (f  (cddr (directory-files dir)) ret)
+      ;; (message f)
+      (when (file-executable-p (concat dir "/" f))
+        (add-to-list 'ret f)))
+    ret))
 
-(defun my-cmake-run (arg)
-  (interactive "P")
-  (let (choose-list exe-list run-command-list choice (dir (file-name-directory (buffer-file-name))) mode)
-    (if arg (setq mode "release") (setq mode "debug"))
-    (when (not (file-exists-p (concat dir mode)))
-      (make-directory (concat dir mode)))
-    (when (not (file-exists-p (concat dir mode "/Makefile")))
-      (compile (format "cd %s && cmake .. %s" (concat dir mode) makefile-system-string)))
-    (setq exe-list
-          (let ((pos 1) (result '()) (str (buffer-substring-no-properties (point-min) (point-max))))
-            (while (and (< pos (point-max)) (string-match "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_]*\\\)" str pos))
-              (add-to-list 'result (match-string 1 str))
-              (setq pos (match-end 1)))
-            result)
-          choose-list exe-list)
-    (setq run-command-list
-            (let ((pos 1) (result '()) (str (buffer-substring-no-properties (point-min) (point-max))))
-              (while (and (< pos (point-max)) (string-match "add_custom_target\\\s*(\\\s*\\\([0-9a-zA-Z_]*\\\)" str pos))
-                (add-to-list 'result (match-string 1 str))
-                (setq pos (match-end 1)))
-              result)
-          choose-list (append choose-list run-command-list))
-    (let ((choose-list-clean choose-list))
-      (dolist (choice choose-list)
-        (dolist (choice2 choose-list)
-          (when (equal (concat "run_" choice) choice2)
-            (setq choose-list-clean (delete choice choose-list-clean)))))
-      (setq choose-list choose-list-clean))
-    (setq choice (ido-completing-read (format "RUN{%s}: " mode)  choose-list ))
-    (cond ((member choice exe-list)
-           (compile (format "cd %s && make %s && ../bin/%s"
-                                  (concat dir mode)
-                                  choice
-                                  choice)))
-          ((member choice run-command-list)
-           (compile (format "cd %s && make %s"
-                                  (concat dir mode)
-                                  choice))))))
-
-(defun my-cmake-run2()
+(defun my-cmake-run()
   (interactive)
   (let ((choice))
     (setq choice
-          (ido-completing-read "RUN EXE: "
-                               (cddr (directory-files "bin"))))
-    (compile (concat "cd bin && ./" choice))
-    ))
+          (ido-completing-read "RUN EXE: " (directory-executable-files "bin")))
+    (compile (concat "cd bin && ./" choice))))
+
 (defun my-cmake-help ()
   (interactive)
   (cmake-help-command)
-)
+  )
 
 (defun my-cmake-test (arg)
   (interactive "P")
   (let (mode)
     (if arg (setq mode "release") (setq mode "debug"))
-    ;; ctest -V 将gtest的信息也打印出来
+    ;; ctest -V : print the test info
     (compile (format "cd %s && ctest -V" mode))))
 
 (add-hook 'cmake-mode-hook
           (lambda () (interactive)
             (local-set-key "\C-c\C-c" 'my-cmake-compile)
-            (local-set-key "\C-c\C-e" 'my-cmake-run2)
+            (local-set-key "\C-c\C-e" 'my-cmake-run)
             (local-set-key "\C-c\C-t" 'my-cmake-test)
             (local-set-key "\C-ch" 'my-cmake-help)))
 
-;; 添加cmake gtest错误信息
+;; add cmake gtest error string
 (require 'compile)
 (add-to-list 'compilation-error-regexp-alist '("^[0-9]+: \\(.*?\\):\\([0-9]+\\): Failure$" 1 2))
 (provide 'init-cmake)
