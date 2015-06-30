@@ -5,6 +5,14 @@
 (require 'cmake-mode)
 (require 'ido)
 
+
+(defvar makefile-system-string
+  (if (or (eq system-type 'windows-nt)
+          (eq system-type 'ms-dos)
+          (eq system-type 'cygwin))
+      "-G \"MSYS Makefiles\""
+    ""))
+
 (defun my-cmake-compile (arg)
   (interactive "P")
   (let (choose-list choice (dir (file-name-directory (buffer-file-name))) mode)
@@ -12,7 +20,7 @@
     (when (not (file-exists-p (concat dir mode)))
       (make-directory (concat dir mode)))
     (when (not (file-exists-p (concat dir mode "/Makefile")))
-      (compile (format "cd %s && cmake .. -G \"MSYS Makefiles\"" (concat dir mode))))
+      (compile (format "cd %s && cmake .. %s" (concat dir mode) makefile-system-string)))
     (setq choose-list
           (let ((pos 1) (result '()) (str (buffer-substring-no-properties (point-min) (point-max))))
             (while (and (< pos (point-max)) (string-match "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" str pos))
@@ -22,11 +30,12 @@
     (setq choose-list (append choose-list '("all" "clean" "generate")))
     (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list ))
     (cond ((equal choice "generate")
-           (compile (format "cd %s && cmake %s .. -G \"MSYS Makefiles\""
+           (compile (format "cd %s && cmake %s .. %s"
                     (concat dir mode)
                     (if (equal mode "debug")
                         "-DCMAKE_BUILD_TYPE=Debug"
-                      "-DCMAKE_BUILD_TYPE=Release"))))
+                      "-DCMAKE_BUILD_TYPE=Release")
+                    makefile-system-string)))
           ((or (equal choice "all")
                (equal choice "clean"))
            (compile (format "cd %s && make %s"
@@ -45,7 +54,7 @@
     (when (not (file-exists-p (concat dir mode)))
       (make-directory (concat dir mode)))
     (when (not (file-exists-p (concat dir mode "/Makefile")))
-      (compile (format "cd %s && cmake .. -G \"MSYS Makefiles\"" (concat dir mode))))
+      (compile (format "cd %s && cmake .. %s" (concat dir mode) makefile-system-string)))
     (setq exe-list
           (let ((pos 1) (result '()) (str (buffer-substring-no-properties (point-min) (point-max))))
             (while (and (< pos (point-max)) (string-match "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_]*\\\)" str pos))
@@ -83,7 +92,7 @@
     (setq choice
           (ido-completing-read "RUN EXE: "
                                (cddr (directory-files "bin"))))
-    (compile (concat "cd bin && " choice))
+    (compile (concat "cd bin && ./" choice))
     ))
 (defun my-cmake-help ()
   (interactive)
