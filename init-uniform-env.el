@@ -43,6 +43,8 @@
   ;;(message "ENV:%s" env)
   (let (value first-part second-part)
     (setq value (cadr (assoc env my-env-alist)))
+    (when (not value)
+      (setq value (getenv env)))
     ;;(message "Value: %s" value)
     (setq first-part (car (split-string value "/")))
     (if (and (> (length first-part) 0) (equal (elt first-part 0) ?$))
