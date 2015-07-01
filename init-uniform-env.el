@@ -1,6 +1,6 @@
 ;;; uniform the environment in term-mode and find-file use an util function
 ;;; which can input a environment name as a path parameter as the start dir
-(defconst emacs-env-file "~/.emacs-env")
+(defconst emacs-env-file "~/.emacs.d/.emacs-env")
 
 (defun read-env-alist-from-file ()
   ;; (interactive)
@@ -82,6 +82,6 @@
 (global-set-key (kbd "C-S-x C-S-f") 'my-env-find-file)
 
 ;; source emacs global variable
-(setenv "LD_LIBRARY_PATH" (concat (getenv "LD_LIBRARY_PATH") ":/usr/local/lib"))
+(setenv "LD_LIBRARY_PATH" (concat (getenv "LD_LIBRARY_PATH") ":/usr/local/lib:/usr/local/lib32:/usr/local/lib64"))
 (provide 'init-uniform-env)
 
