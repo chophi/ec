@@ -59,7 +59,7 @@
 
     (setq choose-list
           (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1))
-    (setq choose-list (append choose-list '("all" "clean" "generate")))
+    (setq choose-list (append choose-list '("all" "clean" "generate" "dist-clean")))
     
     (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list))
     
@@ -73,6 +73,9 @@
                (equal choice "clean"))
            (my--compile  "make %s"
                         choice))
+          ((equal choice "dist-clean")
+           (when (y-or-n-p (concat  "rm -rf " dir mode))
+             (shell-command (concat  "rm -rf " dir mode))))
           (t
            (my--compile "make %s"
                        choice)))))
@@ -114,6 +117,60 @@
 ;; add cmake gtest error string
 (require 'compile)
 (add-to-list 'compilation-error-regexp-alist '("^[0-9]+: \\(.*?\\):\\([0-9]+\\): Failure$" 1 2))
+
+(defvar cmake-project-lists '())
+
+(let ((f "~/.emacs.d/.cmake-project-lists.el"))
+  (when (file-exists-p f)
+    (load-file f)))
+
+;; redefine the c-mode-base-map
+(require 'init-smart-compile)
+(require 'init-smart-run)
+
+(defun get-maybe-cmake ()
+  (let ((bufname (buffer-file-name))
+        (maybe-cmake nil)
+        (cmakefile nil))
+    (catch 'loop
+      (dolist (proj cmake-project-lists)
+        (setq maybe-cmake (concat proj "/CMakeLists.txt"))
+        ;; (message "[%s,%s]" proj (substring bufname 0 (length proj)))
+        (when (and (file-exists-p maybe-cmake)
+                   (<= (length proj) (length bufname))
+                   (equal proj (substring bufname 0 (length proj))))
+          (setq cmakefile maybe-cmake)
+          (throw 'loop cmakefile))))
+    cmakefile))
+
+
+(defun my-smart-compile ()
+  (interactive)
+  (let ((maybe-cmake nil))
+    (setq maybe-cmake (get-maybe-cmake))
+    (if maybe-cmake
+        (progn (find-file-noselect maybe-cmake)
+               (with-current-buffer (get-file-buffer maybe-cmake)
+                 (call-interactively 'my-cmake-compile)))
+      (call-interactively 'smart-compile))))
+
+(defun my-smart-run ()
+  (interactive)
+  (let ((maybe-cmake (get-maybe-cmake)))
+    (if maybe-cmake
+        (progn (find-file-noselect maybe-cmake)
+               (with-current-buffer (get-file-buffer maybe-cmake)
+                 (call-interactively 'my-cmake-run)))
+      (call-interactively 'run-c-program))))
+
+(define-key c-mode-base-map "\C-c\C-c" 'my-smart-compile)
+;; can't set using define-key, so change to set hook here!
+;; (define-key c-mode-base-map "\C-c\C-e" 'my-smart-run)
+(add-hook 'c-mode-common-hook
+          (lambda () (local-set-key "\C-c\C-e" 'my-smart-run)))
+
+
+
 (provide 'init-cmake)
 
 

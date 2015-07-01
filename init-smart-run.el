@@ -84,9 +84,9 @@
   (run-program
    (compose-c-run-program-list)))
 
-(add-hook 'c-mode-hook
-          (lambda () (local-set-key "\C-c\C-e" 'run-c-program)))
-(add-hook 'c++-mode-hook
-          (lambda () (local-set-key "\C-c\C-e" 'run-c-program)))
+;; (add-hook 'c-mode-hook
+;;           (lambda () (local-set-key "\C-c\C-e" 'run-c-program)))
+;; (add-hook 'c++-mode-hook
+;;           (lambda () (local-set-key "\C-c\C-e" 'run-c-program)))
 
 (provide 'init-smart-run)

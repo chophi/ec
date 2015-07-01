@@ -88,7 +88,7 @@ and set the focus back to Emacs frame"
     (recompile)))
 
 (require 'cc-mode)
-(define-key c-mode-base-map "\C-c\C-c" 'smart-compile)
+;; (define-key c-mode-base-map "\C-c\C-c" 'smart-compile)
 (define-key c-mode-base-map "\C-c\S-c" 'recompile-quietly)
 
 (provide 'init-smart-compile)
