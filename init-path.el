@@ -26,7 +26,7 @@
 	 ))
 
       (linux-head-to-path-list
-       '("~/.emacs-bin"))
+       '("~/.emacs.d/.emacs-bin"))
       (linux-exec-path-list
        '(""
 	 )))
