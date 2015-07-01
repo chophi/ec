@@ -47,7 +47,14 @@
         choice
         mode)
 
-    (if arg (setq mode "release") (setq mode "debug"))
+    (if arg (setq mode "release")
+      (setq mode "debug"))
+
+    (setq choose-list
+          (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1))
+    (setq choose-list (append choose-list '("all" "clean" "generate" "dist-clean")))
+    
+    (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list))
 
     ;; redefine the compile command to be executed in dir
     (defmacro my--compile (string &rest objects)
@@ -57,12 +64,6 @@
     (when (not (file-exists-p (concat dir mode "/Makefile")))
       (my--compile "cmake .. %s" makefile-system-string))
 
-    (setq choose-list
-          (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1))
-    (setq choose-list (append choose-list '("all" "clean" "generate" "dist-clean")))
-    
-    (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list))
-    
     (cond ((equal choice "generate")
            (my--compile "cmake %s .. %s"
                        (if (equal mode "debug")
@@ -88,11 +89,20 @@
         (add-to-list 'ret f)))
     ret))
 
-(defun my-cmake-run()
-  (interactive)
-  (let ((choice))
-    (setq choice
-          (ido-completing-read "RUN EXE: " (directory-executable-files "bin")))
+(defun my-cmake-run(arg)
+  (interactive "P")
+  (let (choice cmake-target-list bin-list mode suffix)
+
+    (if arg (setq mode "release" suffix "_r")
+      (setq mode "debug" suffix "_d"))
+    
+    (setq cmake-target-list
+          (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)
+          bin-list
+          (directory-executable-files "bin"))
+    (setq cmake-target-list (mapcar (lambda (x) (concat x suffix)) cmake-target-list))
+    (setq bin-list (remove-if-not (lambda (x) (member x cmake-target-list)) bin-list))
+    (setq choice (ido-completing-read "RUN EXE: " bin-list))
     (compile (concat "cd bin && ./" choice))))
 
 (defun my-cmake-help ()
