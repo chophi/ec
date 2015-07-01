@@ -13,3 +13,6 @@ ac-comphist.dat
 smex-items
 tramp
 lisp-snippets/az-common-env.el
+/.emacs-bin/
+/.emacs-env
+/.emacs-global-env
