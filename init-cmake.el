@@ -179,7 +179,15 @@
 (add-hook 'c-mode-common-hook
           (lambda () (local-set-key "\C-c\C-e" 'my-smart-run)))
 
+(defun my-jump-to-cmake ()
+  (interactive)
+  (let ((maybe-cmake (get-maybe-cmake)))
+     (if maybe-cmake
+         (find-file-other-window maybe-cmake)
+       (error "no cmake file related"))))
 
+(add-hook 'c-mode-common-hook
+          (lambda () (local-set-key "\C-cm" 'my-jump-to-cmake)))
 
 (provide 'init-cmake)
 
