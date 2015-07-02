@@ -38,10 +38,10 @@ which was bad for me")
 ;;   system include files, by removing system symbol from list of objects to search for c-mode:
 ;;   eg. (setq-mode-local c-mode semanticdb-find-default-throttle '(project unloaded system recursive))
 
-;; (setq-mode-local c-mode semanticdb-find-default-throttle
-;;                  '(project unloaded recursive))
-;; (setq-mode-local c++-mode semanticdb-find-default-throttle
-;;                  '(project unloaded recursive))
+(setq-mode-local c-mode semanticdb-find-default-throttle
+                 '(project unloaded recursive))
+(setq-mode-local c++-mode semanticdb-find-default-throttle
+                 '(project unloaded recursive))
 
 ;;; semantic-idle-scheduler-idle-time
 
@@ -52,13 +52,14 @@ which was bad for me")
             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
               (ggtags-mode 1))))
 
+
 ;;; check and add gtags or exubertant ctags support, if found suitable gtags and ctags.
 (require 'cedet-global)
 ;; if you want to enable support for gnu global
-;; (when (cedet-gnu-global-version-check t)
-;;   (semanticdb-enable-gnu-global-databases 'c-mode)
-;;   (semanticdb-enable-gnu-global-databases 'c++-mode)
-;;   )
+(when (cedet-gnu-global-version-check t)
+  (semanticdb-enable-gnu-global-databases 'c-mode)
+  (semanticdb-enable-gnu-global-databases 'c++-mode)
+  )
 
 ;; enable ctags for some languages:
 ;;  Unix Shell, Perl, Pascal, Tcl, Fortran, Asm
@@ -68,34 +69,18 @@ which was bad for me")
 ;;; ede for c & c++ setting
 (global-ede-mode t)
 
-(defvar w32-include-path-list
-  '("D:/ProgEnv/MinGW/lib/gcc/mingw32/4.8.1/include/c++"))
+;; (defvar w32-include-path-list
+;;   '("D:/ProgEnv/MinGW/lib/gcc/mingw32/4.8.1/include/c++"))
 
-(defvar x-include-path-list
-  '(""))
+;; (defvar x-include-path-list
+;;   '(""))
 
-(defvar include-path-list (if *is-windows-system-p* w32-include-path-list x-include-path-list))
-(defvar-mode-local c++-mode semantic-dependency-system-include-path
-  `(,@include-path-list
-    "include" "../include" "inc" "../inc" "~/utils/include" "~/utils/src/"))
+;; (defvar include-path-list (if *is-windows-system-p* w32-include-path-list x-include-path-list))
+;; (defvar-mode-local c++-mode semantic-dependency-system-include-path
+;;   `(,@include-path-list
+;;     "include" "../include" "inc" "../inc" "~/utils/include" "~/utils/src/"))
 
-(let ((ede-root-readme (expand-file-name "~/project/ede/README")))
-  (when (not (file-exists-p ede-root-readme))
-    (make-directory (file-name-directory ede-root-readme) t)
-    (shell-command  (concat
-                     "echo this file is just a hook for ede\\'s include files finding > "
-                     ede-root-readme)))
-  (ede-cpp-root-project "CPP"
-                        :name "CPP Project"
-                        :file ede-root-readme
-                        :include-path '("/include"
-                                        "../include"
-                                        "/inc"
-                                        "../inc")
-                        :system-include-path '("/usr/local/include/c++/4.8.0"
-                                               "/usr/local/include/boost")
-                        :spp-table '(("isUnix" . "")
-                                     ("BOOST_TEST_DYN_LINK" . ""))))
+(require 'init-ede-projects)
 ;; helper for boost setup...
 (defun cedet-files-list-recursively (dir re)
   "Returns list of files in directory matching to given regex"
@@ -118,6 +103,7 @@ which was bad for me")
     (let ((cfiles (cedet-files-list-recursively boost-root "\\(config\\|user\\)\\.hpp")))
       (dolist (file cfiles)
         (add-to-list 'semantic-lex-c-preprocessor-symbol-file file)))))
+
 ;; (c++-setup-boost "/usr/local/include/boost")
 ;; setting opencv
 (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_PROP_RW" . ""))
@@ -178,7 +164,7 @@ which was bad for me")
         (local-set-key (concat prefix temp-key) (cdr m))))
     (local-set-key (concat prefix "h") `(lambda () (interactive) (with-temp-buffer (insert ,help-message))))))
 (defconst my-semantic-map
-  '(;;(?j . semantic-ia-fast-jump)
+  '((?i . semantic-ia-fast-jump)
     (?p . semantic-analyze-proto-impl-toggle)
     (?b . semantic-mrub-switch-tags)
     (?s . semantic-ia-show-summary)
@@ -233,6 +219,23 @@ which was bad for me")
 
 (require 'cc-mode)
 (add-hook 'c-mode-common-hook (lambda () (my-local-set-keys "\C-c\C-s" `(,my-semantic-map ,my-eassist-map ,my-ggtags-map))))
+
+(require 'init-cmake)
+(defun my-semantic-include-dirs ()
+  (interactive)
+  (let (maybe-cmake file-dir dir-list)
+    (setq maybe-cmake (get-maybe-cmake))
+    (when maybe-cmake
+      (setq file-dir (file-name-directory maybe-cmake))
+      (setq dir-list (cddr (directory-files file-dir)))
+      (setq dir-list (remove-if-not (lambda (x) (file-directory-p (concat file-dir x))) dir-list))
+      (setq dir-list (mapcar (lambda (x) (concat file-dir x)) dir-list)))
+     dir-list))
+
+;; doesn't work
+;; (add-hook 'c-mode-common-hook
+;;           (lambda ()
+;;             (setq-local semantic-dependency-include-path (my-semantic-include-dirs))))
 
 ;; (require 'lisp-mode)
 ;; (add-hook 'emacs-lisp-mode-hook (lambda () (my-local-set-keys "\C-c\C-s" `(,my-semantic-map))))

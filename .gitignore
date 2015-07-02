@@ -17,3 +17,4 @@ lisp-snippets/az-common-env.el
 /.emacs-env
 /.emacs-global-env
 /.cmake-project-lists.el
+/init-ede-projects.el
