@@ -54,12 +54,13 @@ which was bad for me")
 
 
 ;;; check and add gtags or exubertant ctags support, if found suitable gtags and ctags.
-(require 'cedet-global)
-;; if you want to enable support for gnu global
-(when (cedet-gnu-global-version-check t)
-  (semanticdb-enable-gnu-global-databases 'c-mode)
-  (semanticdb-enable-gnu-global-databases 'c++-mode)
-  )
+;; FIXME: it open too many buffers when enable global for c-mode
+;; (require 'cedet-global)
+;; ;; if you want to enable support for gnu global
+;; (when (cedet-gnu-global-version-check t)
+;;   (semanticdb-enable-gnu-global-databases 'c-mode)
+;;   (semanticdb-enable-gnu-global-databases 'c++-mode)
+;;   )
 
 ;; enable ctags for some languages:
 ;;  Unix Shell, Perl, Pascal, Tcl, Fortran, Asm
