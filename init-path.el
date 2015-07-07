@@ -26,7 +26,8 @@
 	 ))
 
       (linux-head-to-path-list
-       '("~/.emacs.d/.emacs-bin"))
+       '("~/.emacs.d/.emacs-bin"
+         "/usr/local/texlive/2015/bin/x86_64-linux"))
       (linux-exec-path-list
        '(""
 	 )))
