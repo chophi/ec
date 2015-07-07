@@ -18,3 +18,6 @@ lisp-snippets/az-common-env.el
 /.emacs-global-env
 /.cmake-project-lists.el
 /init-ede-projects.el
+/elpa/gh-md-readme.txt
+/elpa/gh-readme.txt
+/elpa/gitlab-readme.txt
