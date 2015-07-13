@@ -7,6 +7,8 @@
           (lambda ()
             (yas-minor-mode -1)))
 
+(require 'init-create-multi-terms)
+
 (provide 'term-inside-ide-init)
 
 

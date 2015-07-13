@@ -161,7 +161,7 @@
 (setq css-sanityinc-tomorrow-eighties
       "<style type=\"text/css\">
  <!--/*--><![CDATA[/*><!--*/
-  html { font-family: Times, serif; font-size: 12pt;  background: #2d2d2d; color: white}
+  html { font-family: sans-serif; font-size: 12pt;}
   .title  { text-align: center; color: #f99157}
   .todo   { color: red; }
   .done   { color: green; }
@@ -173,6 +173,7 @@
   .left   {margin-left:0px;  margin-right:auto; text-align:left;}
   .center {margin-left:auto; margin-right:auto; text-align:center;}
   p.verse { margin-left: 3% }
+  p, ul, ol {-webkit-margin-before: 0em; -webkit-margin-after: 0em;}
   div[id^=\"text-table-of-contents\"] {color: #99ffff}
   [href] {color: #ff7f00;}
   h3[id^=\"sec\"] {color: #9aff9a}
