@@ -30,10 +30,21 @@
 
 (define-key term-mode-map "\C-c\C-k" 'term-toggle-between-modes)
 ;; setting keys \C-z + i(which from 1 to 8) to switch to the the ith term frame
+
+
+(defun update-terms-keys ()
+  (dotimes (i (length multi-term-buffer-list))
+    (let* ((buf (nth i multi-term-buffer-list))
+           (bufname (buffer-name buf))
+           (order  (1+ i)))
+      (with-current-buffer buf
+        (rename-buffer (replace-regexp-in-string "<[0-9]*>" (format "<%d>" order) bufname))))))
+
 (dotimes (i 8)
   (global-set-key
    (concat "\C-z" (number-to-string (+ i 1)))
    `(lambda() (interactive)
+      (update-terms-keys)
       (let (tn) (when (setq tn (nth ,i (if (fboundp 'multi-term-list)
                                            (multi-term-list)
                                          multi-term-buffer-list)))
