@@ -97,13 +97,16 @@
 (require 'init-load-snippets)
 (require 'init-sort-dired)
 
+
+(require 'init-dired)
+(require 'init-uniform-env)
+(require 'init-system-default-frame-alist)
+
+;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
 (when *is-linux-system-p*
   (add-to-list 'load-path (concat user-emacs-directory "term"))
   (require 'term-inside-ide-init))
 
-(require 'init-dired)
-(require 'init-uniform-env)
-(require 'init-system-default-frame-alist)
 
 
