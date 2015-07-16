@@ -70,5 +70,17 @@
       (switch-to-buffer-other-window term-buf)
       (end-of-buffer))))
 
+(defconst *temp-cwd-exchange-file* "~/.temp-cwd-exchange-file")
+
+(defun uf-watch-current-directory ()
+  (interactive)
+  (when (not (eq 'term-mode major-mode))
+    (error "only use this command with term-mode buffer"))
+  (term-send-raw-string (format "echo `pwd` > %s\n" *temp-cwd-exchange-file*))
+  (let ((path (my-shell-command-to-string (format "cat %s" *temp-cwd-exchange-file*))))
+    (find-file-other-window path)))
+
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
+(global-set-key "\C-zw" 'uf-watch-current-directory)
+
 (provide 'init-term-keys)
