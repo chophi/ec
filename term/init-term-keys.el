@@ -50,4 +50,25 @@
                                          multi-term-buffer-list)))
                   (switch-to-buffer tn))))))
 
+
+(defun uf-send-cwd-to-term ()
+  (interactive)
+  (if (not (buffer-file-name))
+      nil
+    (let (buf-name (term-buf nil))
+      (setq buf-name (buffer-file-name))
+      (catch 'found
+        (dolist (buf-win (window-list))
+          (when (eq 'term-mode (with-current-buffer (window-buffer buf-win)
+                                 major-mode))
+            (setq term-buf (window-buffer buf-win))
+            (throw 'found term-buf))))
+      (when (not term-buf)
+        (setq term-buf (get-buffer (ido-completing-read "Choose A Term Buffer: " (mapcar (lambda (para) (buffer-name para)) multi-term-buffer-list)))))
+      (with-current-buffer term-buf
+        (term-send-raw-string (format "cd %s\n" (file-name-directory buf-name))))
+      (switch-to-buffer-other-window term-buf)
+      (end-of-buffer))))
+
+(global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (provide 'init-term-keys)
