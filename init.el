@@ -102,6 +102,9 @@
 (require 'init-uniform-env)
 (require 'init-system-default-frame-alist)
 
+(require 'init-neotree)
+
+
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
 (when *is-linux-system-p*

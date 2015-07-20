@@ -22,3 +22,4 @@ lisp-snippets/az-common-env.el
 /elpa/gh-readme.txt
 /elpa/gitlab-readme.txt
 /term/.multi-term-config.el
+/.emacs.desktop~

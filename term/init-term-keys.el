@@ -53,22 +53,20 @@
 
 (defun uf-send-cwd-to-term ()
   (interactive)
-  (if (not (buffer-file-name))
-      nil
-    (let (buf-name (term-buf nil))
-      (setq buf-name (buffer-file-name))
-      (catch 'found
-        (dolist (buf-win (window-list))
-          (when (eq 'term-mode (with-current-buffer (window-buffer buf-win)
-                                 major-mode))
-            (setq term-buf (window-buffer buf-win))
-            (throw 'found term-buf))))
-      (when (not term-buf)
-        (setq term-buf (get-buffer (ido-completing-read "Choose A Term Buffer: " (mapcar (lambda (para) (buffer-name para)) multi-term-buffer-list)))))
-      (with-current-buffer term-buf
-        (term-send-raw-string (format "cd %s\n" (file-name-directory buf-name))))
-      (switch-to-buffer-other-window term-buf)
-      (end-of-buffer))))
+  (let ((cwd default-directory)
+        (term-buf nil))
+    (catch 'found
+      (dolist (buf-win (window-list))
+        (when (eq 'term-mode (with-current-buffer (window-buffer buf-win)
+                               major-mode))
+          (setq term-buf (window-buffer buf-win))
+          (throw 'found term-buf))))
+    (when (not term-buf)
+      (setq term-buf (get-buffer (ido-completing-read "Choose A Term Buffer: " (mapcar (lambda (para) (buffer-name para)) multi-term-buffer-list)))))
+    (with-current-buffer term-buf
+      (term-send-raw-string (format "cd %s\n" cwd)))
+    (switch-to-buffer-other-window term-buf)
+    (end-of-buffer)))
 
 (defconst *temp-cwd-exchange-file* "~/.temp-cwd-exchange-file")
 
@@ -77,6 +75,7 @@
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
   (term-send-raw-string (format "echo `pwd` > %s\n" *temp-cwd-exchange-file*))
+  (sleep-for 0.5)
   (let ((path (my-shell-command-to-string (format "cat %s" *temp-cwd-exchange-file*))))
     (find-file-other-window path)))
 
