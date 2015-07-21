@@ -103,14 +103,13 @@
 (require 'init-system-default-frame-alist)
 
 (require 'init-neotree)
-
+(require 'init-smali)
 
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
 (when *is-linux-system-p*
   (add-to-list 'load-path (concat user-emacs-directory "term"))
   (require 'term-inside-ide-init))
-
 
 
 (put 'erase-buffer 'disabled nil)
