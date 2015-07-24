@@ -14,7 +14,7 @@
     (interactive)
     (let (str)
       (setq str (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-      (string-match "\\(lib[a-zA-Z_]*\.so\\)" str)
+      (string-match "\\(lib[a-zA-Z1-9_]*\.so\\)" str)
       (message (match-string 0 str))
       ))
 
