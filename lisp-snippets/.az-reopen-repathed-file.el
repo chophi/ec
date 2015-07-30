@@ -11,7 +11,3 @@
           (kill-buffer buf)
           (find-file newname)
           )))))
-
-
-
-
