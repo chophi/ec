@@ -207,8 +207,20 @@ which was bad for me")
           (when (file-exists-p toname)
             (find-file-other-window toname)))))))
 
+;;; DEBUG: the flet is obsolete, fix it when it is not bound.
+(defun my-new-eassist-switch-h-cpp (arg)
+  (interactive "P")
+  (if arg
+      (if (fboundp 'flet)
+          (flet ((find-file-other-window (name &optional wildcard) (find-file name wildcard))
+                 (switch-to-buffer-other-window (name &optional norecord) (switch-to-buffer name norecord)))
+            (my-eassist-switch-h-cpp))
+        (my-eassist-switch-h-cpp))
+    (my-eassist-switch-h-cpp)))
+
+
 (defconst my-eassist-map
-  '(("g" . my-eassist-switch-h-cpp)
+  '(("g" . my-new-eassist-switch-h-cpp)
     ("l" . eassist-list-methods)
     ;;("r" . semantic-symref)
     ))
