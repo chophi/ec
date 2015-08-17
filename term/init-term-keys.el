@@ -51,10 +51,8 @@
                   (switch-to-buffer tn))))))
 
 
-(defun uf-send-cwd-to-term ()
-  (interactive)
-  (let ((cwd default-directory)
-        (term-buf nil))
+(defun uf-send-command-to-term (command &optional switch-to-buffer-p)
+  (let ((term-buf nil))
     (catch 'found
       (dolist (buf-win (window-list))
         (when (eq 'term-mode (with-current-buffer (window-buffer buf-win)
@@ -64,9 +62,28 @@
     (when (not term-buf)
       (setq term-buf (get-buffer (ido-completing-read "Choose A Term Buffer: " (mapcar (lambda (para) (buffer-name para)) multi-term-buffer-list)))))
     (with-current-buffer term-buf
-      (term-send-raw-string (format "cd %s\n" cwd)))
-    (switch-to-buffer-other-window term-buf)
-    (end-of-buffer)))
+      (term-send-raw-string command))
+    (when switch-to-buffer-p
+        (switch-to-buffer-other-window term-buf)
+      (end-of-buffer))))
+
+(defun uf-send-cwd-to-term ()
+  (interactive)
+  (let ((cwd default-directory))
+    (uf-send-command-to-term (format "cd %s\n" cwd) t)))
+
+(defun compile-with-term ()
+  (interactive)
+  (let ((cwd default-directory)
+        (compile-command (read-string "Input compile command: ")))
+    (uf-send-command-to-term (format "cd %s && %s 2>&1 | tee compile.log\n" cwd compile-command) nil)
+    (catch 'compile-file-generated
+      (dotimes (time 10)
+        (if (file-exists-p "compile.log")
+          (throw 'compile-file-generated t)
+          (sleep-for 0.5))))
+    (find-file-other-window "compile.log")
+    (compilation-mode)))
 
 (defconst *temp-cwd-exchange-file* "~/.temp-cwd-exchange-file")
 
