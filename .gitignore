@@ -23,3 +23,4 @@ lisp-snippets/az-common-env.el
 /elpa/gitlab-readme.txt
 /term/.multi-term-config.el
 /.emacs.desktop~
+/lisp-snippets/.az-reopen-repathed-file.el
