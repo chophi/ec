@@ -13,8 +13,8 @@
   'smali-mode
   ;; comments
   '(
-    ;; personal branch compiles these, public branch won't so beware
-    "//"
+    ;; ;; personal branch compiles these, public branch won't so beware
+    ;; "//"
     ;; actual compilable smali comments
     "#"
    )
