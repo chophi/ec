@@ -3,9 +3,10 @@
 ;; the cd function provide will cause some delay when
 ;; change directory to a directory which has a multi-byte name.
 ;; I just make it empty to solve this problem, it's a lazy solution.
-(defun cd(dir)
-  
-  )
+(when (not *is-amazon-linux*)
+    (defun cd(dir)      
+      )
+    )
 
 ;;; set C-c C-k to term-toggle-between-mode
 (defun term-toggle-between-modes()
