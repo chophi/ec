@@ -1,4 +1,5 @@
 (require 'name-variables)
+
 (setq ruhoh-blog-root-directory (expand-file-name "~/blog/ruhoh"))
 
 (defconst ruhoh-blog-posts-directory
@@ -11,7 +12,7 @@
   "bundle exec ruhoh server"
   "rackup command")
 (defconst ruhoh-blog-port
-  "9292"
+  "9293"
   "the port of ruhoh")
 (defconst ruhoh-shell-process-buffer
   "*RUHOH RACKUP*"
@@ -131,14 +132,14 @@
     (setq str (concat str "---\n"))))
     ;; (message str)))
 
-(defconst ruhoh-temp-buffer-for-post "*ruhoh temp post*")
+(defconst ruhoh-temp-buffer-for-post "*Org HTML Export*")
 (defconst ruhoh-org-level 3)
 (defun org/ruhoh-parse-post-to-buffer(&optional buf)
   (when (not buf)
       (setq buf (get-buffer-create ruhoh-temp-buffer-for-post)))
   (let ((output (ruhoh-post-meta-infomations)))
     (save-current-buffer
-      (org-export-as-html ruhoh-org-level nil buf t))
+      (org-html-export-as-html nil nil nil t))
     (message "after parse current-buffer is %s" (buffer-name))
     (with-current-buffer buf
       (goto-char (point-min))
@@ -211,8 +212,14 @@
 		   (org/ruhoh-publish-post-internal path))))))
     path))
 
+(defun find-chrome-program-name ()
+  (if (not (equal  (shell-command-to-string "which chrome") ""))
+      "chrome"
+    (if (not (equal  (shell-command-to-string "which google-chrome") ""))
+        "google-chrome"
+      (error "chrome program not found"))))
 (defconst ruhoh-prefer-browser
-  "chrome"
+  (find-chrome-program-name)
   "default browser for viewing ruhoh")
 
 (defun org/ruhoh-publish-post-and-view()
