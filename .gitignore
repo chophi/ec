@@ -24,3 +24,4 @@ lisp-snippets/az-common-env.el
 /term/.multi-term-config.el
 /.emacs.desktop~
 /lisp-snippets/.az-reopen-repathed-file.el
+/lisp-snippets/.az-temp-commands.el
