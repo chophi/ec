@@ -104,7 +104,7 @@
 
 (require 'init-neotree)
 (require 'init-smali)
-(require 'init-astyle)
+(require 'init-cc-format)
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
 (when *is-linux-system-p*

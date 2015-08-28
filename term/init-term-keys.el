@@ -75,13 +75,13 @@
 (defun compile-with-term ()
   (interactive)
   (let ((cwd default-directory)
-        (compile-command (read-string "Input compile command: ")))
+        (compile-command (read-string "Compile Command: ")))
     (uf-send-command-to-term (format "cd %s && %s 2>&1 | tee compile.log\n" cwd compile-command) nil)
     (catch 'compile-file-generated
       (dotimes (time 10)
         (if (file-exists-p "compile.log")
           (throw 'compile-file-generated t)
-          (sleep-for 0.5))))
+          (sleep-for 0.1))))
     (find-file-other-window "compile.log")
     (compilation-mode)))
 

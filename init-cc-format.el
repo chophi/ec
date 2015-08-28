@@ -16,4 +16,4 @@
 (setq-default clang-format-style
       "{BasedOnStyle: Google, IndentWidth: 4}")
 
-(provide 'init-astyle)
+(provide 'init-cc-format)
