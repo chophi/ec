@@ -102,8 +102,16 @@
     (error "only use this command with term-mode buffer"))
   (rename-buffer (concat "*" (read-string "Buffer Name: ") "<1000>*")))
 
+(defun uf-switch-to-term-buffer ()
+  (interactive)
+  (let ((buffer-list '()))
+    (dolist (term multi-term-buffer-list)
+             (add-to-list 'buffer-list (buffer-name term)))
+    (switch-to-buffer (get-buffer  (ido-completing-read "Switch to Term: " buffer-list)))))
+
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
 (global-set-key "\C-zr" 'uf-term-rename-buffer)
+(global-set-key "\C-zs" 'uf-switch-to-term-buffer)
 
 (provide 'init-term-keys)
