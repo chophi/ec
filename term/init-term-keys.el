@@ -96,7 +96,14 @@
   (let ((path (my-shell-command-to-string (format "cat %s" *temp-cwd-exchange-file*))))
     (find-file-other-window path)))
 
+(defun uf-term-rename-buffer ()
+  (interactive)
+  (when (not (eq 'term-mode major-mode))
+    (error "only use this command with term-mode buffer"))
+  (rename-buffer (concat "*" (read-string "Buffer Name: ") "<1000>*")))
+
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
+(global-set-key "\C-zr" 'uf-term-rename-buffer)
 
 (provide 'init-term-keys)
