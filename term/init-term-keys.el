@@ -115,6 +115,7 @@
     (error "only use this command with term-mode buffer"))
   (term-send-raw-string (format "export PROMPT_COMMAND=\"\"\n")))
 
+
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
 (global-set-key "\C-zr" 'uf-term-rename-buffer)
