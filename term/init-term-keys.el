@@ -109,9 +109,16 @@
              (add-to-list 'buffer-list (buffer-name term)))
     (switch-to-buffer (get-buffer  (ido-completing-read "Switch to Term: " buffer-list)))))
 
+(defun uf-clear-prompt-command ()
+  (interactive)
+  (when (not (eq 'term-mode major-mode))
+    (error "only use this command with term-mode buffer"))
+  (term-send-raw-string (format "export PROMPT_COMMAND=\"\"")))
+
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
 (global-set-key "\C-zr" 'uf-term-rename-buffer)
 (global-set-key "\C-zs" 'uf-switch-to-term-buffer)
+(global-set-key "\C-zl" 'uf-clear-prompt-command)
 
 (provide 'init-term-keys)
