@@ -33,7 +33,7 @@
 (require 'init-maxframe)
 (require 'init-windows)
 (when *is-linux-system-p*
-  (maximize-frame))
+  (maximize-frame "Emacs::IDE"))
 (when *is-windows-system-p*
   (w32-maximize-frame))
 
