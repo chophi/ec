@@ -116,5 +116,8 @@
   (require 'term-inside-ide-init))
 
 
+(if *is-mac-machine*
+    (global-set-key "\C-\M-g" (lambda () (interactive) (shell-command "open \"/Applications/Google Chrome.app/\""))))
+
 (put 'erase-buffer 'disabled nil)
  
