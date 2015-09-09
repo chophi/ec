@@ -189,7 +189,8 @@ which was bad for me")
 (add-to-list 'eassist-header-switches '("cc" "h" "hh"))
 
 (setq lib-include-replace-list '(("/libs/" "/include/")
-                                 ("/lib" "/include/")))
+                                 ("/lib" "/include/")
+                                 ("/media/libstagefright/" "/include/media/stagefright/")))
 
 (defun my-eassist-switch-h-cpp ()
   (interactive)
