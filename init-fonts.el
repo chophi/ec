@@ -93,8 +93,10 @@ by the :height face attribute."
   (set-cjk-font "SimSun" 16.3)
   (set-ascii-font-size 15.5))
 
+;;; TODO: cjk-font not work now
 (when *is-mac-machine*
- (set-ascii-font-size 14))
+  (set-cjk-font "STHeiti" 15)
+  (set-ascii-font-size 15))
 
 ;; (when (eq window-system 'w32)
 ;;   (set-cjk-font "SimSun" 14.3) 
