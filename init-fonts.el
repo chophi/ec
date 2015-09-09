@@ -76,7 +76,8 @@ by the :height face attribute."
 ;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 ;; (when (eq window-system 'w32)
 ;;     (set-cjk-font "SimSun" 18.4) 
-;;   (set-ascii-font "Monaco" 15.0)) 
+;;   (set-ascii-font "Monaco" 15.0))
+
 
 (when (eq window-system 'w32)
     (set-cjk-font "SimSun" 14.3) 
@@ -93,9 +94,9 @@ by the :height face attribute."
   (set-cjk-font "SimSun" 16.3)
   (set-ascii-font-size 15.5))
 
-;;; TODO: cjk-font not work now
+;;; DONE: cjk-font working now
 (when *is-mac-machine*
-  (set-cjk-font "STHeiti" 15)
+  (set-fontset-font t 'han (font-spec :family "STHeiti" :size 18))
   (set-ascii-font-size 15))
 
 ;; (when (eq window-system 'w32)
