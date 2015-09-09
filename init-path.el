@@ -38,5 +38,6 @@
   (dolist (p (if *is-windows-system-p* win-head-to-path-list linux-head-to-path-list))
     (head-to-path p)))
 
+(add-to-list 'exec-path "/usr/local/bin")
 (provide 'init-path)
 
