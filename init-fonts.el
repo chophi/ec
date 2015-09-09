@@ -83,6 +83,7 @@ by the :height face attribute."
   (set-ascii-font "Consolas" 13.0))
 
 (when (and (not *is-amazon-machine*)
+           (not *is-mac-machine*)
 	   (window-system))
   (set-cjk-font "SimSun" 15.8)
   (set-ascii-font-size 14.5))
@@ -91,6 +92,9 @@ by the :height face attribute."
 	   (window-system))
   (set-cjk-font "SimSun" 16.3)
   (set-ascii-font-size 15.5))
+
+(when *is-mac-machine*
+ (set-ascii-font-size 14))
 
 ;; (when (eq window-system 'w32)
 ;;   (set-cjk-font "SimSun" 14.3) 

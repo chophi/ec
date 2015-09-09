@@ -217,7 +217,7 @@
       "chrome"
     (if (not (equal  (shell-command-to-string "which google-chrome") ""))
         "google-chrome"
-      (error "chrome program not found"))))
+      (message "chrome program not found"))))
 (defconst ruhoh-prefer-browser
   (find-chrome-program-name)
   "default browser for viewing ruhoh")

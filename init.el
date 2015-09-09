@@ -32,9 +32,11 @@
 
 (require 'init-maxframe)
 (require 'init-windows)
-(if *is-linux-system-p*
-    (maximize-frame "Emacs::IDE")
+(when *is-linux-system-p*
+  (maximize-frame))
+(when *is-windows-system-p*
   (w32-maximize-frame))
+
 
 ;; heavy configures follows
 (require 'init-yasnippet)
@@ -85,8 +87,6 @@
 (require 'init-lisps)
 (require 'init-rainbow-delimiters)
 
-(when *is-amazon-machine*)
-
 
 ;; (require 'init-metapost)
 (require 'init-pandoc)
@@ -111,9 +111,10 @@
 (require 'init-logcat-mode)
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
-(when *is-linux-system-p*
+(when (or *is-linux-system-p* *is-mac-machine*) 
   (add-to-list 'load-path (concat user-emacs-directory "term"))
   (require 'term-inside-ide-init))
 
 
 (put 'erase-buffer 'disabled nil)
+ 
