@@ -30,12 +30,20 @@
          "/usr/local/texlive/2015/bin/x86_64-linux"))
       (linux-exec-path-list
        '(""
-	 )))
-  (dolist (p (if *is-windows-system-p* win-append-to-path-list linux-append-to-path-list))
+	 ))
+      (mac-append-to-path-list
+       '("~/bin"
+         "~/bin/common-scripts"
+         ))
+      (mac-exec-path-list
+       '(""))
+      (mac-head-to-path-list
+       '("")))
+  (dolist (p (if *is-windows-system-p* win-append-to-path-list (if *is-linux-system-p* linux-append-to-path-list mac-append-to-path-list)))
     (append-to-path p))
-  (dolist (p (if *is-windows-system-p* win-exec-path-list linux-exec-path-list))
+  (dolist (p (if *is-windows-system-p* win-exec-path-list (if *is-linux-system-p* linux-exec-path-list mac-exec-path-list)))
     (add-to-list 'exec-path p))
-  (dolist (p (if *is-windows-system-p* win-head-to-path-list linux-head-to-path-list))
+  (dolist (p (if *is-windows-system-p* win-head-to-path-list (if *is-linux-system-p*  linux-head-to-path-list mac-head-to-path-list)))
     (head-to-path p)))
 
 (add-to-list 'exec-path "/usr/local/bin")
