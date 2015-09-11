@@ -49,9 +49,7 @@
 (require 'init-smart-run)
 
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load-file custom-file)
-(set-background-color "#2E3436")
+;; (set-background-color "#2E3436")
 ;; (set-foreground-color "medium spring green")
 ;; (set-foreground-color "medium sea green")
 
@@ -100,7 +98,7 @@
 
 (require 'init-dired)
 (require 'init-uniform-env)
-(require 'init-system-default-frame-alist)
+
 
 (require 'init-neotree)
 (require 'init-smali)
@@ -119,5 +117,13 @@
 (if *is-mac-machine*
     (global-set-key "\C-\M-g" (lambda () (interactive) (shell-command "open \"/Applications/Google Chrome.app/\""))))
 
+
 (put 'erase-buffer 'disabled nil)
  
+
+;;;(when (not *is-mac-machine*)
+(require 'init-system-default-frame-alist)
+;;;)
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load-file custom-file)
