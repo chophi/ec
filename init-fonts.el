@@ -87,7 +87,7 @@ by the :height face attribute."
            (not *is-mac-machine*)
 	   (window-system))
   (set-cjk-font "SimSun" 15.8)
-  (set-ascii-font-size 14.5))
+  (set-ascii-font "Consolas" 14.5))
 
 (when (and *is-amazon-machine*
 	   (window-system))
