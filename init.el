@@ -114,8 +114,11 @@
   (require 'term-inside-ide-init))
 
 
-(if *is-mac-machine*
-    (global-set-key "\C-\M-g" (lambda () (interactive) (shell-command "open \"/Applications/Google Chrome.app/\""))))
+(when *is-mac-machine*
+    (global-set-key "\C-\M-g" (lambda () (interactive) (shell-command "open \"/Applications/Google Chrome.app/\"")))
+    (global-set-key "\C-\M-x" (lambda () (interactive) (shell-command "open \"/Applications/Xcode.app/\"")))
+    (define-key emacs-lisp-mode-map "\C-\M-x" nil)
+  )
 
 
 (put 'erase-buffer 'disabled nil)
