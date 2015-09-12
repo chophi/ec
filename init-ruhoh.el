@@ -163,7 +163,7 @@
       (kill-buffer (current-buffer)))))
 
 (defconst org/ruhoh-file-extend 
-  "md")
+  "html")
 
 ;; these two are two strong, so I change it!
 ;; (defun org-get-post-id()
