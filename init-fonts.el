@@ -46,7 +46,7 @@ by the :height face attribute."
 
 (defun set-cjk-font (type size)
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
-    (set-fontset-font "fontset-default"
+    (set-fontset-font t
 		      charset
 		      (font-spec
 		       :family type
@@ -60,7 +60,7 @@ by the :height face attribute."
 
 (defun set-cjk-font-size (size)
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
-    (set-fontset-font "fontset-default"
+    (set-fontset-font t
 		      charset
 		      (font-spec
 		       :size size)
@@ -96,7 +96,8 @@ by the :height face attribute."
 
 ;;; DONE: cjk-font working now
 (when *is-mac-machine*
-  (set-fontset-font t 'han (font-spec :family "STHeiti" :size 18))
+  ;;(set-fontset-font t 'han (font-spec :family "STHeiti" :size 18))
+  (set-cjk-font "STHeiti" 18)
   (set-ascii-font "Monaco" 15))
 
 ;; (when (eq window-system 'w32)
