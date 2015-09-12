@@ -107,6 +107,10 @@
 (require 'init-groovy)
 
 (require 'init-logcat-mode)
+(require 'init-markdown-mode)
+(require 'init-yml-mode)
+
+
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
 (when (or *is-linux-system-p* *is-mac-machine*) 
@@ -130,3 +134,6 @@
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load-file custom-file)
+
+(when (file-exists-p "~/.emacs.d/init-private-custom.el")
+  (require 'init-private-custom))
