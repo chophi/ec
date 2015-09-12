@@ -1,6 +1,6 @@
 (require 'name-variables)
 
-(setq ruhoh-blog-root-directory (expand-file-name "~/blog/ruhoh"))
+(setq ruhoh-blog-root-directory (expand-file-name "~/blog/chophi"))
 
 (defconst ruhoh-blog-posts-directory
   (expand-file-name (concat ruhoh-blog-root-directory "/posts"))
