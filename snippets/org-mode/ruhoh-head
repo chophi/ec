@@ -1,0 +1,16 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ruhoh-head
+# key: ruhoh-head
+# binding: direct-keybinding
+# --
+#+TITLE: $1
+#+DATE: $2
+
+#+OPTIONS: ^:{}
+
+#+CATEGORIES:
+#+TAGS:
+#+LAYOUT:
+#+DESCRIPTION:
+
+$0
