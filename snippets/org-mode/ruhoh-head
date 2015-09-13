@@ -3,14 +3,12 @@
 # key: ruhoh-head
 # binding: direct-keybinding
 # --
-#+TITLE: $1
-#+DATE: $2
-
-#+OPTIONS: ^:{}
-
-#+CATEGORIES:
-#+TAGS:
-#+LAYOUT:
-#+DESCRIPTION:
-
+---
+title       : ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-name)))`}
+date        : '${2:`(format-time-string "%Y-%m-%d")`}'
+categories  : ['${3:misc}']
+tags        : ['${4:misc}']
+layout      : ${5:posts}
+description : '${6:input your description here}'
+---
 $0

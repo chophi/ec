@@ -54,8 +54,8 @@
 
 (defconst ruhoh-post-tag-type-list
   '(("date" . string) 
-    ("categories" . list)
-    ("tags" . list)
+    ("categories" . raw-list)
+    ("tags" . raw-list)
     ("layout" . string)
     ("title" . string)
     ("description" . string)
@@ -124,6 +124,12 @@
 	(setq val (cadr alist))
 	(when val
 	  (setq str (concat str (format "%s: '%s'\n" (car alist) val)))))
+      
+      (when (equal prop 'raw-list)
+	(setq val (cadr alist))
+	(when val
+	  (setq str (concat str (format "%s: %s\n" (car alist) val)))))
+
       (when (equal prop 'list) 
 	(setq val (ruhoh-post-print-list (cadr alist)))
 	(when val
@@ -210,7 +216,7 @@
 				      (ruhoh-unique-guid)
 				      org/ruhoh-file-extend))
 		   (org/ruhoh-publish-post-internal path))))))
-    path))
+    (find-file-other-window  path)))
 
 (defun find-chrome-program-name ()
   (if (not (equal  (shell-command-to-string "which chrome") ""))
@@ -252,15 +258,25 @@
 
 (defconst org/ruhoh-prefix
   '(format 
-   "#+TITLE: %s\n\
+   "\
+#+TITLE: %s
 #+DATE: %s\n
-#+OPTIONS: ^:{}\n\
-#+CATEGORIES: \n\
-#+TAGS: \n\
-#+LAYOUT: \n\
-#+DESCRIPTION:\n\n"
+# ruhoh blog metadata
+# catetories and tags should be wrapped with \"\" and seperate with comma
+# ----
+#+OPTIONS: ^:{}
+#+CATEGORIES: []
+#+TAGS: []
+#+LAYOUT:
+#+DESCRIPTION:
+# ----\n"
    (read-string "File Name: ")
    (format-time-string "%Y-%m-%d")))
+
+(defun org/ruhoh-insert-metadata ()
+  (interactive)
+  (goto-char 1)
+  (insert (eval org/ruhoh-prefix)))
 
 (defun org/ruhoh-new-post()
   (interactive)

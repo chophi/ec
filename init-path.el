@@ -33,6 +33,7 @@
 	 ))
       (mac-append-to-path-list
        '("~/bin"
+         "/usr/local/bin"
          "~/bin/common-scripts"
          ))
       (mac-exec-path-list
