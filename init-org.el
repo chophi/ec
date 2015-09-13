@@ -33,9 +33,6 @@
             (linum-mode -1)
             (visual-line-mode)) t)
 
-;; hide the extra org mode stars perfectly
-(set-face-background 'org-hide (face-background 'default))
-(set-face-foreground 'org-hide (face-background 'default))
 ;; (when *is-a-mac*
 ;;   (require-package 'org-mac-link-grabber)
 ;;   (require-package 'org-mac-iCal))
