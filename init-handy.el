@@ -112,8 +112,12 @@ end of the line."
 ;; change backup and auto-save directory
 (setq backup-directory-alist 
       '(("[:ascii:]*" . "~/.emacs.d/backup-file")))
-(setq auto-save-file-name-transforms 
-      '((".*" "~/.emacs.d/auto-save-file/\\2" t)))
+
+(let ((auto-save-file-directory "~/.emacs.d/auto-save-file"))
+  (when (not (file-exists-p auto-save-file-directory))
+    (make-directory auto-save-file-directory))
+  (setq auto-save-file-name-transforms 
+        `((".*" ,(concat auto-save-file-directory "/\\2") t))))
 
 (defun my-practise-dir ()
   (interactive)
