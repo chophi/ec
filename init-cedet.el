@@ -190,7 +190,8 @@ which was bad for me")
 
 (setq lib-include-replace-list '(("/libs/" "/include/")
                                  ("/lib" "/include/")
-                                 ("/media/libstagefright/" "/include/media/stagefright/")))
+                                 ("/media/libstagefright/" "/include/media/stagefright/")
+                                 ("/base/native/android/" "/native/include/android/")))
 
 (defun my-eassist-switch-h-cpp ()
   (interactive)
