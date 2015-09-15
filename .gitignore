@@ -29,3 +29,4 @@ lisp-snippets/az-common-env.el
 /ido.last
 /init-private-custom.el
 /server/
+/custom.el
