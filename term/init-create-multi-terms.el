@@ -1,6 +1,9 @@
 (defvar multi-term-config-list '()
   "init multi terms according to this config list")
 
+(when (not (file-exists-p "~/.emacs.d/term/.multi-term-config.el"))
+  (copy-file "~/.emacs.d/term/.multi-term-config.sample.el" "~/.emacs.d/term/.multi-term-config.el"))
+
 (require '.multi-term-config ".multi-term-config.el" t)
 
 (defun create-term-without-switch (term-name command-list)

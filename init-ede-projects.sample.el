@@ -1,6 +1,6 @@
 (ede-cpp-root-project "cv"
                       :name "cv"
-                      :file "FILE_IN_PROJECT_ROOT"
+                      :file "~/.emacs.d/init.el" ;; make sure this file/dir exists
                       :include-path '("/src"
                                       "/test"
                                       "/tool"

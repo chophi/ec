@@ -28,3 +28,5 @@ lisp-snippets/az-common-env.el
 /recentf
 /ido.last
 /init-private-custom.el
+/server/
+/custom.el

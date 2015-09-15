@@ -1,6 +1,6 @@
 (setq multi-term-config-list
-      '(("TerminalName"
-         ("Command 1"
-          "Command 2"))))
+      '(("Stub Terminal"
+         ("cd ~/.eamcs.d/"
+          "ls"))))
 
 (provide '.multi-term-config)

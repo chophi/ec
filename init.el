@@ -74,13 +74,13 @@
 (require 'init-magit)
 (require 'init-latex)
 (require 'init-openwith)
-(require 'init-cnblogs)
+;; (require 'init-cnblogs)
 (require 'init-handy)
 (require 'init-js)
 (require 'init-ruhoh)
 
-
-(require 'init-topcoder)
+;;; deprecated from windows
+;; (require 'init-topcoder)
 
 (require 'init-lisps)
 (require 'init-rainbow-delimiters)
@@ -90,7 +90,7 @@
 (require 'init-pandoc)
 
 (require 'important-parameter-settings)
-(require 'init-chrome-emacs)
+;; (require 'init-chrome-emacs)
 
 (require 'init-load-snippets)
 (require 'init-sort-dired)
@@ -109,14 +109,6 @@
 (require 'init-logcat-mode)
 (require 'init-markdown-mode)
 (require 'init-yml-mode)
-
-
-;; !!!!! put the term code the last !!!!!!!!!!!!
-;; import the multi-term function to linux.
-(when (or *is-linux-system-p* *is-mac-machine*) 
-  (add-to-list 'load-path (concat user-emacs-directory "term"))
-  (require 'term-inside-ide-init))
-
 
 (when *is-mac-machine*
     (global-set-key "\C-\M-g" (lambda () (interactive) (shell-command "open \"/Applications/Google Chrome.app/\"")))
@@ -141,3 +133,9 @@
 ;; hide the extra org mode stars perfectly
 (set-face-background 'org-hide (face-background 'default))
 (set-face-foreground 'org-hide (face-background 'default))
+
+;; !!!!! put the term code the last !!!!!!!!!!!!
+;; import the multi-term function to linux.
+(when (or *is-linux-system-p* *is-mac-machine*) 
+  (add-to-list 'load-path (concat user-emacs-directory "term"))
+  (require 'term-inside-ide-init))
