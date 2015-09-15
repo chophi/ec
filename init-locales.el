@@ -1,16 +1,17 @@
 (when *is-windows-system-p*
-  (setq locale-coding-system 'utf-8)
-  (set-default-coding-systems 'utf-8)
+  (setq save-buffer-coding-system 'utf-8-unix)
+  (setq locale-coding-system 'utf-8-unix)
+  (set-default-coding-systems 'utf-8-unix)
 
-  (set-terminal-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8-unix)
   (setq file-name-coding-system 'gbk)
 
   (set-selection-coding-system 'gbk)
   (set-clipboard-coding-system 'gbk)
 
-  (prefer-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8-unix)
 
-  ;; (set-coding-system-priority 'utf-8 'utf-8-dos)
+  (set-coding-system-priority 'utf-8 'utf-8-dos)
 
   ;; ;; week day 乱码
   (fset 'old-format-time-string (symbol-function 'format-time-string))
