@@ -31,8 +31,8 @@
 (define-key term-mode-map "\C-c\C-k" 'term-toggle-between-modes)
 ;; setting keys \C-z + i(which from 1 to 8) to switch to the the ith term frame
 
-
-(defun update-terms-keys ()
+(defun update-terms-name ()
+  "update all terminal names"
   (dotimes (i (length multi-term-buffer-list))
     (let* ((buf (nth i multi-term-buffer-list))
            (bufname (buffer-name buf))
@@ -44,7 +44,7 @@
   (global-set-key
    (concat "\C-z" (number-to-string (+ i 1)))
    `(lambda() (interactive)
-      (update-terms-keys)
+      (update-terms-name)
       (let (tn) (when (setq tn (nth ,i (if (fboundp 'multi-term-list)
                                            (multi-term-list)
                                          multi-term-buffer-list)))
@@ -100,7 +100,8 @@
   (interactive)
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (rename-buffer (concat "*" (read-string "Buffer Name: ") "<1000>*")))
+  (rename-buffer (concat "*" (read-string "Buffer Name: ") "<1000>*"))
+  (update-terms-name))
 
 (defun uf-switch-to-term-buffer ()
   (interactive)
