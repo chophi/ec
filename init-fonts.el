@@ -80,13 +80,7 @@ by the :height face attribute."
 
 
 (when (eq window-system 'w32)
-    (set-cjk-font "SimSun" 14.3) 
-  (set-ascii-font "Consolas" 13.0))
-
-(when (and (not *is-amazon-machine*)
-           (not *is-mac-machine*)
-	   (window-system))
-  (set-cjk-font "SimSun" 15.8)
+    (set-cjk-font "SimSun" 15.0) 
   (set-ascii-font "Consolas" 14.5))
 
 (when (and *is-amazon-machine*
