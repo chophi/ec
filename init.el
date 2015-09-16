@@ -42,6 +42,7 @@
 (require 'init-yasnippet)
 (require 'init-auto-complete)
 (require 'init-python)
+(require 'init-ruby)
 
 ;; c++ configuration
 (require 'init-cc-mode)
