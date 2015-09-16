@@ -7,9 +7,9 @@
 
 (require-package 'fill-column-indicator)
 (require 'fill-column-indicator)
-(setq fci-rule-color "#aaaaaa")
 
 (defun enable-fci-mode-hook ()
+  (setq fci-rule-color "#8b2252") ;; maroon4
   (fci-mode 1))
 
 (defconst *enable-prog-fci-mode* t)
