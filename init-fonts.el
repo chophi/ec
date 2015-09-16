@@ -86,7 +86,7 @@ by the :height face attribute."
 (when (and *is-amazon-machine*
 	   (window-system))
   (set-cjk-font "SimSun" 16.3)
-  (set-ascii-font-size 15.5))
+  (set-ascii-font "Consolas" 15.3))
 
 ;;; DONE: cjk-font working now
 (when *is-mac-machine*
