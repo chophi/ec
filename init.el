@@ -133,10 +133,6 @@
 (when (file-exists-p "~/.emacs.d/init-private-custom.el")
   (require 'init-private-custom))
 
-;; hide the extra org mode stars perfectly
-(set-face-background 'org-hide (face-background 'default))
-(set-face-foreground 'org-hide (face-background 'default))
-
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
 (when (or *is-linux-system-p* *is-mac-machine*) 

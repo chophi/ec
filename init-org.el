@@ -31,7 +31,10 @@
 (add-hook 'org-mode-hook
 	  (lambda() (interactive)
             (linum-mode -1)
-            (visual-line-mode)) t)
+            (visual-line-mode)
+            ;; hide the extra org mode stars perfectly
+            (set-face-background 'org-hide (face-background 'default))
+            (set-face-foreground 'org-hide (face-background 'default))) t)
 
 ;; (when *is-a-mac*
 ;;   (require-package 'org-mac-link-grabber)
