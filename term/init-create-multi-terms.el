@@ -31,7 +31,9 @@
 
 (global-set-key "\C-zd" 'duplicate-term-and-switch)
 
-;; (dolist (term-config multi-term-config-list)
-;;   (create-term-without-switch (car term-config) (cadr term-config)))
+
+(dolist (term-config multi-term-config-list)
+  (when (caddr term-config)
+    (create-term-without-switch (car term-config) (cadr term-config))))
 
 (provide 'init-create-multi-terms)
