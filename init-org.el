@@ -33,8 +33,8 @@
             (linum-mode -1)
             (visual-line-mode)
             ;; hide the extra org mode stars perfectly
-            (set-face-background 'org-hide (face-background 'default))
-            (set-face-foreground 'org-hide (face-background 'default))) t)
+            (set-face-background 'org-hide global-background-color)
+            (set-face-foreground 'org-hide global-background-color)) t)
 
 ;; (when *is-a-mac*
 ;;   (require-package 'org-mac-link-grabber)
