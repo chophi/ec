@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: reinterpret_cast
+# key: rc
+# binding: direct-keybinding
+# --
+reinterpret_cast<${1:Cast To Type}*>($0)

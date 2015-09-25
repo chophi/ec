@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: static_cast
+# key: sc
+# binding: direct-keybinding
+# --
+static_cast<${1:Cast To Type}*>($0)
