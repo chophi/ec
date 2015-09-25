@@ -1,5 +1,5 @@
 (add-to-list 'load-path user-emacs-directory)
-
+(setq global-background-color "#2E3436")
 (setq warning-suppress-types '((initialization)))
 
 (require 'init-system-check)
@@ -30,6 +30,8 @@
 
 (require 'init-recentf)
 (require 'init-ido)
+;; FIXME: seems no-flet not compatible with other packages.
+;; (require 'kill-ring-ido)
 
 (require 'init-sessions)
 
@@ -55,7 +57,7 @@
 (require 'init-smart-run)
 
 
-;; (set-background-color "#2E3436")
+;; (set-background-color global-background-color)
 ;; (set-foreground-color "medium spring green")
 ;; (set-foreground-color "medium sea green")
 
