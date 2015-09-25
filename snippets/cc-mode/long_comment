@@ -4,3 +4,6 @@
 # binding: direct-keybinding
 # --
 
+// `(make-string 76 ?-)`
+// $0
+// `(make-string 76 ?-)`
