@@ -118,6 +118,7 @@
 (require 'init-markdown-mode)
 (require 'init-yml-mode)
 
+(require 'init-browse-kill-ring)
 (when *is-mac-machine*
     (global-set-key "\C-\M-g" (lambda () (interactive) (shell-command "open \"/Applications/Google Chrome.app/\"")))
     (global-set-key "\C-\M-x" (lambda () (interactive) (shell-command "open \"/Applications/Xcode.app/\"")))
