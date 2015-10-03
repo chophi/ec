@@ -90,9 +90,18 @@ by the :height face attribute."
 
 ;;; DONE: cjk-font working now
 (when *is-mac-machine*
+  (setq *toggle-font-size* t)
   ;;(set-fontset-font t 'han (font-spec :family "STHeiti" :size 18))
-  (set-cjk-font "STHeiti" 18)
-  (set-ascii-font "Monaco" 15))
+  (defun toggle-font-size ()
+    (interactive)
+    (if *toggle-font-size*
+        (progn (set-cjk-font "STHeiti" 18)
+               (set-ascii-font "Monaco" 15)
+               (setq *toggle-font-size* nil))
+      (progn (set-cjk-font "STHeiti" 22)
+             (set-ascii-font "Monaco" 19)
+             (setq *toggle-font-size* t))))
+  (toggle-font-size))
 
 ;; (when (eq window-system 'w32)
 ;;   (set-cjk-font "SimSun" 14.3) 
