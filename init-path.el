@@ -35,9 +35,10 @@
        '("~/bin"
          "/usr/local/bin"
          "~/bin/common-scripts"
+         "/usr/local/texlive/2015/bin/universal-darwin"
          ))
       (mac-exec-path-list
-       '("/usr/local/texlive/2015/bin/universal-darwin"))
+       '(""))
       (mac-head-to-path-list
        '("")))
   (dolist (p (if *is-windows-system-p* win-append-to-path-list (if *is-linux-system-p* linux-append-to-path-list mac-append-to-path-list)))
