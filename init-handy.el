@@ -153,4 +153,5 @@ end of the line."
       split-width-threshold 100)
 
 (global-set-key (kbd "C-!") 'shell-command)
+(global-set-key (kbd "\C-xf") 'other-frame)
 (provide 'init-handy)
