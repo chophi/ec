@@ -129,6 +129,12 @@ end of the line."
   (setq smart-compile-make-program "mingw32-make ")  
   )
 
+(when *is-mac-machine*
+  (defun my-ring-bell-function ()
+    (message "try to ring bell"))
+  (setq visible-bell t
+        ring-bell-function 'my-ring-bell-function))
+
 ;; Prevent issues with the Windows null device (NUL)
 ;; when using cygwin find with rgrep.
 (defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
