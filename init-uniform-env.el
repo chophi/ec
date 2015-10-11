@@ -10,10 +10,10 @@
         (env-alist '())
         env
         value)
-    (while (string-match "^\\([0-9a-zA-Z_]+\\)=\\([$/~0-9a-zA-Z_.-]+\\)" str start)
-      (setq env (match-string 1 str)
-            value (match-string 2 str)
-            start (match-end 2))
+    (while (string-match "^\\(export +\\)?\\([0-9a-zA-Z_]+\\)=\\([$/~0-9a-zA-Z_.-]+\\)" str start)
+      (setq env (match-string 2 str)
+            value (match-string 3 str)
+            start (match-end ))
       (add-to-list 'env-alist `(,env ,value)))
     env-alist))
 
@@ -53,7 +53,7 @@
       value)))
 
 (defun my-env-find-file ()
-  ;; (interactive)
+  (interactive)
   (let ((choices '())
         env
         value)
