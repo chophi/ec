@@ -20,4 +20,36 @@
 ;;; be available
 (if *is-mac-machine*
     (setq insert-directory-program "/opt/local/libexec/gnubin/ls"))
+
+
+
+(defun dired-do-command (command)
+  "Run COMMAND on marked files. Any files not already open will be opened.
+After this command has been run, any buffers it's modified will remain
+open and unsaved."
+  (interactive
+   (list
+    (let ((print-level nil)
+          (minibuffer-history-position 0)
+          (minibuffer-history-sexp-flag (1+ (minibuffer-depth))))
+      (unwind-protect
+          (read-from-minibuffer
+           "Command: " (prin1-to-string (nth 0 command-history))
+           read-expression-map t
+           (cons 'command-history 0))
+        
+        ;; If command was added to command-history as a
+        ;; string, get rid of that.  We want only
+        ;; evaluable expressions there.
+        (if (stringp (car command-history))
+            (setq command-history (cdr command-history)))))))
+  (dolist (filename (dired-get-marked-files))
+    (with-current-buffer (find-file-noselect filename)
+      (if (symbolp command)
+          (call-interactively command)
+        (eval command)))))
+
+(define-key dired-mode-map (kbd "E") 'dired-do-command)
+
+
 (provide 'init-dired)
