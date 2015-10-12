@@ -147,4 +147,13 @@ end of the line."
       split-width-threshold 100)
 
 (global-set-key (kbd "C-!") 'shell-command)
+
+(defun handy-scratch()
+  (interactive)
+  (make-directory "~/scratch" t)
+  (let ((pre-major-mode major-mode))
+    (find-file-other-window (concat "~/scratch/scratch-" (symbol-name pre-major-mode)))
+    (funcall pre-major-mode)
+    ))
+
 (provide 'init-handy)
