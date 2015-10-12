@@ -33,7 +33,7 @@
 
 (defconst  split-at-n-column 83)
 
-(when *is-amazon-linux-window*
+(when (or *is-amazon-linux-window* *is-mac-machine*)
   (setq split-at-n-column 87))
 
 (defun split-right-at-n-column(arg)

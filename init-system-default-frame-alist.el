@@ -5,7 +5,7 @@
           (font . ,(frame-parameter nil 'font))
           (top . ,(frame-parameter nil 'top))
           (left . ,(frame-parameter nil 'left))
-          (background-color . global-background-color)
+          (background-color . ,global-background-color)
           )
         (ns
          (width . 139)
@@ -13,8 +13,8 @@
          (font . "-*-Monaco-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
          (top . 23)
          (left . 0)
-         (background-color . global-background-color))))
+         (background-color . ,global-background-color))))
 
-(add-to-list 'initial-frame-alist '(background-color . "#2E3436"))
+(add-to-list 'initial-frame-alist '(background-color . global-background-color))
 
 (provide 'init-system-default-frame-alist)
