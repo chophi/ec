@@ -3,7 +3,8 @@
 
 (when *is-windows-system-p*
       (setq server-auth-dir "~/.emacs.d/server"
-	    server-name "emacs-server-file"))
+	    server-name "emacs-server-file")
+      (defun server-ensure-safe-dir (dir) "Noop" t))
 
 
 (when (not (window-system))
