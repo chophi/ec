@@ -15,6 +15,6 @@
          (left . 0)
          (background-color . ,global-background-color))))
 
-(add-to-list 'initial-frame-alist '(background-color . global-background-color))
+(add-to-list 'initial-frame-alist `(background-color . ,global-background-color))
 
 (provide 'init-system-default-frame-alist)
