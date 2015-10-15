@@ -13,7 +13,7 @@
     (while (string-match "^\\(export +\\)?\\([0-9a-zA-Z_]+\\)=\\([$/~0-9a-zA-Z_.-]+\\)" str start)
       (setq env (match-string 2 str)
             value (match-string 3 str)
-            start (match-end ))
+            start (match-end 0))
       (add-to-list 'env-alist `(,env ,value)))
     env-alist))
 
