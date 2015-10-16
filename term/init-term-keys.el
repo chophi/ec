@@ -29,7 +29,27 @@
 (global-set-key "\M-p" 'tabbar-backward)
 
 (define-key term-mode-map "\C-c\C-k" 'term-toggle-between-modes)
-;; setting keys \C-z + i(which from 1 to 8) to switch to the the ith term frame
+
+;; setting keys \C-z + i(which from 1 to max-terminal-count) to switch to the the ith term frame
+(defconst max-terminal-count 9)
+(dotimes (i max-terminal-count)
+  (global-set-key
+   (concat "\C-z" (number-to-string (+ i 1)))
+   `(lambda() (interactive)
+      (update-terms-name)
+      (let (tn) (when (setq tn (nth ,i (if (fboundp 'multi-term-list)
+                                           (multi-term-list)
+                                         multi-term-buffer-list)))
+                  (switch-to-buffer tn))))))
+
+(setq multi-term-buffer-name "TM")
+(defvar term-name-template "*TM<1>*")
+
+(defun update-term-external-env ()
+  (interactive)
+  (dolist (term-buf multi-term-buffer-list)
+    (with-current-buffer term-buf
+      (term-send-raw-string (format "export TERM_BUFFER_NAME=\"%s\"\n" (buffer-name))))))
 
 (defun update-terms-name ()
   "update all terminal names"
@@ -40,16 +60,16 @@
       (with-current-buffer buf
         (rename-buffer (replace-regexp-in-string "<[0-9]*>" (format "<%d>" order) bufname))))))
 
-(dotimes (i 8)
-  (global-set-key
-   (concat "\C-z" (number-to-string (+ i 1)))
-   `(lambda() (interactive)
-      (update-terms-name)
-      (let (tn) (when (setq tn (nth ,i (if (fboundp 'multi-term-list)
-                                           (multi-term-list)
-                                         multi-term-buffer-list)))
-                  (switch-to-buffer tn))))))
+(defadvice multi-term (around multi-term-ad)
+  (when (>= (length multi-term-buffer-list) max-terminal-count)
+    (error "too many terminal now, try to reuse!"))
+  (update-terms-name)
+  ad-do-it
+  (update-term-external-env))
+(ad-activate 'multi-term)
 
+(defun term-prefix (buf)
+  (substring (buffer-name buf) 0 (length term-name-template)))
 
 (defun uf-send-command-to-term (command &optional switch-to-buffer-p)
   (let ((term-buf nil))
@@ -100,8 +120,8 @@
   (interactive)
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (rename-buffer (concat "*" (read-string "Buffer Name: ") "<1000>*"))
-  (update-terms-name))
+  (update-terms-name)
+  (rename-buffer (concat (term-prefix (current-buffer)) "[" (read-string "Buffer Name[Term prefix keep]: ") "]")))
 
 (defun uf-switch-to-term-buffer ()
   (interactive)
@@ -116,7 +136,11 @@
     (error "only use this command with term-mode buffer"))
   (term-send-raw-string (format "export PROMPT_COMMAND=\"\"\n")))
 
-
+(defun --append-terminal-name (term-buf-prefix name)
+  (dolist (term multi-term-buffer-list)
+    (when (equal (term-prefix term) term-buf-prefix)
+      (with-current-buffer term
+        (rename-buffer (concat term-buf-prefix "[" name "]"))))))
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
 (global-set-key "\C-zr" 'uf-term-rename-buffer)

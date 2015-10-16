@@ -17,7 +17,7 @@
     (multi-term-internal)
     (dolist (command command-list)
       (term-send-raw-string (concat command "\n")))
-    (rename-buffer (format "*%s<%d>*" term-name (length multi-term-buffer-list)))))
+    (rename-buffer (format "*%s<%d>*[%s]" multi-term-buffer-name (length multi-term-buffer-list) term-name))))
 
 (defun duplicate-term-and-switch ()
   (interactive)
