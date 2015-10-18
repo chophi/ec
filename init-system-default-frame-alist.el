@@ -10,7 +10,7 @@
         (ns
          (width . 139)
          (height . 34)
-         (font . "-*-Monaco-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
+         ;; (font . "-*-Monaco-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
          (top . 23)
          (left . 0)
          (background-color . ,global-background-color))))

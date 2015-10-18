@@ -90,7 +90,7 @@ by the :height face attribute."
 
 ;;; DONE: cjk-font working now
 (when *is-mac-machine*
-  (setq *toggle-font-size* t)
+  (setq *toggle-font-size* nil)
   (defun toggle-font-size ()
     (interactive)
     (if *toggle-font-size*
