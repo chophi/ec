@@ -63,8 +63,8 @@
 (defadvice multi-term (around multi-term-ad)
   (when (>= (length multi-term-buffer-list) max-terminal-count)
     (error "too many terminal now, try to reuse!"))
-  (update-terms-name)
   ad-do-it
+  (update-terms-name)
   (update-term-external-env))
 (ad-activate 'multi-term)
 
