@@ -136,11 +136,13 @@
     (error "only use this command with term-mode buffer"))
   (term-send-raw-string (format "export PROMPT_COMMAND=\"\"\n")))
 
-(defun --append-terminal-name (term-buf-prefix name)
-  (dolist (term multi-term-buffer-list)
-    (when (equal (term-prefix term) term-buf-prefix)
-      (with-current-buffer term
-        (rename-buffer (concat term-buf-prefix "[" name "]"))))))
+(defun --append-terminal-name (term-buf-name append-name)
+  (let ((term-buf-prefix (substring term-buf-name 0 (length term-name-template))))
+    (dolist (term multi-term-buffer-list)
+      (when (equal (term-prefix term) term-buf-prefix)
+        (with-current-buffer term
+          (rename-buffer (concat term-buf-prefix "[" append-name "]")))))))
+
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
 (global-set-key "\C-zr" 'uf-term-rename-buffer)
