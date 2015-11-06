@@ -12,6 +12,7 @@
         ;; ("C-k" . kill-line)
         ;;("C-b" . term-send-left)
         ;;("C-f" . term-send-right)
+        ("C-u" . universal-argument)
         ("C-c C-k" . term-line-mode)
         ("C-y" . term-paste)
         ([(return)] . (lambda()(interactive) (term-send-raw-string "\C-j")))
@@ -116,12 +117,16 @@
   (let ((path (my-shell-command-to-string (format "cat %s" *temp-cwd-exchange-file*))))
     (find-file-other-window path)))
 
-(defun uf-term-rename-buffer ()
-  (interactive)
+(defun uf-term-rename-buffer (arg)
+  (interactive "P")
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
   (update-terms-name)
-  (rename-buffer (concat (term-prefix (current-buffer)) "[" (read-string "Buffer Name[Term prefix keep]: ") "]")))
+  (let* ((prompt-string (if arg "Append" "Erase After Prefix"))
+         (string (read-string (format "Buffer Name(mode: %s): " prompt-string))))
+    (if arg
+        (rename-buffer (concat (buffer-name) "[" string "]"))
+      (rename-buffer (concat (term-prefix (current-buffer)) "[" string "]")))))
 
 (defun uf-switch-to-term-buffer ()
   (interactive)
