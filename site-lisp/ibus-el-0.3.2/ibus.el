@@ -1056,7 +1056,8 @@ use either \\[customize] or the function `ibus-mode'."
 
 (defun ibus-message (format-string &rest args)
   (apply 'ibus-log (concat "message: " format-string) args)
-  (apply 'message (concat "IBus: " format-string) args))
+  ;;(apply 'message (concat "IBus: " format-string) args)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Miscellaneous
