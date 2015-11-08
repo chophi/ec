@@ -145,5 +145,5 @@
   (add-to-list 'load-path (concat user-emacs-directory "term"))
   (require 'term-inside-ide-init))
 
-(when *is-linux-system-p*
-  (require 'init-ibus))
+;; (when *is-linux-system-p*
+;;   (require 'init-ibus))
