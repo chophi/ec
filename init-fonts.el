@@ -86,7 +86,22 @@ by the :height face attribute."
 (when (and *is-amazon-machine*
 	   (window-system))
   (set-cjk-font "SimSun" 16.3)
-  (set-ascii-font "Ubuntu Mono" 16.0))
+  (defvar *current-font-index* -1)
+  (defvar font-config-list
+    '(("Monaco" . 14.5)
+      ("Consolas" . 15.0)
+      ("Ubuntu Mono" . 15.5)))
+  (defun next-font ()
+    (interactive)
+    (let* ((len (length font-config-list))
+           (index (mod (1+ *current-font-index*) len))
+           (font-config (nth index font-config-list))
+           (font-name (car font-config))
+           (font-size (cdr font-config)))
+      (set-ascii-font font-name font-size)
+      (setq-default line-spacing 0.05)
+      (setq *current-font-index* index)))
+  (next-font))
 
 ;;; DONE: cjk-font working now
 (when *is-mac-machine*
