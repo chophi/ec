@@ -27,8 +27,8 @@
 (global-set-key "\C-zn" 'multi-term-next)
 (global-set-key "\C-zp" 'multi-term-prev)
 
-(global-set-key "\M-n" 'tabbar-forward)
-(global-set-key "\M-p" 'tabbar-backward)
+;; (global-set-key "\M-n" 'tabbar-forward)
+;; (global-set-key "\M-p" 'tabbar-backward)
 
 (define-key term-mode-map "\C-c\C-k" 'term-toggle-between-modes)
 
