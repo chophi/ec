@@ -80,10 +80,13 @@ See also \\[c-hungry-delete-forward]."
 (delete (rassoc 'doc-view-mode-maybe auto-mode-alist) auto-mode-alist)
 
 (setq explorer-command
-      (if (eq system-type 'gnu/linux) "gnome-open" "explorer"))
+      (if (eq system-type 'gnu/linux) "gnome-open"
+        (if *is-mac-machine*
+            "open"
+          "explorer")))
 (defun my-explore-curdir()
   (interactive)
-  (shell-command (concat "cd " default-directory " && " explorer-command " .")))
+  (shell-command (concat "cd \"" default-directory "\" && " explorer-command " .")))
 
 ;;----------------------------------------------------------------------------
 ;; if no region selected, comment/uncomment current line

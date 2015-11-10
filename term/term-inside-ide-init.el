@@ -9,7 +9,9 @@
 
 (require 'init-create-multi-terms)
 
+(modify-syntax-entry ?_ "w" term-mode-syntax-table)
+(modify-syntax-entry ?- "w" term-mode-syntax-table)
+(modify-syntax-entry ?. "w" term-mode-syntax-table)
+(modify-syntax-entry ?/ "w" term-mode-syntax-table)
+
 (provide 'term-inside-ide-init)
-
-
-
