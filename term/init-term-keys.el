@@ -15,7 +15,6 @@
         ("C-u" . universal-argument)
         ("C-c C-k" . term-line-mode)
         ("C-c C-z" . term-quit-subjob)
-        ;; ("C-y" . term-paste)
         ([(return)] . (lambda()(interactive) (term-send-raw-string "\C-j")))
         ))
 
