@@ -3,7 +3,7 @@
 ;; the cd function provide will cause some delay when
 ;; change directory to a directory which has a multi-byte name.
 ;; I just make it empty to solve this problem, it's a lazy solution.
-(when (not *is-amazon-linux*)
+(when (or  (not *is-amazon-linux*) (not *is-mac-machine*))
     (defun cd(dir)      
       )
     )
