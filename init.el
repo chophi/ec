@@ -147,3 +147,6 @@
 
 ;; (when *is-linux-system-p*
 ;;   (require 'init-ibus))
+
+(require 'init-dmesg-mode)
+(require 'init-dictionary)
