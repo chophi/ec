@@ -6,7 +6,8 @@
 (add-hook 'term-mode-hook
           (lambda ()
             (yas-minor-mode -1)
-            (define-key term-raw-map "\C-y" 'term-send-raw)))
+            (define-key term-raw-map "\C-y" 'term-send-raw)
+            (define-key term-raw-map "\M-y" 'term-paste)))
 
 (require 'init-create-multi-terms)
 
