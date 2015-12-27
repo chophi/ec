@@ -221,5 +221,6 @@
 (require-package 'htmlize)
 (add-hook 'htmlize-before-hook (lambda () (when (fboundp 'fci-mode) (fci-mode -1))))
 (setq htmlize-html-charset "utf-8")
+(setq org-html-postamble nil)
 
 (provide 'init-org-publish-settings)
