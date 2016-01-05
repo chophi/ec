@@ -180,7 +180,7 @@
   h4[id^=\"sec\"] {color: #9aff9a}
   pre {
 	border: 1pt solid #AEBDCC;
-	background-color: #171717;
+	background-color: #a9a9a9;
 	padding: 5pt;
 	font-family: consolas, monospace;
         font-size: 90%;
