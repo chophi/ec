@@ -88,9 +88,9 @@ by the :height face attribute."
   (set-cjk-font "SimSun" 16.3)
   (defvar *current-font-index* -1)
   (defvar font-config-list
-    '(("Monaco" . 14.5)
+    '(("Ubuntu Mono" . 16.5)
       ("Consolas" . 15.0)
-      ("Ubuntu Mono" . 15.5)))
+      ("Monaco" . 14.5)))
   (defun next-font ()
     (interactive)
     (let* ((len (length font-config-list))
