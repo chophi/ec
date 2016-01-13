@@ -29,7 +29,7 @@ lisp-snippets/az-common-env.el
 /ido.last
 /init-private-custom.el
 /server/
-/custom.el
+# /custom.el
 /elpa/archives/gnu/archive-contents
 /.DS_Store
 /links.org
