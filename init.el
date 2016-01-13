@@ -1,7 +1,10 @@
 (add-to-list 'load-path user-emacs-directory)
-;;; (setq global-background-color "#2E3436")
-;;; paper-parchment
-(setq global-background-color "#F1F1D4")
+
+(setq use-theme "none")
+(when (equal use-theme "none") (setq global-background-color "#F1F1D4"))
+(when (equal use-theme "paper") (setq global-background-color "#F1F1D4"))
+(when (equal use-theme "sanityinc-tommorrow") (setq global-background-color "#2E3436"))
+
 (setq warning-suppress-types '((initialization)))
 
 (require 'init-system-check)
