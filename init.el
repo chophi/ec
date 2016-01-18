@@ -1,9 +1,12 @@
 (add-to-list 'load-path user-emacs-directory)
 
 (setq use-theme "none")
-(when (equal use-theme "none") (setq global-background-color "#F1F1D4"))
+(when (equal use-theme "none") (setq global-background-color "#F5F5F5"))
 (when (equal use-theme "paper") (setq global-background-color "#F1F1D4"))
-(when (equal use-theme "sanityinc-tommorrow") (setq global-background-color "#2E3436"))
+(when (equal use-theme "sanityinc-tommorrow")
+  (setq global-background-color "#2E3436"
+        ansi-color-faces-vector [default bold shadow italic underline bold bold-italic bold]
+        ansi-color-names-vector (vector "#c5c8c6" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#8abeb7" "#1d1f21")))
 
 (setq warning-suppress-types '((initialization)))
 

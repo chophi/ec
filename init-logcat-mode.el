@@ -14,5 +14,5 @@
 (add-to-list 'auto-mode-alist '("/logcat.*\.log$" . logcat-mode))
 
 ;; (add-hook 'logcat-mode-hook '(lambda () (read-only-mode 1)))
-
+(add-hook 'logcat-mode-hook '(lambda () (line-number-mode 1)))
 (provide 'init-logcat-mode)
