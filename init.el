@@ -1,16 +1,24 @@
 (add-to-list 'load-path user-emacs-directory)
+(setq warning-suppress-types '((initialization)))
+(require 'init-system-check)
+
+(let ((is-amazon-machine "0")
+      (is-mac-machine "0"))
+  (when *is-mac-machine* (setq is-mac-machine "1"))
+  (when *is-amazon-machine* (setq is-mac-machine "1"))
+  (setq custom-file (format "~/.emacs.d/custom-%s-%s.el"  is-amazon-machine is-mac-machine))
+  (when (and (not (file-exists-p custom-file)) (file-exists-p "~/.emacs.d/custom.el"))
+    (rename-file "~/.emacs.d/custom.el" custom-file)))
 
 (setq use-theme "none")
+(when *is-mac-machine*
+  (setq use-theme "sanityinc-tommorrow"))
 (when (equal use-theme "none") (setq global-background-color "#F5F5F5"))
 (when (equal use-theme "paper") (setq global-background-color "#F1F1D4"))
 (when (equal use-theme "sanityinc-tommorrow")
   (setq global-background-color "#2E3436"
         ansi-color-faces-vector [default bold shadow italic underline bold bold-italic bold]
         ansi-color-names-vector (vector "#c5c8c6" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#8abeb7" "#1d1f21")))
-
-(setq warning-suppress-types '((initialization)))
-
-(require 'init-system-check)
 
 (require 'init-server)
 
@@ -141,7 +149,6 @@
 (require 'init-system-default-frame-alist)
 ;;;)
 
-(setq custom-file "~/.emacs.d/custom.el")
 (load-file custom-file)
 
 (when (file-exists-p "~/.emacs.d/init-private-custom.el")

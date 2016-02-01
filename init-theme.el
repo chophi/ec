@@ -10,8 +10,10 @@
   (load-theme 'paper t))
 
 (when (equal use-theme "sanityinc-tommorrow")
+  (require 'custom)
   (require-package 'color-theme-sanityinc-tomorrow)
-  (color-theme-sanityinc-tomorrow-night))
+  ;;(color-theme-sanityinc-tomorrow-night)
+  )
 
 
 (provide 'init-theme)
