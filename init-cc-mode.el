@@ -11,9 +11,8 @@
             (c-toggle-auto-newline 1)
             ))
 
-(setq-mode-local c-mode
-                 tab-width 4
-                 tab-stop-list (number-sequence 4 120 4))
+(setq-default tab-width 4
+              tab-stop-list (number-sequence 4 120 4))
 
 ;;; use the // comment in c code.
 (add-hook 'c-mode-hook
