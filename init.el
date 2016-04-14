@@ -170,3 +170,6 @@
 
 (require 'init-dmesg-mode)
 (require 'init-dictionary)
+
+(when (and *is-mac-machine* *is-mac-machine*)
+  (setq shell-file-name "/bin/bash"))
