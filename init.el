@@ -173,3 +173,5 @@
 
 (when (and *is-mac-machine* *is-mac-machine*)
   (setq shell-file-name "/bin/bash"))
+
+(require 'init-work-with-repo)
