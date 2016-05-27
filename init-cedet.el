@@ -167,7 +167,24 @@ which was bad for me")
                       " "
                       (symbol-name (cdr m))"\n"))
         (local-set-key (concat prefix temp-key) (cdr m))))
-    (local-set-key (concat prefix "h") `(lambda () (interactive) (with-temp-buffer (insert ,help-message))))))
+    (local-set-key (concat prefix "?") `(lambda () (interactive) (with-temp-buffer (insert ,help-message))))))
+
+(defun my-set-global-keys (prefix map-lists)
+  (let ((help-message "") temp-key)
+    (dolist (mlist map-lists)
+      (dolist (m mlist)
+        (setq temp-key
+              (if (characterp (car m))
+                  (char-to-string (car m))
+                (car m))
+              help-message
+              (concat help-message
+                      temp-key
+                      " "
+                      (symbol-name (cdr m))"\n"))
+        (global-set-key (concat prefix temp-key) (cdr m))))
+    (global-set-key (concat prefix "?") `(lambda () (interactive) (with-temp-buffer (insert ,help-message))))))
+
 (defconst my-semantic-map
   '((?i . semantic-ia-fast-jump)
     (?p . semantic-analyze-proto-impl-toggle)
