@@ -175,3 +175,4 @@
   (setq shell-file-name "/bin/bash"))
 
 (require 'init-work-with-repo)
+(require 'init-grok)
