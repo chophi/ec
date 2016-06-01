@@ -176,3 +176,4 @@
 
 (require 'init-work-with-repo)
 (require 'init-grok)
+(require 'init-confluence)
