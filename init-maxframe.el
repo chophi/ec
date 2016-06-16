@@ -36,8 +36,9 @@
                (sanityinc/maximized-p sanityinc/prev-frame))
       (maximize-frame))))
 
-(add-hook 'after-make-frame-functions 'sanityinc/maybe-maximize-frame)
-(add-hook 'after-init-hook 'sanityinc/maybe-maximize-frame)
+(when (not *is-mac-machine*)
+  (add-hook 'after-make-frame-functions 'sanityinc/maybe-maximize-frame)
+  (add-hook 'after-init-hook 'sanityinc/maybe-maximize-frame))
 
 (defun within-p (a b delta)
   (<= (abs (- b a)) delta))
