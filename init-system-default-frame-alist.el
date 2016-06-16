@@ -15,6 +15,7 @@
            (top . ,(frame-parameter nil 'top))
            (left . ,(frame-parameter nil 'left))
            (background-color . ,global-background-color)
+           (foreground-color . ,(frame-parameter nil 'foreground-color))
            )
           (ns
            (width . 139)
@@ -22,6 +23,7 @@
            ;; (font . "-*-Monaco-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
            (top . 23)
            (left . 0)
+           (foreground-color . ,(frame-parameter nil 'foreground-color))
            (background-color . ,global-background-color)))))
 
 (re-evaluate-default-window-alist)
