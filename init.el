@@ -13,6 +13,9 @@
 (setq use-theme "none")
 (when *is-mac-machine*
   (setq use-theme "sanityinc-tommorrow"))
+(when *is-amazon-linux*
+  (setq use-theme "sanityinc-tommorrow"))
+
 (when (equal use-theme "none") (setq global-background-color "#F5F5F5"))
 (when (equal use-theme "paper") (setq global-background-color "#F1F1D4"))
 (when (equal use-theme "sanityinc-tommorrow")
@@ -176,3 +179,5 @@
 
 (require 'init-work-with-repo)
 (require 'init-grok)
+
+(require 'init-ediff-binary)

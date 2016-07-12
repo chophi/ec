@@ -169,3 +169,8 @@ end of the line."
 
 
 (provide 'init-handy)
+
+(defun my-write-path ()
+  (interactive)
+  (let ((dir  default-directory))
+    (shell-command (format "echo %s > ~/.emacs-default-directory" dir))))
