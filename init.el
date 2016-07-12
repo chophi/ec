@@ -152,12 +152,11 @@
 
 (put 'erase-buffer 'disabled nil)
  
+(load-file custom-file)
 
 ;;;(when (not *is-mac-machine*)
 (require 'init-system-default-frame-alist)
 ;;;)
-
-(load-file custom-file)
 
 (when (file-exists-p "~/.emacs.d/init-private-custom.el")
   (require 'init-private-custom))

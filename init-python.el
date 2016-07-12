@@ -29,4 +29,7 @@
 (setq jedi:complete-on-dot t)
 (setq-default python-indent-offset 4)
 
+(when *is-mac-machine*
+  (add-to-list 'exec-path "/opt/local/bin/"))
+
 (provide 'init-python)
