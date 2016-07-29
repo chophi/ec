@@ -13,10 +13,15 @@
 (setq use-theme "none")
 (when *is-mac-machine*
   (setq use-theme "sanityinc-tommorrow"))
-(when (equal use-theme "none") (setq global-background-color "#F5F5F5"))
-(when (equal use-theme "paper") (setq global-background-color "#F1F1D4"))
+(when (equal use-theme "none")
+  (setq global-background-color "#F5F5F5")
+  (setq global-foreground-color "Black"))
+(when (equal use-theme "paper")
+  (setq global-background-color "#F1F1D4")
+  (setq global-foreground-color "Black"))
 (when (equal use-theme "sanityinc-tommorrow")
   (setq global-background-color "#2E3436"
+        global-foreground-color "white"
         ansi-color-faces-vector [default bold shadow italic underline bold bold-italic bold]
         ansi-color-names-vector (vector "#c5c8c6" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#8abeb7" "#1d1f21")))
 
