@@ -11,14 +11,19 @@
     (rename-file "~/.emacs.d/custom.el" custom-file)))
 
 (setq use-theme "none")
+
 (when *is-mac-machine*
   (setq use-theme "sanityinc-tommorrow"))
+(when *is-amazon-linux*
+  (setq use-theme "sanityinc-tommorrow"))
+
 (when (equal use-theme "none")
   (setq global-background-color "#F5F5F5")
   (setq global-foreground-color "Black"))
 (when (equal use-theme "paper")
   (setq global-background-color "#F1F1D4")
   (setq global-foreground-color "Black"))
+
 (when (equal use-theme "sanityinc-tommorrow")
   (setq global-background-color "#2E3436"
         global-foreground-color "white"
@@ -180,3 +185,11 @@
 
 (require 'init-work-with-repo)
 (require 'init-grok)
+
+(require 'init-ediff-binary)
+
+(when (and *is-amazon-linux*)
+  (add-to-list 'exec-path "/usr/share-2/bin")
+  (require 'init-amazon-linux.el))
+
+

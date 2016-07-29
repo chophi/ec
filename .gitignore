@@ -36,3 +36,4 @@ lisp-snippets/az-common-env.el
 /commands.md
 /links.html
 /.opengrok/
+/init-amazon-linux.el
