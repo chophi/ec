@@ -25,7 +25,8 @@
 
 ;; (setq py-shell-name "d:/ProgEnv/Python34/Scripts/ipython.exe")
 (require-package 'jedi)
-(add-hook 'python-mode-hook 'jedi:setup)
+(when (not *is-mac-machine*)
+  (add-hook 'python-mode-hook 'jedi:setup))
 (setq jedi:complete-on-dot t)
 (setq-default python-indent-offset 4)
 
