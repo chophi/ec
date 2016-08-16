@@ -19,7 +19,7 @@
     (setq start-pos (1+ (elt pos-list (1- cur-index))))
     (if (equal cur-index (length pos-list))
         (setq end-pos (point-max))
-      (setq end-pos (elt pos-list cure-index)))
+      (setq end-pos (elt pos-list cur-index)))
     ;; To highlight the region
     ;; (print `(,start-pos ,end-pos))
     ;; (let ((inhibit-modification-hooks t)
