@@ -186,3 +186,4 @@
   (require 'init-amazon-linux.el))
 
 
+(provide 'init-patch-buffer)
