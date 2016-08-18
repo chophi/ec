@@ -65,7 +65,7 @@
     (dolist (dir dir-list)
       (when (file-exists-p (concat "~/workspace/" dir "/.repo"))
         (add-to-list 'choice-list dir)))
-    (setq choice (ido-completing-read "select the repo project" choice-list))
+    (setq choice (ido-completing-read "select the repo project: " choice-list))
     (repo-list-projects (concat "~/workspace/" choice))))
 
 (defun _filter-line-base-on-input ()
