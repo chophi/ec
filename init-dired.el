@@ -16,10 +16,10 @@
 (require 'dired)
 (define-key dired-mode-map (kbd "F") 'dired-narrow)
 
-;;; install MacPort, then sudo port install coreutils, and the ls program will
 ;;; be available
 (if *is-mac-machine*
-    (setq insert-directory-program "/opt/local/libexec/gnubin/ls"))
+    ;; installed by brew install coreutils
+    (setq insert-directory-program "/usr/local/opt/coreutils/libexec/gnubin/ls"))
 
 
 
