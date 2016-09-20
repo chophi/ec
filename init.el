@@ -30,6 +30,11 @@
         ansi-color-faces-vector [default bold shadow italic underline bold bold-italic bold]
         ansi-color-names-vector (vector "#c5c8c6" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#8abeb7" "#1d1f21")))
 
+(when (equal use-theme "solarized")
+  (setq global-background-color nil
+        global-foreground-color nil)
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/emacs-color-theme-solarized/")
+  (load-theme 'solarized t))
 
 (setq warning-suppress-types '((initialization)))
 
