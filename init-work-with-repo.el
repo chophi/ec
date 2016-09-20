@@ -53,6 +53,7 @@
           (local-set-key "f" '_filter-line-base-on-input)
           (local-set-key "g" `(lambda () (interactive) (_jump-to-project-at-point ,root)))
           (local-set-key [return] `(lambda () (interactive) (_jump-to-project-at-point ,root)))
+          (local-set-key (kbd "RET") `(lambda () (interactive) (_jump-to-project-at-point ,root)))
           (local-set-key "u" '_update-content)
           (local-set-key "?" (lambda () (interactive) (message "f : filter line\ng: jump to project\nreturn: jump to project\nu: update content"))))))))
 
