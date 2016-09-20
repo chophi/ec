@@ -88,10 +88,6 @@
 (require 'init-smart-run)
 
 
-;; (set-background-color global-background-color)
-;; (set-foreground-color "medium spring green")
-;; (set-foreground-color "medium sea green")
-
 ;; org-mode configuration
 (require 'init-org)
 (require 'init-org-publish-settings)
