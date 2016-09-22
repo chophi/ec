@@ -192,4 +192,3 @@ end of the line."
       (interactive "p")
       (whole-line-or-region-call-with-region 'kill-save-to-out-clipboard prefix t))
     (global-set-key "\C-xy" 'save-whole-line-or-region-to-out-clipboard)))
-
