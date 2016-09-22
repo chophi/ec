@@ -174,3 +174,23 @@ end of the line."
   (interactive)
   (let ((dir  default-directory))
     (shell-command (format "echo %s > ~/.emacs-default-directory" dir))))
+
+(require-package 'whole-line-or-region)
+
+;; Please define out-clip-host-user and out-clipboard-hostname
+;; in site-lisp/az-common-env.el first
+(when (file-exists-p "~/.emacs.d/site-lisp/az-common-env.el")
+  (load-file "~/.emacs.d/site-lisp/az-common-env.el"))
+
+(defun kill-save-to-out-clipboard (start end)
+  (when (and (stringp out-clipboard-host-user) (stringp out-clipboard-hostname))
+    (let ((command (format "echo %s | ssh %s@%s pbcopy" (shell-quote-argument (buffer-substring-no-properties start end)) out-clipboard-host-user out-clipboard-hostname)))
+      ;; (message "command is %s" command)
+      (shell-command-to-string command))))
+
+(defun save-whole-line-or-region-to-out-clipboard (prefix)
+  "Copy region or PREFIX whole lines to outer clipboard."
+  (interactive "p")
+  (whole-line-or-region-call-with-region 'kill-save-to-out-clipboard prefix t))
+
+(global-set-key "\C-xy" 'save-whole-line-or-region-to-out-clipboard)
