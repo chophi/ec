@@ -101,4 +101,9 @@
                               (scroll-up 1))))
 (unless window-system
   (enable-xterm-mouse-scroll))
+
+(when (fboundp 'delete-other-window)
+  (global-set-key "\C-xd" 'delete-other-window)
+  (global-set-key "\C-xc" 'delete-other-window))
+
 (provide 'init-windows)
