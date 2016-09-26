@@ -90,7 +90,8 @@
 (global-set-key "\C-x?" 'my-multi-windows)
 
 ;; enable mouse reporting for terminal emulators
-(unless window-system
+(defun enable-xterm-mouse-scroll ()
+  (interactive)
   (xterm-mouse-mode 1)
   (global-set-key [mouse-4] (lambda ()
                               (interactive)
@@ -98,4 +99,6 @@
   (global-set-key [mouse-5] (lambda ()
                               (interactive)
                               (scroll-up 1))))
+(unless window-system
+  (enable-xterm-mouse-scroll))
 (provide 'init-windows)
