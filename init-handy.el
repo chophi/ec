@@ -178,9 +178,9 @@ end of the line."
 (require-package 'whole-line-or-region)
 
 ;; Please define out-clip-host-user and out-clipboard-hostname
-;; in site-lisp/az-common-env.el first
-(when (file-exists-p "~/.emacs.d/site-lisp/az-common-env.el")
-  (load-file "~/.emacs.d/site-lisp/az-common-env.el")
+;; in lisp-snippets/az-common-env.el first
+(when (file-exists-p "~/.emacs.d/lisp-snippets/az-common-env.el")
+  (load-file "~/.emacs.d/lisp-snippets/az-common-env.el")
   (when (and (stringp out-clipboard-host-user) (stringp out-clipboard-hostname))
     (defun kill-save-to-out-clipboard (start end)
       (let ((command (format "echo %s | ssh %s@%s pbcopy" (shell-quote-argument (buffer-substring-no-properties start end)) out-clipboard-host-user out-clipboard-hostname)))
