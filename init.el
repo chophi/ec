@@ -195,3 +195,4 @@
 
 
 (require 'init-patch-buffer)
+(require 'init-json)
