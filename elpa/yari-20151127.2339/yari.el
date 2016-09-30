@@ -5,7 +5,8 @@
 ;; Author: Aleksei Gusev <aleksei.gusev@gmail.com>
 ;; Maintainer: Aleksei Gusev <aleksei.gusev@gmail.com>
 ;; Created: 24 Apr 2010
-;; Version: 0.7
+;; Version: 0.8
+;; Package-Version: 20151127.2339
 ;; Keywords: tools
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -235,7 +236,7 @@
             (cond
              ((yari-ri-version-at-least "2.5")
                "require 'rdoc/ri/driver';       \
-                driver  = RDoc::RI::Driver.new; \
+                driver  = RDoc::RI::Driver.new(RDoc::RI::Driver.process_args([])); \
                 puts driver.list_known_classes; \
                 puts driver.list_methods_matching('.')")
               ((yari-ri-version-at-least "2.2.0")
