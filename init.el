@@ -196,3 +196,4 @@
 
 (require 'init-patch-buffer)
 (require 'init-json)
+(require 'init-confluence)
