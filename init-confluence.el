@@ -48,5 +48,10 @@
                        (with-current-buffer tmp-buf
                          (longlines-restore))))))))
 
+(add-hook 'confluence-edit-mode-hook
+  (local-set-key "\C-xw" confluence-prefix-map)
+  (local-set-key "\M-j" 'confluence-newline-and-indent)
+  (local-set-key "\M-;" 'confluence-list-indent-dwim))
+
 (require 'init-private-custom)
 (provide 'init-confluence)
