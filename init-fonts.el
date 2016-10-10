@@ -38,20 +38,33 @@ by the :height face attribute."
 ;;   (set-face-attribute
 ;;    'default nil :font (concat type " " (number-to-string size))))
 
-(defun set-ascii-font (type size)
-  (set-face-attribute
-   'default nil :font (font-spec
-                       :family type
-                       :size size)))
+(defun set-ascii-font (type size &optional weight)
+  (if weight
+      (set-face-attribute
+       'default nil :font (font-spec
+                           :family type
+                           :size size
+                           :weight weight))
+    (set-face-attribute
+     'default nil :font (font-spec
+                         :family type
+                         :size size))))
 
-(defun set-cjk-font (type size)
-  (dolist (charset '(kana han symbol cjk-misc bopomofo))
-    (set-fontset-font t
-		      charset
-		      (font-spec
-		       :family type
-		       :size size)
-		      )))
+(defun set-cjk-font (type size &optional weight)
+  (if weight
+      (dolist (charset '(kana han symbol cjk-misc bopomofo))
+        (set-fontset-font t
+                          charset
+                          (font-spec
+                           :family type
+                           :size size
+                           :weight weight)))
+    (dolist (charset '(kana han symbol cjk-misc bopomofo))
+      (set-fontset-font t
+                        charset
+                        (font-spec
+                         :family type
+                         :size size)))))
 
 (defun set-ascii-font-size (size)
   (set-face-attribute
@@ -109,11 +122,11 @@ by the :height face attribute."
   (defun toggle-font-size ()
     (interactive)
     (if *toggle-font-size*
-        (progn (set-cjk-font "STFangsong" 18)
-               (set-ascii-font "Monaco" 15)
+        (progn (set-cjk-font "STFangsong" 18 'ultra-light)
+               (set-ascii-font "Monaco" 15 'ultra-light)
                (setq *toggle-font-size* nil))
-      (progn (set-cjk-font "STFangsong" 22)
-             (set-ascii-font "Monaco" 19)
+      (progn (set-cjk-font "STFangsong" 22 'ultra-light)
+             (set-ascii-font "Monaco" 19 'ultra-light)
              (setq *toggle-font-size* t))))
   (toggle-font-size))
 
@@ -141,5 +154,9 @@ by the :height face attribute."
 
 (global-set-key (kbd "C-c z i") 'zoom-frame)
 (global-set-key (kbd "C-c z o") 'zoom-frame-out)
+
+(defun set-perferred-large-screen-fontsize ()
+  (interactive)
+  (set-face-attribute 'default (selected-frame) :height 240))
 
 (provide 'init-fonts)
