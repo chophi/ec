@@ -15,7 +15,9 @@
   ;;(color-theme-sanityinc-tomorrow-night)
   )
 
-(set-background-color global-background-color)
-(set-foreground-color global-foreground-color)
+(when global-background-color
+  (set-background-color global-background-color))
+(when global-foreground-color
+  (set-foreground-color global-foreground-color))
 
 (provide 'init-theme)

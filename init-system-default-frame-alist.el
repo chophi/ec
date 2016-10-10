@@ -14,8 +14,12 @@
            (font . ,(frame-parameter nil 'font))
            (top . ,(frame-parameter nil 'top))
            (left . ,(frame-parameter nil 'left))
-           (background-color . ,global-background-color)
-           (foreground-color . ,global-foreground-color)
+           (background-color . ,(if global-background-color
+				    global-background-color
+				  (frame-parameter nil 'background-color)))
+           (foreground-color . ,(if global-foreground-color
+				    global-foreground-color
+				  (frame-parameter nil 'foreground-color)))
            )
           (ns
            (width . 139)
@@ -23,12 +27,20 @@
            ;; (font . "-*-Monaco-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
            (top . 23)
            (left . 0)
-           (background-color . ,global-background-color)
-           (foreground-color . ,global-foreground-color)))))
+           (background-color . ,(if global-background-color
+				    global-background-color
+				  (frame-parameter nil 'background-color)))
+           (foreground-color . ,(if global-foreground-color
+				    global-foreground-color
+				  (frame-parameter nil 'foreground-color)))
+	   ))))
 
 (re-evaluate-default-window-alist)
 
-(add-to-list 'initial-frame-alist `(background-color . ,global-background-color))
+(add-to-list 'initial-frame-alist
+	     `(background-color . ,(if global-background-color
+				       global-background-color
+				     (frame-parameter nil 'background-color))))
 
 (provide 'init-system-default-frame-alist)
 
