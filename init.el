@@ -201,3 +201,5 @@
 (require 'init-json)
 (require 'init-confluence)
 (require 'init-protobuf)
+
+(require 'init-applescript-mode)
