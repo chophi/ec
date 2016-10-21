@@ -29,10 +29,9 @@
              *mac-extra-path-list*
            *linux-extra-path-list*))
   (let ((path (car extra-path-list))
-        (insert-to-head (card extra-path-list)))
+        (insert-to-head (cadr extra-path-list)))
     (add-to-path path insert-to-head)))
 
-(add-to-list 'exec-path "/usr/local/bin")
 (provide 'init-path)
 
-(getenv "PATH")"/Users/ayliu:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_9:/Users/ayliu/bin:/usr/local/bin:/Users/ayliu/bin/common-scripts:/usr/local/texlive/2015/bin/universal-darwin"
+
