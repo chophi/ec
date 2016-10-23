@@ -203,3 +203,4 @@
 (require 'init-protobuf)
 
 (require 'init-applescript-mode)
+(require 'init-custom-compile)
