@@ -21,7 +21,10 @@
   '(("~/bin" t)
     ("/usr/local/bin" t)
     ("~/bin/common-scripts" t)
-    ("/usr/local/texlive/2016/bin/universal-darwin"))
+    ("/usr/local/texlive/2016/bin/universal-darwin")
+    ("~/Library/Android/sdk/platform-tools/")
+    ("~/Library/Android/android-ndk-r10e/")
+    ("~/Library/Android/sdk/tools/"))
   "The list of paths which will be add to path on linux if the path exists")
 
 (dolist (extra-path-list

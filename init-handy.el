@@ -168,7 +168,7 @@ end of the line."
     ))
 
 
-(provide 'init-handy)
+
 
 (defun my-write-path ()
   (interactive)
@@ -192,3 +192,30 @@ end of the line."
       (interactive "p")
       (whole-line-or-region-call-with-region 'kill-save-to-out-clipboard prefix t))
     (global-set-key "\C-xy" 'save-whole-line-or-region-to-out-clipboard)))
+
+(defun cp-under-dir-has-sub (regex &optional path)
+  (when (not path) (setq path default-directory))
+  (let ((parts (split-string path "/"))
+        (ret nil))
+    (dolist (part parts ret)
+      (when (string-match regex part)
+        (message "found matching %s" part)
+        (setq ret t)))))
+
+
+(defun cp-detect-context (&optional path)
+  (when (and (cp-under-dir-has-sub "Chapter_[0-9]+$")) 'cp-opengles3-book))
+
+(defun get-file-content-as-string (filename)
+  "Return the content in filename as a string"
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (buffer-string)))
+
+(defun eval-file-as-lisp-expression (filename)
+  "Return the eval result of filename as expression"
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (read (current-buffer))))
+
+(provide 'init-handy)
