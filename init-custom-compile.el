@@ -81,8 +81,17 @@
         (case command-type
           ('compile (compile command-string))
           ('run (shell-command command-string))
+          ('term (with-current-buffer (get-buffer-create "*custom-compile-log*")
+                   (when (not (boundp 'choosed-terminal))
+                     (set (make-local-variable 'choosed-terminal)
+                          (let ((buffer-list '()))
+                            (dolist (term multi-term-buffer-list)
+                              (add-to-list 'buffer-list (buffer-name term)))
+                            (get-buffer (ido-completing-read "Choose terminal to execute: " buffer-list)))))
+                   (with-current-buffer choosed-terminal
+                     (term-send-raw-string (format "cd %s && %s\n" project-root command-string)))))
           ('t (message "Unknown command type, exiting")
               (return-from cp-custom-compile nil)))))))
 
-(global-set-key "\C-c\C-c" 'cp-custom-compile)
+(global-set-key "\C-ccc" 'cp-custom-compile)
 (provide 'init-custom-compile)
