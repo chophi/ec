@@ -53,7 +53,7 @@
           chosed-unit (cdr (assoc choice compile-list)))
     (dolist (command chosed-unit)
       (let ((command-type (car command))
-            (command-string (cadr command))
+            (command-string (eval (cadr command)))
             (relative-path (caddr command)))
 
         (with-current-buffer (get-buffer-create "*custom-compile-log*")
