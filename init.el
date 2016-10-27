@@ -158,6 +158,7 @@
     (global-set-key "\C-\M-l" (lambda () (interactive) (shell-command "open \"/Applications/Microsoft Lync.app/\"")))
     (global-set-key "\C-\M-o" (lambda () (interactive) (shell-command "open \"/Applications/Microsoft Outlook.app/\"")))
     (define-key emacs-lisp-mode-map "\C-\M-x" nil)
+    (define-key org-mode-map "\C-\M-t" nil)
   )
 
 
