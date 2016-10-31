@@ -195,7 +195,7 @@
 
 (when (and *is-amazon-linux*)
   (add-to-list 'exec-path "/usr/share-2/bin")
-  (require 'init-amazon-linux.el))
+  (require 'init-amazon-linux))
 
 
 (require 'init-patch-buffer)
