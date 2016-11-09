@@ -78,19 +78,19 @@
 
 (update-env-alist)
 
-(defun insert-to-env-alist ()
+(defun my-insert-to-env-list ()
   (interactive)
   (let ((file-path (ido-read-file-name "File PATH:"))
-        (name (read-string "Name: "))))
+        (name (read-string "Name: ")))
   (with-current-buffer (find-file-noselect emacs-env-file)
-    (goto-char buffer-end)
+    (goto-char (buffer-end 1))
     (insert (format "%s=%s" name (expand-file-name file-path)))
     (save-buffer)
-    (update-env-alist)
-    )
-  )
+    (update-env-alist))))
+
 ;; (global-set-key (kbd "C-x C-f") 'ido-find-file)
 (global-set-key (kbd "C-c C-f") 'my-env-find-file)
+(global-set-key (kbd "C-c C-i") 'my-insert-to-env-list)
 
 ;; source emacs global variable
 (setenv "LD_LIBRARY_PATH" (concat (getenv "LD_LIBRARY_PATH") ":/usr/local/lib:/usr/local/lib32:/usr/local/lib64"))
