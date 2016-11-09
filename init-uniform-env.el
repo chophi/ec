@@ -79,9 +79,8 @@
 (update-env-alist)
 
 ;; (global-set-key (kbd "C-x C-f") 'ido-find-file)
-(global-set-key (kbd "C-S-x C-S-f") 'my-env-find-file)
+(global-set-key (kbd "C-c C-f") 'my-env-find-file)
 
 ;; source emacs global variable
 (setenv "LD_LIBRARY_PATH" (concat (getenv "LD_LIBRARY_PATH") ":/usr/local/lib:/usr/local/lib32:/usr/local/lib64"))
 (provide 'init-uniform-env)
-
