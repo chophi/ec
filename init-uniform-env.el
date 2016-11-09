@@ -78,6 +78,17 @@
 
 (update-env-alist)
 
+(defun insert-to-env-alist ()
+  (interactive)
+  (let ((file-path (ido-read-file-name "File PATH:"))
+        (name (read-string "Name: "))))
+  (with-current-buffer (find-file-noselect emacs-env-file)
+    (goto-char buffer-end)
+    (insert (format "%s=%s" name (expand-file-name file-path)))
+    (save-buffer)
+    (update-env-alist)
+    )
+  )
 ;; (global-set-key (kbd "C-x C-f") 'ido-find-file)
 (global-set-key (kbd "C-c C-f") 'my-env-find-file)
 
