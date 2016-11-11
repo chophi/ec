@@ -96,7 +96,7 @@
             ('compile (compile command-string))
             ('run (shell-command command-string))
             ('term 
-             (when (or (not (boundp 'choosed-terminal)) (not (get-buffer choosed-terminal)))
+             (when (or (not (boundp 'choosed-terminal)) (not (buffer-live-p choosed-terminal)))
                (set (make-local-variable 'choosed-terminal)
                     (let ((buffer-list '()))
                       (dolist (term multi-term-buffer-list)
