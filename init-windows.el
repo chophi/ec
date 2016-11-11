@@ -31,25 +31,19 @@
     (delete-other-windows)
     (funcall (split-window-func-with-other-buffer 'split-window-vertically))))
 
-(defconst  split-at-n-column 83)
-
-(when (or *is-amazon-linux-window* *is-mac-machine*)
-  (setq split-at-n-column 87))
-
-(defun split-right-at-n-column(arg)
-  (interactive "P")
-  (delete-other-windows)
-  (let ((width split-at-n-column))
-    (if arg
-        (split-window-right (- width))
-      (split-window-right width))))
+(setq split-height-threshold nil
+      split-width-threshold 160)
 
 (defun split-window-horizontally-instead ()
   (interactive)
-  (save-excursion
-    (delete-other-windows)
-    (funcall
-     (split-window-func-with-other-buffer (lambda() (split-window-right split-at-n-column))))))
+  (if (not (>= (frame-width) split-width-threshold))
+      (progn
+        (message "Window is too narrow, split window vertical instead")
+        (split-window-vertically-instead))
+    (save-excursion
+      (delete-other-windows)
+      (funcall
+       (split-window-func-with-other-buffer 'split-window-horizontally)))))
 
 (defconst alpha-list '((85 50) (100 100)))
 (defun window-cycle-alpha-parameter ()
@@ -62,10 +56,9 @@
 (global-set-key "\C-x|" 'split-window-horizontally-instead)
 (global-set-key "\C-x_" 'split-window-vertically-instead)
 
-(global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
-(global-set-key "\C-x3" (split-window-func-with-other-buffer (lambda() (split-window-right split-at-n-column))))
+(global-set-key "\C-x2" 'split-window-horizontally-instead)
+(global-set-key "\C-x3" 'split-window-vertically-instead)
 
-(global-set-key "\C-x9" 'split-right-at-n-column)
 
 ;;; multi-window modes
 (defun my-four-grid-windows ()

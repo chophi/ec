@@ -152,9 +152,6 @@ end of the line."
                                     '( ;; ("\\<\\(and\\|or\\|not\\)\\>" . 'font-lock-keyword-face)
                                       ("\\<\\(FIXME\\|MODIFIED\\|DEBUG\\|UPDATED\\|TODO\\):" 1 'font-lock-warning-face prepend)))))
 
-(setq split-height-threshold nil
-      split-width-threshold 100)
-
 (global-set-key (kbd "C-!") 'shell-command)
 
 (global-set-key (kbd "\C-xf") 'other-frame)
