@@ -2,7 +2,11 @@
   (if *is-windows-system-p* ";" ":"))
 
 (defun existed-directory? (path)
-  (and (file-exists-p path) (eq (car (file-attributes path)) t)))
+  (and (file-exists-p path)
+       (let ((first-attr (car (file-attributes path))))
+         (if (eq first-attr t)
+             t
+           (and (stringp first-attr) (existed-directory? first-attr))))))
 
 (defun add-to-path(path &optional insert-to-head)
   (when (existed-directory? path)
@@ -14,6 +18,7 @@
 
 (defconst *linux-extra-path-list*
   '(("~/.emacs.d/.emacs-bin" t)
+    ("~/.linux_script" t)
     ("/usr/local/texlive/2015/bin/x86_64-linux"))
   "The list of paths which will be add to path on linux if the path exists")
 
