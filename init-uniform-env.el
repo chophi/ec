@@ -10,7 +10,7 @@
         (env-alist '())
         env
         value)
-    (while (string-match "^\\(export +\\)?\\([0-9a-zA-Z_]+\\)=\\([$/~0-9a-zA-Z_.-]+\\)" str start)
+    (while (string-match "^\\(export +\\)?\\([0-9a-zA-Z_-]+\\)=\\([$/~0-9a-zA-Z_.-]+\\)" str start)
       (setq env (match-string 2 str)
             value (match-string 3 str)
             start (match-end 0))
@@ -77,6 +77,7 @@
     (setenv (car env-li) (my-env-expand (car env-li)))))
 
 (update-env-alist)
+
 
 (defun my-insert-to-env-list ()
   (interactive)
