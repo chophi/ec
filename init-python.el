@@ -47,5 +47,4 @@
   (dolist (use-ido use-ido-list)
     (setf (cdr (assoc use-ido helm-completing-read-handlers-alist)) 'ido))))
 
-
 (provide 'init-python)
