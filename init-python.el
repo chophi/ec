@@ -24,13 +24,28 @@
 ;; (require 'python-mode)
 
 ;; (setq py-shell-name "d:/ProgEnv/Python34/Scripts/ipython.exe")
-(require-package 'jedi)
 (when (not *is-mac-machine*)
+  (require-package 'jedi)
+  (setq jedi:complete-on-dot t)
   (add-hook 'python-mode-hook 'jedi:setup))
-(setq jedi:complete-on-dot t)
-(setq-default python-indent-offset 4)
+
+(setq-default python-indent-offset 2)
+
+(require-package 'helm-pydoc)
+(with-eval-after-load "python"
+  (define-key python-mode-map (kbd "C-c C-d") 'helm-pydoc))
 
 (when *is-mac-machine*
   (add-to-list 'exec-path "/opt/local/bin/"))
+
+;; use ido instead of helm with following use-ido-list
+(with-eval-after-load "helm"
+  (let ((use-ido-list
+       '(describe-function
+         describe-variable
+         describe-symbol)))
+  (dolist (use-ido use-ido-list)
+    (setf (cdr (assoc use-ido helm-completing-read-handlers-alist)) 'ido))))
+
 
 (provide 'init-python)
