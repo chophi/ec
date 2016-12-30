@@ -37,5 +37,5 @@
 
 (when *is-mac-machine*
   (add-to-list 'exec-path "/opt/local/bin/"))
-ö
+
 (provide 'init-python)
