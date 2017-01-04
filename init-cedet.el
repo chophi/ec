@@ -1,26 +1,20 @@
 (defconst site-lisp-directory "~/.emacs.d/site-lisp")
-(defconst cedet-directory (concat site-lisp-directory "/cedet-1.1/")
-  "choose the cedet directory, and forbid require choose the internal cedet,
-which was bad for me")
-;; eieio is not needed anymore, as it's in emacs 24.5+
-(defconst cedet-collections
-  '("common" "semantic" "speedbar" "ede" "srecode")
-  "cedet collections that I require")
-(add-to-list 'load-path cedet-directory)
-(dolist (part cedet-collections)
-  (add-to-list 'load-path (concat cedet-directory part)))
-;;; remember to load cedet before using any parts of cedet
+
 (require 'cedet)
+(require 'semantic)
 (require 'cedet-files)
+(require 'ede)
+(require 'eieio)
+(require 'speedbar)
 
 ;;; enable the features
-(semantic-load-enable-gaudy-code-helpers)
+(global-semantic-idle-scheduler-mode 1)
 (global-semanticdb-minor-mode 1)
-
-;; (require 'semanticdb-ectag)
-;; (semantic-load-enable-all-exuberent-ctags-support)
-
-(global-semantic-tag-folding-mode 1)
+(global-semantic-idle-summary-mode 1)
+(global-semantic-idle-completions-mode 1)
+(global-semantic-highlight-func-mode 1)
+(global-semantic-decoration-mode 1)
+(global-semantic-stickyfunc-mode 1)
 (global-semantic-mru-bookmark-mode 1)
 
 ;;; add system include dirs for some modes.
@@ -104,6 +98,7 @@ which was bad for me")
            ((file-directory-p file)
             (let ((tfiles (cedet-files-list-recursively file re)))
               (when tfiles (setq matched (append matched tfiles)))))))))))
+
 (defun c++-setup-boost (boost-root)
   (when (file-accessible-directory-p boost-root)
     (let ((cfiles (cedet-files-list-recursively boost-root "\\(config\\|user\\)\\.hpp")))
@@ -112,12 +107,12 @@ which was bad for me")
 
 ;; (c++-setup-boost "/usr/local/include/boost")
 ;; setting opencv
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_PROP_RW" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W_SIMPLE" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W_MAP" . ""))
-(add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_INLINE" . ""))
+;; (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_PROP_RW" . ""))
+;; (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS" . ""))
+;; (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W_SIMPLE" . ""))
+;; (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W" . ""))
+;; (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_EXPORTS_W_MAP" . ""))
+;; (add-to-list 'semantic-lex-c-preprocessor-symbol-map '("CV_INLINE" . ""))
 
 ;;; preprocessing of source code
 ;; (setq qt4-base-dir "/usr/include/qt4")
@@ -204,8 +199,7 @@ which was bad for me")
   "the map of semantic")
 
 (require 'eassist)
-(require 'cedet-contrib)
-(require 'cogre)
+
 
 (add-to-list 'eassist-header-switches '("hh" "cpp" "cc"))
 (add-to-list 'eassist-header-switches '("cc" "h" "hh"))
