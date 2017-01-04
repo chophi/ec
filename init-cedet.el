@@ -2,8 +2,9 @@
 (defconst cedet-directory (concat site-lisp-directory "/cedet-1.1/")
   "choose the cedet directory, and forbid require choose the internal cedet,
 which was bad for me")
+;; eieio is not needed anymore, as it's in emacs 24.5+
 (defconst cedet-collections
-  '("common" "semantic" "speedbar" "ede" "eieio" "srecode")
+  '("common" "semantic" "speedbar" "ede" "srecode")
   "cedet collections that I require")
 (add-to-list 'load-path cedet-directory)
 (dolist (part cedet-collections)

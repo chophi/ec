@@ -16,21 +16,21 @@
 ;;; https://github.com/jorgenschaefer/elpy
 ;;; ---------------------------------------
 ;;; pip install rope jedi flake8 importmagic autopep8 yapf
-(defun pip-installed? (packages)
-  (let ((pip-packages (shell-command-to-string "pip list"))
-        (all-installed t))
-    (dolist (pkg packages)
-      (when (not (string-match pkg pip-packages))
-        (setq all-installed nil))
-      )
-    all-installed))
+;; (defun pip-installed? (packages)
+;;   (let ((pip-packages (shell-command-to-string "pip list"))
+;;         (all-installed t))
+;;     (dolist (pkg packages)
+;;       (when (not (string-match pkg pip-packages))
+;;         (setq all-installed nil))
+;;       )
+;;     all-installed))
 
-(if (pip-installed? '("rope" "jedi" "flake8" "importmagic" "autopep8" "yapf"))
-    (progn
-      (require-package 'elpy)
-      (elpy-enable))
-  (progn
-    (message "please install the required packages:\n sudo -H pip install rope jedi flake8 importmagic autopep8 yapf")))
+;; (if (pip-installed? '("rope" "jedi" "flake8" "importmagic" "autopep8" "yapf"))
+;;     (progn
+;;       (require-package 'elpy)
+;;       (elpy-enable))
+;;   (progn
+;;     (message "please install the required packages:\n sudo -H pip install rope jedi flake8 importmagic autopep8 yapf")))
 
 
 ;; (setq py-shell-name "d:/ProgEnv/Python34/Scripts/ipython.exe")
