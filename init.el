@@ -83,8 +83,8 @@
 (require 'init-yasnippet)
 (require 'init-auto-complete)
 (require 'init-python)
-(require 'init-helm)
-(require 'init-anything)
+;;(require 'init-helm)
+;;(require 'init-anything)
 (require 'init-ruby)
 
 ;; c++ configuration

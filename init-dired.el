@@ -51,5 +51,16 @@ open and unsaved."
 
 (define-key dired-mode-map (kbd "E") 'dired-do-command)
 
+(require-package 'dired-narrow)
+(define-key dired-mode-map (kbd "/")
+  '(lambda ()
+     (interactive)
+     (let ((choice (read-char-choice
+                    "Please choose the filter mode\nn: dired-narrow\nf: dired-narrow-fuzzy\nr: dired-narrow-regexp\nInput: "
+                    '(?n ?f ?r))))
+       (case choice
+         (?n (dired-narrow))
+         (?f (dired-narrow-fuzzy))
+         (?r (dired-narrow-regexp))))))
 
 (provide 'init-dired)
