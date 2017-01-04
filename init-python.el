@@ -24,11 +24,16 @@
 ;; (require 'python-mode)
 
 ;; (setq py-shell-name "d:/ProgEnv/Python34/Scripts/ipython.exe")
-(require-package 'jedi)
 (when (not *is-mac-machine*)
+  (require-package 'jedi)
+  (setq jedi:complete-on-dot t)
   (add-hook 'python-mode-hook 'jedi:setup))
-(setq jedi:complete-on-dot t)
-(setq-default python-indent-offset 4)
+
+(setq-default python-indent-offset 2)
+
+(require-package 'helm-pydoc)
+(with-eval-after-load "python"
+  (define-key python-mode-map (kbd "C-c C-d") 'helm-pydoc))
 
 (when *is-mac-machine*
   (add-to-list 'exec-path "/opt/local/bin/"))
