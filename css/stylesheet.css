@@ -1178,8 +1178,8 @@
 
   pre {
     font-family: Monaco, Consolas, "Lucida Console", monospace;
-    color: black;
-    background-color: #efefef;
+    color: #CCCCCC;
+    background-color: #2D2D2D;
     padding: 1.2em;
     border: 1px solid #dddddd;
     overflow: auto;
