@@ -39,25 +39,30 @@
         )
       )
 
-(defun my-preview-org-file ()
-  (interactive)
+(defun my-preview-org-file (with-file)
+  (interactive "P")
   (when (not (file-directory-p (org-blog-path "org-export/css")))
-    (make-directory (org-blog-path "org-export/css")))
+    (make-directory (org-blog-path "org-export/css") t))
   (when (not (file-directory-p (org-blog-path "www")))
     (make-directory (org-blog-path "www")))
   (when (not (file-exists-p (org-blog-path "org-export/css/stylesheet.css")))
     (copy-file "~/.emacs.d/css/stylesheet.css"
                (org-blog-path "org-export/css/stylesheet.css")))
-  
-  (when (or (not (eq major-mode 'org-mode))
-            (not (equal (file-name-extension (buffer-name)) "org"))) 
-    (error "This command only works in org-mode and on org file"))  
-  (write-file (format (org-blog-path "org-export/%s") (buffer-name)))
+
+  (when with-file
+    (when (or (not (eq major-mode 'org-mode))
+              (not (equal (file-name-extension (buffer-name)) "org"))) 
+      (error "This command only works in org-mode and on org file"))
+    (write-file (format (org-blog-path "org-export/%s") (buffer-name))))
+
   (org-publish-all)
 
   (when *is-mac-machine*
     (shell-command
-     (format "open %s/www/%s.%s" *org-blog-root* (file-name-sans-extension (buffer-name)) "html"))))
+     (format "open %s/www/%s.%s" *org-blog-root*
+             (if with-file
+               (file-name-sans-extension (buffer-name))
+               "sitemap") "html"))))
 
 (define-key org-mode-map [f9] 'my-preview-org-file)
 
