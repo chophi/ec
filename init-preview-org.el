@@ -7,12 +7,12 @@
   (concat *org-blog-root* relpath))
 
 (setq org-publish-project-alist
-      '(
+      `(
         ;; These are the main web files
         ("org-notes"
-         :base-directory (org-blog-path "org-export/") ;; Change this to your local dir
+         :base-directory ,(org-blog-path "org-export/") ;; Change this to your local dir
          :base-extension "org"
-         :publishing-directory (org-blog-path "www")
+         :publishing-directory ,(org-blog-path "www")
          :recursive t
          :publishing-function org-html-publish-to-html
          :headline-levels 4             ; Just the default for this project.
@@ -28,9 +28,9 @@
 
         ;; These are static files (images, pdf, etc)
         ("org-static"
-         :base-directory (org-blog-path "org-export/") ;; Change this to your local dir
+         :base-directory ,(org-blog-path "org-export/") ;; Change this to your local dir
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|txt\\|asc"
-         :publishing-directory (org-blog-path "www/")
+         :publishing-directory ,(org-blog-path "www/")
          :recursive t
          :publishing-function org-publish-attachment
          )
@@ -41,10 +41,13 @@
 
 (defun my-preview-org-file ()
   (interactive)
-  (when (not (file-directory-p (org-blog-path "org-export/css"))  (make-directory (org-blog-path "org-export/css")) t))
-  (when (not (file-directory-p (org-blog-path "www"))  (make-directory (org-blog-path "www")) t))
+  (when (not (file-directory-p (org-blog-path "org-export/css")))
+    (make-directory (org-blog-path "org-export/css")))
+  (when (not (file-directory-p (org-blog-path "www")))
+    (make-directory (org-blog-path "www")))
   (when (not (file-exists-p (org-blog-path "org-export/css/stylesheet.css")))
-    (copy-file "~/.emacs.d/css/stylesheet.css" (org-blog-path "org-export/css/stylesheet.css")))
+    (copy-file "~/.emacs.d/css/stylesheet.css"
+               (org-blog-path "org-export/css/stylesheet.css")))
   
   (when (or (not (eq major-mode 'org-mode))
             (not (equal (file-name-extension (buffer-name)) "org"))) 
