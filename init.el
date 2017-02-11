@@ -212,3 +212,4 @@
 (require 'init-applescript-mode)
 (require 'init-custom-compile)
 (require 'init-preview-org)
+(require 'init-flycheck)
