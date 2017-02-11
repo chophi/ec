@@ -1,3 +1,7 @@
+(when (memq window-system '(mac ns))
+  (require-package 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
+
 (defun path-seperator()
   (if *is-windows-system-p* ";" ":"))
 
@@ -41,5 +45,3 @@
     (add-to-path path insert-to-head)))
 
 (provide 'init-path)
-
-
