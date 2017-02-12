@@ -48,8 +48,8 @@
 
 (require 'init-server)
 
-(require 'init-path)
 (require 'init-elpa)
+(require 'init-path)
 (require 'init-benchmarking)
 
 (require 'init-theme)
