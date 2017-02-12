@@ -8,4 +8,5 @@
 
 ;; (setq magit-last-seen-setup-instructions "1.4.0")
 
+(setq-default git-commit-fill-column 70)
 (provide 'init-magit)
