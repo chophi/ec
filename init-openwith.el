@@ -23,4 +23,9 @@
       (add-to-list 'exec-path p))
     (dolist (p extra-openwith-associations)
       (add-to-list 'openwith-associations p))))
+
+(when *is-mac-machine*
+  (setq openwith-associations
+        '(("\\.pdf$\\|\\.png$\\|\\.jpeg$\\|\\.jpg$" "open" (file)))))
+
 (provide 'init-openwith)
