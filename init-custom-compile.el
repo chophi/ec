@@ -72,10 +72,12 @@
   (interactive "P")
   (when (not path) (setq path default-directory))
   ;;; compile-exprs should be the list of pairs of (project-root . exprs)
-  (let (compile-exprs)
+  (let (compile-exprs
+        (processed-config nil))
     (setq compile-exprs '())
     (let ((compile-config (find-custom-compile-file path)))
       ;; (message "find compile-config: %s\n" compile-config)
+      (push compile-config processed-config)
       (when compile-config
         (add-to-list 'compile-exprs `(,(file-name-directory compile-config)
                                       ,compile-config
@@ -87,12 +89,19 @@
                 (lambda (str)
                   (and (> (length str) 3) (equal (substring str (- (length str) 3) (length str)) ".el")))
                 (directory-files *global-compile-directory*)))
-        (let ((compile-config (concat *global-compile-directory* "/" compile-file)))
-          (dolist (compile-expr (eval-file-as-lisp-expression compile-config))
-            (add-to-list 'compile-exprs (list (car compile-expr)
-                                              compile-config
-                                              (cadr compile-expr)
-                                              ))))))
+        (let ((compile-config (concat *global-compile-directory* "/" compile-file))
+              (is-processed-file nil))
+          (dolist (file processed-config)
+            (if (equal (file-truename (file-chase-links file))
+                       (file-truename (file-chase-links compile-config)))
+                (setq is-processed-file t)))
+          (when (not is-processed-file)
+            (dolist (compile-expr (eval-file-as-lisp-expression compile-config))
+              (add-to-list 'compile-exprs (list (car compile-expr)
+                                                compile-config
+                                                (cadr compile-expr)
+                                                )))
+            (push compile-config processed-config)))))
     compile-exprs))
 
 (defun cp-process-duplicate-and-reshape (compile-exprs)
