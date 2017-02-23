@@ -77,8 +77,8 @@
     (setq compile-exprs '())
     (let ((compile-config (find-custom-compile-file path)))
       ;; (message "find compile-config: %s\n" compile-config)
-      (push compile-config processed-config)
       (when compile-config
+        (push compile-config processed-config)
         (add-to-list 'compile-exprs `(,(file-name-directory compile-config)
                                       ,compile-config
                                       ,(eval-file-as-lisp-expression compile-config))))
