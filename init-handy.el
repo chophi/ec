@@ -214,7 +214,8 @@ end of the line."
   (with-temp-buffer
     (insert-file-contents filename)
     (goto-char (buffer-end 1))
-    (eval-last-sexp t)))
+    (eval-last-sexp t)
+    ))
 
 ;; If emacs is run in a terminal, the clipboard- functions have no
 ;; effect. Instead, we use of xsel, see

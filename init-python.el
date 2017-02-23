@@ -40,8 +40,6 @@
 (add-hook 'python-mode-hook 'jedi:ac-setup)
 (setq jedi:complete-on-dot t)
 
-(setq-default python-indent-offset 2)
-
 (require-package 'helm-pydoc)
 (with-eval-after-load "python"
   (define-key python-mode-map (kbd "C-c C-d") 'helm-pydoc))

@@ -154,24 +154,43 @@
     cmakefile))
 
 
+(if *is-linux-system-p*
+    (setq *ndk-build-bin-path* "~/software/android-ndk-r10e")
+  (setq *ndk-build-bin-path* "path-to-android-ndk-build"))
+
 (defun my-smart-compile ()
   (interactive)
-  (let ((maybe-cmake nil))
-    (setq maybe-cmake (get-maybe-cmake))
-    (if maybe-cmake
-        (progn (find-file-noselect maybe-cmake)
-               (with-current-buffer (get-file-buffer maybe-cmake)
-                 (call-interactively 'my-cmake-compile)))
-      (call-interactively 'smart-compile))))
+  (if (file-exists-p (format "%s/%s"
+                             (file-name-directory (buffer-file-name))
+                             "Android.mk"))
+      (progn (compile (format "PATH=$PATH:%s ndk-build"
+                              *ndk-build-bin-path*)))
+    (let ((maybe-cmake nil))
+      (setq maybe-cmake (get-maybe-cmake))
+      (if maybe-cmake
+          (progn (find-file-noselect maybe-cmake)
+                 (with-current-buffer (get-file-buffer maybe-cmake)
+                   (call-interactively 'my-cmake-compile)))
+        (call-interactively 'smart-compile)))))
 
+(require 'init-custom-compile)
 (defun my-smart-run ()
   (interactive)
-  (let ((maybe-cmake (get-maybe-cmake)))
-    (if maybe-cmake
-        (progn (find-file-noselect maybe-cmake)
-               (with-current-buffer (get-file-buffer maybe-cmake)
-                 (call-interactively 'my-cmake-run)))
-      (call-interactively 'run-c-program))))
+  (if (file-exists-p (format "%s/%s"
+                             (file-name-directory (buffer-file-name))
+                             "Android.mk"))
+      (let ((binary (ido-read-file-name "Select a binary to run: "
+                                        "../libs/")))
+        (send-command-to-terminal
+         (choose-buffer-local-terminal)
+         (format "adb push %s /data/ && adb wait-for-device && adb shell /data/%s"
+                 binary (file-name-nondirectory binary))))
+    (let ((maybe-cmake (get-maybe-cmake)))
+      (if maybe-cmake
+          (progn (find-file-noselect maybe-cmake)
+                 (with-current-buffer (get-file-buffer maybe-cmake)
+                   (call-interactively 'my-cmake-run)))
+        (call-interactively 'run-c-program)))))
 
 (define-key c-mode-base-map "\C-c\C-c" 'my-smart-compile)
 ;; can't set using define-key, so change to set hook here!
