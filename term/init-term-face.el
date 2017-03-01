@@ -19,6 +19,6 @@
       "Temporary buffer local face for term mode")
     (buffer-face-set 'temp-buffer-local-term-mode-face)))
 
-(add-hook 'term-mode-hook 'my-term-mode-change-font-hook)
+(add-hook 'term-mode-hook 'my-term-mode-set-buffer-local-face)
 
 (provide 'init-term-face)
