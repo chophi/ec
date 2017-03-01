@@ -9,4 +9,16 @@
 ;; (set-face-attribute 'term-color-cyan nil :foreground "#008b8b")
 ;; (set-face-attribute 'term-color-white nil :foreground "#e6e6fa")
 
+
+(defun my-term-mode-set-buffer-local-face ()
+  (when (x-list-fonts "Monaco for Powerline")
+    (defface temp-buffer-local-term-mode-face
+      '((t
+         :family "Monaco for Powerline"
+         :size 16))
+      "Temporary buffer local face for term mode")
+    (buffer-face-set 'temp-buffer-local-term-mode-face)))
+
+(add-hook 'term-mode-hook 'my-term-mode-change-font-hook)
+
 (provide 'init-term-face)
