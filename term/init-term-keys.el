@@ -139,7 +139,7 @@
   (interactive)
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (term-send-raw-string (format "export PROMPT_COMMAND=\"\"\n")))
+  (term-send-raw-string (format "export PROMPT_COMMAND=__prompt_command\n")))
 
 (defun --append-terminal-name (term-buf-name append-name)
   (let ((term-buf-prefix (substring term-buf-name 0 (length term-name-template))))
