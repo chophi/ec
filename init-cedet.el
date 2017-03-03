@@ -17,6 +17,8 @@
 (global-semantic-stickyfunc-mode 1)
 (global-semantic-mru-bookmark-mode 1)
 
+;;; set the default-directory to the Kbuild file to avoid pop selection prompt.
+(setq project-linux-build-directory-default 'same)
 ;;; add system include dirs for some modes.
 ;;; eg. (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
 ;;; boost support need to specify where to find constant's definitions.
