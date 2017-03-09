@@ -51,7 +51,7 @@
   (let ((comm (read-string "Input the command to send to all terminal: ")))
     (dolist (term-buf multi-term-buffer-list)
       (with-current-buffer term-buf
-        (term-send-raw-string (format "%s\n" str))))))
+        (term-send-raw-string (format "%s\n" comm))))))
 
 (defun update-term-external-env ()
   (interactive)
