@@ -17,4 +17,10 @@
 
 (setq multi-term-program "/bin/bash")
 
+(when (and *is-mac-machine* (not *is-amazon-linux*))
+  (when (file-exists-p "/usr/local/bin/bash")
+    (setq multi-term-program "/usr/local/bin/bash")
+    )
+  )
+
 (provide 'init-multi-term)
