@@ -46,6 +46,13 @@
 (setq multi-term-buffer-name "TM")
 (defvar term-name-template "*TM<1>*")
 
+(defun send-to-all-terminal ()
+  (interactive)
+  (let ((comm (read-string "Input the command to send to all terminal: ")))
+    (dolist (term-buf multi-term-buffer-list)
+      (with-current-buffer term-buf
+        (term-send-raw-string (format "%s\n" str))))))
+
 (defun update-term-external-env ()
   (interactive)
   (dolist (term-buf multi-term-buffer-list)
