@@ -213,3 +213,4 @@
 (require 'init-custom-compile)
 (require 'init-preview-org)
 (require 'init-flycheck)
+(require 'init-swift)
