@@ -81,8 +81,10 @@
            (my--compile "make %s"
                        choice)))))
 
-(defun directory-executable-files (dir)
+(defun* directory-executable-files (dir)  
   (let ((ret '()))
+    (when (not (file-directory-p dir))
+      (return-from directory-executable-files ret))
     (dolist (f  (cddr (directory-files dir)) ret)
       ;; (message f)
       (when (file-executable-p (concat dir "/" f))
@@ -91,7 +93,7 @@
 
 (defun my-cmake-run(arg)
   (interactive "P")
-  (let (choice cmake-target-list bin-list mode suffix)
+  (let (choice cmake-target-list bin-list mode suffix choice-list)
 
     (if arg (setq mode "release" suffix "_r")
       (setq mode "debug" suffix "_d"))
@@ -100,10 +102,16 @@
           (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)
           bin-list
           (directory-executable-files "bin"))
+    (dolist (target cmake-target-list)
+      (when (and (file-exists-p (concat mode "/" target))
+                 (file-executable-p (concat mode "/" target)))
+        (push (concat mode "/" target) choice-list)))
     (setq cmake-target-list (mapcar (lambda (x) (concat x suffix)) cmake-target-list))
     (setq bin-list (remove-if-not (lambda (x) (member x cmake-target-list)) bin-list))
-    (setq choice (ido-completing-read "RUN EXE: " bin-list))
-    (compile (concat "cd bin && ./" choice))))
+    (dolist (bin-file bin-list)
+      (push (concat "bin/" bin-file) choice-list))
+    (setq choice (ido-completing-read "RUN EXE: " choice-list))
+    (compile choice)))
 
 (defun my-cmake-help ()
   (interactive)
