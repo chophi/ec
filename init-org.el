@@ -29,7 +29,7 @@
 
 ;; org-indent-mode is more comfortable
 (add-hook 'org-mode-hook
-	  (lambda() (interactive)
+          (lambda() (interactive)
             (linum-mode -1)
             (visual-line-mode)
             ;; hide the extra org mode stars perfectly
@@ -44,11 +44,11 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 
-; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
+                                        ; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
 (setq org-refile-targets (quote ((nil :maxlevel . 5) (org-agenda-files :maxlevel . 5))))
-; Targets start with the file name - allows creating level 1 tasks
+                                        ; Targets start with the file name - allows creating level 1 tasks
 (setq org-refile-use-outline-path (quote file))
-; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
+                                        ; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
 (setq org-outline-path-complete-in-steps t)
 
 
@@ -124,5 +124,22 @@
 ;;        (define-key org-mode-map (kbd "C-c g") 'omlg-grab-link))
 ;;      ;;(require 'org-checklist)
 ;;      (require 'org-fstree)))
+(eval-after-load 'init-private-custom
+  '(defun my-export-buffer-to-wiki(buffer-name wiki-page-id)
+     (with-current-buffer (get-buffer buffer-name)
+       (save-current-buffer
+         (org-html-export-as-html nil nil nil t)))
+     (let ((str
+            (with-current-buffer (get-buffer "*Org HTML Export*")
+              (buffer-string))))
+       (message
+        (shell-command-to-string
+         (format "python %s -u %s -p %s -P %s -c %s -C %s "
+                 *custom-write-wiki-script-path*
+                 *custom-confluence-username*
+                 (custom-input-confluence-password)
+                 wiki-page-id
+                 (shell-quote-argument str)
+                 *custom-confluence-root-url*))))))
 
 (provide 'init-org)
