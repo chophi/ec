@@ -2001,7 +2001,7 @@ With prefix, prompt for extra arguments to give to `fb-adb'."
              (logcat-mode))
            (unless (logcat-running-p)
              (logcat-start extra-arguments))
-           (read-only-mode 1)
+           ;;  (read-only-mode 1)
            (goto-char (point-max))
            (display-buffer buffer)
            ;; (pop-to-buffer buffer)
