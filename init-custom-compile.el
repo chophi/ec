@@ -267,7 +267,7 @@
             ('term
              (send-command-to-terminal
               (choose-buffer-local-terminal)
-              (format "cd %s && %s" project-root command-string)))
+              (format "cd %s &&\\\n %s" project-root command-string)))
             ('t (message "Unknown command type, exiting")
                 (return-from cp-custom-compile nil))))))))
 
