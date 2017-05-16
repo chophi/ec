@@ -69,4 +69,7 @@
 (when *is-mac-machine*
   (add-to-list 'exec-path "/Applications/Racket v6.6/bin/"))
 
+(when *is-linux-system-p*
+  (add-to-list 'exec-path "~/software/racket/bin"))
+
 (provide 'init-lisps)
