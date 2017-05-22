@@ -19,6 +19,7 @@
 
 ;;; set the default-directory to the Kbuild file to avoid pop selection prompt.
 (setq project-linux-build-directory-default 'same)
+(setq project-linux-architecture-default "arm64")
 ;;; add system include dirs for some modes.
 ;;; eg. (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
 ;;; boost support need to specify where to find constant's definitions.

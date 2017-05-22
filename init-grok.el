@@ -2,8 +2,9 @@
 (require 'eopengrok)
 
 (setq eopengrok-ctags (concat (getenv "HOME") "/.emacs-pkg/ctags"))
-(setq eopengrok-jar (concat (getenv "HOME") "/.emacs-pkg/clj-opengrok-0.3.0-standalone.jar"))
+(setq eopengrok-jar (concat (getenv "HOME") "/.emacs-pkg/bin/opengrok.jar"))
 (add-to-list 'exec-path (concat (getenv "HOME") "/.emacs-pkg"))
+(add-to-path (concat (getenv "HOME") "/.emacs-pkg") t)
 
 (defconst my-opengrok-map
   '(;;(?i . eopengrok-make-index)

@@ -44,4 +44,6 @@
 (with-eval-after-load "python"
   (define-key python-mode-map (kbd "C-c C-d") 'helm-pydoc))
 
+(require-package 'yapfify)
+(add-hook 'python-mode-hook 'yapf-mode)
 (provide 'init-python)
