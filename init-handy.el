@@ -328,6 +328,15 @@ end of the line."
       (delete-region start end)
       (insert (url-hexify-string result)))))
 
+(defun my-sudo-edit ()
+  "Edit the file that is associated with current buffer as root"
+  (interactive)
+  (if (buffer-file-name)
+      (progn
+        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
+        (find-file file))
+    (message "Current buffer does not have an associated file.")))
+
 (provide 'init-handy)
 
 
