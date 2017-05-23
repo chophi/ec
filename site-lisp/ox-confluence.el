@@ -156,7 +156,7 @@ a communication channel."
   (let* ((lang (org-element-property :language src-block))
          (language (or (cdr (assoc lang org-confluence-lang-alist)) lang))
          (content (org-export-format-code-default src-block info)))
-    (org-confluence--block language "Emacs" content)))
+    (org-confluence--block language "Confluence" content)))
 
 (defun org-confluence-strike-through (strike-through contents info)
   (format "-%s-" contents))
