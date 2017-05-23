@@ -328,6 +328,16 @@ end of the line."
       (delete-region start end)
       (insert (url-hexify-string result)))))
 
+(defun my-sudo-edit ()
+  "Edit the file that is associated with current buffer as root"
+  (interactive)
+  (if (buffer-file-name)
+      (progn
+        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
+        (find-file file))
+    (message "Current buffer does not have an associated file.")))
+
+
 (defun my-pretty-print-xml-region (begin end)
   "Pretty format XML markup in region. You need to have nxml-mode
 http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
