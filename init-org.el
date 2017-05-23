@@ -124,22 +124,5 @@
 ;;        (define-key org-mode-map (kbd "C-c g") 'omlg-grab-link))
 ;;      ;;(require 'org-checklist)
 ;;      (require 'org-fstree)))
-(eval-after-load 'init-private-custom
-  '(defun my-export-buffer-to-wiki(buffer-name wiki-page-id)
-     (with-current-buffer (get-buffer buffer-name)
-       (save-current-buffer
-         (org-html-export-as-html nil nil nil t)))
-     (let ((str
-            (with-current-buffer (get-buffer "*Org HTML Export*")
-              (buffer-string))))
-       (message
-        (shell-command-to-string
-         (format "python %s -u %s -p %s -P %s -c %s -C %s "
-                 *custom-write-wiki-script-path*
-                 *custom-confluence-username*
-                 (custom-input-confluence-password)
-                 wiki-page-id
-                 (shell-quote-argument str)
-                 *custom-confluence-root-url*))))))
 
 (provide 'init-org)
