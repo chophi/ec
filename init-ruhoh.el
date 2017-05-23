@@ -305,14 +305,17 @@
   (shell-command (format "cd %s && git add -A && git commit -m \"%s\" && bundle exec ruhoh publish github &"                         
                          ruhoh-blog-root-directory
                          (format-time-string "%Y-%m-%d"))))
+
 (defconst org/ruhoh-keys
-  '(("u" . ruhoh-rackup)
-    ("d" . ruhoh-rackdown)
-    ("r" . ruhoh-rack-restart)
-    ("n" . org/ruhoh-new-post)
-    ("p" . org/ruhoh-publish-post)
-    ("v" . org/ruhoh-view-post)
-    ("g" . org/ruhoh-publish-to-github)))
+  (if *is-amazon-machine*
+      '()
+    '(("u" . ruhoh-rackup)
+      ("d" . ruhoh-rackdown)
+      ("r" . ruhoh-rack-restart)
+      ("n" . org/ruhoh-new-post)
+      ("p" . org/ruhoh-publish-post)
+      ("v" . org/ruhoh-view-post)
+      ("g" . org/ruhoh-publish-to-github))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; duplicated, can make it shared

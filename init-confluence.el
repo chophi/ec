@@ -120,7 +120,9 @@
       (switch-to-buffer-other-window wiki-buffer)
       )))
 
-(add-to-list 'org/ruhoh-keys '("w" . org-update-related-wiki-page))
-(add-to-list 'org/ruhoh-keys '("W" . org-read-related-wiki-page))
+(when *is-amazon-machine*
+  (add-to-list 'org/ruhoh-keys '("w" . org-update-related-wiki-page))
+  (add-to-list 'org/ruhoh-keys '("r" . org-read-related-wiki-page))
+  )
 
 (provide 'init-confluence)
