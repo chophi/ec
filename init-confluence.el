@@ -58,7 +58,7 @@
 (defun org-export-buffer-to-wiki(buffer-name wiki-page-id)
   (with-current-buffer (get-buffer buffer-name)
     (save-current-buffer
-      (org-confluence-export-as-confluence nil nil nil t)))
+      (org-confluence-export-as-confluence nil nil nil nil)))
   (let ((str
          (with-current-buffer (get-buffer "*org CONFLUENCE Export*")
            (buffer-string))))
