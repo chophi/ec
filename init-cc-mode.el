@@ -83,7 +83,7 @@
 		    ("\\<\\(alignof\\|alignas\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face)
 		    ("\\<\\(char[0-9]+_t\\)\\>" . font-lock-keyword-face)
 		    ;; PREPROCESSOR_CONSTANT
-		    ("\\<[A-Z]+[A-Z_]+\\>" . font-lock-constant-face)
+		    ("\\<[A-Z]+[A-Z0-9_]+\\>" . font-lock-constant-face)
 		    ;; hexadecimal numbers
 		    ("\\<0[xX][0-9A-Fa-f]+\\>" . font-lock-constant-face)
 		    ;; integer/float/scientific numbers
