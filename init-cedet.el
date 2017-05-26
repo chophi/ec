@@ -233,16 +233,16 @@
               (let ((toname (concat pname "." suf)))
                 ;; (message toname)
                 (when (file-exists-p toname)
-                  (find-file-other-window toname)
+                  (find-file toname)
                   (throw 'file-found nil))))))))))
 
 ;;; DEBUG: the flet is obsolete, fix it when it is not bound.
 (defun my-new-eassist-switch-h-cpp (arg)
   (interactive "P")
-  (if arg
+  (if (not arg)
       (if (fboundp 'flet)
-          (flet ((find-file-other-window (name &optional wildcard) (find-file name wildcard))
-                 (switch-to-buffer-other-window (name &optional norecord) (switch-to-buffer name norecord)))
+          (flet ((find-file (name &optional wildcard) (find-file-other-window name wildcard))
+                 (switch-to-buffer (name &optional norecord) (switch-to-buffer-other-window name norecord)))
             (my-eassist-switch-h-cpp))
         (my-eassist-switch-h-cpp))
     (my-eassist-switch-h-cpp)))
