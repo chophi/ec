@@ -1,12 +1,20 @@
-;; Sample compile.el
-;; ((unit "compile"
-;;        (compile "ndk-build" "jni"))
-;;  (unit "run"
-;;        (run "adb root")
-;;        (run "add remount")
-;;        (run "adb push libs/armeabi/test-libstl /data/")
-;;        (run "adb shell /data/test-libstl")))
-
+;; ;; Sample for compile.el in local dir
+;; '((unit "compile"
+;;         (compile "ndk-build" "jni"))
+;;   (unit "run"
+;;         (run "adb root")
+;;         (run "add remount")
+;;         (run "adb push libs/armeabi/test-libstl /data/")
+;;         (run "adb shell /data/test-libstl")))
+;; ;; Sample compile files in ~/vif/elisp-compile-files
+;; '("project-root"
+;;   ((unit "compile"
+;;          (compile "ndk-build" "jni"))
+;;    (unit "run"
+;;          (run "adb root")
+;;          (run "add remount")
+;;          (run "adb push libs/armeabi/test-libstl /data/")
+;;          (run "adb shell /data/test-libstl"))))
 
 (require 'init-handy)
 
