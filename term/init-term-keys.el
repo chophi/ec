@@ -134,9 +134,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (interactive)
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (term-send-raw-string (format "echo `pwd` > %s\n" *temp-cwd-exchange-file*))
-  (sleep-for 0.5)
-  (let ((path (my-shell-command-to-string (format "cat %s" *temp-cwd-exchange-file*))))
+  (let ((path default-directory))
     (find-file-other-window path)))
 
 (defun uf-term-rename-buffer (arg)
