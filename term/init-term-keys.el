@@ -3,6 +3,21 @@
   (interactive)
   (message "disabled return key"))
 
+(defun generate-random-uuid ()
+  "Generate a random UUID.
+Example of a UUID: 1df63142-a513-c850-31a3-535fc3520c3d
+
+WARNING: this is a simple implementation. The chance of generating the same UUID is much higher than a robust algorithm.."
+  (interactive)
+  (format "%04x%04x-%04x-%04x-%04x-%06x%06x"
+          (random (expt 16 4))
+          (random (expt 16 4))
+          (random (expt 16 4))
+          (random (expt 16 4))
+          (random (expt 16 4))
+          (random (expt 16 6))
+          (random (expt 16 6)) ) )
+
 (setq my-extra-needed-key
       '(
         ;; ("C-a" . move-beginning-of-line)
@@ -53,12 +68,6 @@
       (with-current-buffer term-buf
         (term-send-raw-string (format "%s\n" comm))))))
 
-(defun update-term-external-env ()
-  (interactive)
-  (dolist (term-buf multi-term-buffer-list)
-    (with-current-buffer term-buf
-      (term-send-raw-string (format "export TERM_BUFFER_NAME=\"%s\"\n" (buffer-name))))))
-
 (defun update-terms-name ()
   "update all terminal names"
   (dotimes (i (length multi-term-buffer-list))
@@ -71,9 +80,15 @@
 (defadvice multi-term (around multi-term-ad)
   (when (>= (length multi-term-buffer-list) max-terminal-count)
     (error "too many terminal now, try to reuse!"))
-  ad-do-it
-  (update-terms-name)
-  (update-term-external-env))
+  (let* ((random-uuid (generate-random-uuid))
+         (process-environment
+          (nconc
+           (list (format "TERM_UUID=%s" random-uuid))
+           process-environment)))
+    ad-do-it
+    (update-terms-name)
+    (setq-local TERM_UUID random-uuid)
+    ))
 (ad-activate 'multi-term)
 
 (defun term-prefix (buf)
@@ -148,12 +163,19 @@
     (error "only use this command with term-mode buffer"))
   (term-send-raw-string (format "export PROMPT_COMMAND=__prompt_command\n")))
 
-(defun --append-terminal-name (term-buf-name append-name)
-  (let ((term-buf-prefix (substring term-buf-name 0 (length term-name-template))))
+(defun get-term-buffer (term-id)
+  (let (buf)
     (dolist (term multi-term-buffer-list)
-      (when (equal (term-prefix term) term-buf-prefix)
-        (with-current-buffer term
-          (rename-buffer (concat term-buf-prefix "[" append-name "]")))))))
+      (with-current-buffer term
+        (when (and (boundp 'TERM_UUID) (equal TERM_UUID term-id))
+          (setq buf term))))
+    buf))
+
+(defun --append-terminal-name (term-id append-name)
+    (with-current-buffer (get-term-buffer term-id)
+      (let ((term-buf-prefix (substring (buffer-name) 0 (length term-name-template))))
+        (rename-buffer (concat term-buf-prefix "[" append-name "]")
+          ))))
 
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
@@ -162,3 +184,4 @@
 (global-set-key "\C-zl" 'uf-clear-prompt-command)
 
 (provide 'init-term-keys)
+
