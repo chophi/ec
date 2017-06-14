@@ -166,27 +166,6 @@
 (require 'init-system-default-frame-alist)
 ;;;)
 
-(when (file-exists-p "~/.emacs.d/init-private-custom.el")
-  (require 'init-private-custom))
-
-(defun make-shell-command-key-lambda (command)
-  `(lambda () (interactive)
-     (if *is-mac-machine*
-         (shell-command ,command)
-       (ssh-shell-command ,command)))
-  )
-
-(global-set-key "\C-\M-g" (make-shell-command-key-lambda "open \"/Applications/Google Chrome.app/\""))
-(global-set-key "\C-\M-x" (make-shell-command-key-lambda "open \"/Applications/Xcode.app/\""))
-(global-set-key "\C-\M-t" (make-shell-command-key-lambda "open \"/Applications/iTerm.app/\""))
-(global-set-key "\C-\M-l" (make-shell-command-key-lambda "open \"/Applications/Microsoft Lync.app/\""))
-(global-set-key "\C-\M-o" (make-shell-command-key-lambda "open \"/Applications/Microsoft Outlook.app/\""))
-(global-set-key "\C-\M-p" (make-shell-command-key-lambda "open \"/Applications/Preview.app/\""))
-(define-key emacs-lisp-mode-map "\C-\M-x" nil)
-(define-key org-mode-map "\C-\M-t" nil)
-(define-key paredit-mode-map "\C-\M-p" nil)
-
-
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
 (when (or *is-linux-system-p* *is-mac-machine*) 
@@ -222,3 +201,23 @@
 (require 'init-preview-org)
 (require 'init-flycheck)
 (require 'init-swift)
+
+(when (file-exists-p "~/.emacs.d/init-private-custom.el")
+  (require 'init-private-custom))
+
+(defun make-shell-command-key-lambda (command)
+  `(lambda () (interactive)
+     (if *is-mac-machine*
+         (shell-command ,command)
+       (ssh-shell-command ,command)))
+  )
+
+(global-set-key "\C-\M-g" (make-shell-command-key-lambda "open \"/Applications/Google Chrome.app/\""))
+(global-set-key "\C-\M-x" (make-shell-command-key-lambda "open \"/Applications/Xcode.app/\""))
+(global-set-key "\C-\M-t" (make-shell-command-key-lambda "open \"/Applications/iTerm.app/\""))
+(global-set-key "\C-\M-l" (make-shell-command-key-lambda "open \"/Applications/Microsoft Lync.app/\""))
+(global-set-key "\C-\M-o" (make-shell-command-key-lambda "open \"/Applications/Microsoft Outlook.app/\""))
+(global-set-key "\C-\M-p" (make-shell-command-key-lambda "open \"/Applications/Preview.app/\""))
+(define-key emacs-lisp-mode-map "\C-\M-x" nil)
+(define-key org-mode-map "\C-\M-t" nil)
+(define-key paredit-mode-map "\C-\M-p" nil)
