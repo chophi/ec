@@ -163,8 +163,10 @@
     (global-set-key "\C-\M-t" (lambda () (interactive) (shell-command "open \"/Applications/iTerm.app/\"")))
     (global-set-key "\C-\M-l" (lambda () (interactive) (shell-command "open \"/Applications/Microsoft Lync.app/\"")))
     (global-set-key "\C-\M-o" (lambda () (interactive) (shell-command "open \"/Applications/Microsoft Outlook.app/\"")))
+    (global-set-key "\C-\M-p" (lambda () (interactive) (shell-command "open \"/Applications/Preview.app/\"")))
     (define-key emacs-lisp-mode-map "\C-\M-x" nil)
     (define-key org-mode-map "\C-\M-t" nil)
+    (define-key paredit-mode-map "\C-\M-p" nil)
   )
 
 
