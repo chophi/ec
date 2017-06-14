@@ -157,18 +157,6 @@
 (require 'init-yml-mode)
 
 (require 'init-browse-kill-ring)
-(when *is-mac-machine*
-    (global-set-key "\C-\M-g" (lambda () (interactive) (shell-command "open \"/Applications/Google Chrome.app/\"")))
-    (global-set-key "\C-\M-x" (lambda () (interactive) (shell-command "open \"/Applications/Xcode.app/\"")))
-    (global-set-key "\C-\M-t" (lambda () (interactive) (shell-command "open \"/Applications/iTerm.app/\"")))
-    (global-set-key "\C-\M-l" (lambda () (interactive) (shell-command "open \"/Applications/Microsoft Lync.app/\"")))
-    (global-set-key "\C-\M-o" (lambda () (interactive) (shell-command "open \"/Applications/Microsoft Outlook.app/\"")))
-    (global-set-key "\C-\M-p" (lambda () (interactive) (shell-command "open \"/Applications/Preview.app/\"")))
-    (define-key emacs-lisp-mode-map "\C-\M-x" nil)
-    (define-key org-mode-map "\C-\M-t" nil)
-    (define-key paredit-mode-map "\C-\M-p" nil)
-  )
-
 
 (put 'erase-buffer 'disabled nil)
  
@@ -180,6 +168,24 @@
 
 (when (file-exists-p "~/.emacs.d/init-private-custom.el")
   (require 'init-private-custom))
+
+(defun make-shell-command-key-lambda (command)
+  `(lambda () (interactive)
+     (if *is-mac-machine*
+         (shell-command ,command)
+       (ssh-shell-command ,command)))
+  )
+
+(global-set-key "\C-\M-g" (make-shell-command-key-lambda "open \"/Applications/Xcode.app/\""))
+(global-set-key "\C-\M-x" (make-shell-command-key-lambda "open \"/Applications/Xcode.app/\""))
+(global-set-key "\C-\M-t" (make-shell-command-key-lambda "open \"/Applications/iTerm.app/\""))
+(global-set-key "\C-\M-l" (make-shell-command-key-lambda "open \"/Applications/Microsoft Lync.app/\""))
+(global-set-key "\C-\M-o" (make-shell-command-key-lambda "open \"/Applications/Microsoft Outlook.app/\""))
+(global-set-key "\C-\M-p" (make-shell-command-key-lambda "open \"/Applications/Preview.app/\""))
+(define-key emacs-lisp-mode-map "\C-\M-x" nil)
+(define-key org-mode-map "\C-\M-t" nil)
+(define-key paredit-mode-map "\C-\M-p" nil)
+
 
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
