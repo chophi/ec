@@ -176,7 +176,7 @@
        (ssh-shell-command ,command)))
   )
 
-(global-set-key "\C-\M-g" (make-shell-command-key-lambda "open \"/Applications/Xcode.app/\""))
+(global-set-key "\C-\M-g" (make-shell-command-key-lambda "open \"/Applications/Google Chrome.app/\""))
 (global-set-key "\C-\M-x" (make-shell-command-key-lambda "open \"/Applications/Xcode.app/\""))
 (global-set-key "\C-\M-t" (make-shell-command-key-lambda "open \"/Applications/iTerm.app/\""))
 (global-set-key "\C-\M-l" (make-shell-command-key-lambda "open \"/Applications/Microsoft Lync.app/\""))
