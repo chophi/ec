@@ -24,4 +24,17 @@
 
 (my-set-global-keys "\C-c\C-g" `(,my-opengrok-map))
 
+(defun --read-ignore-file (dir)
+  (let ((ignore-file (concat dir ".opengrok_ignore")))
+    (if (file-exists-p ignore-file)
+        (replace-regexp-in-string "\n" ":" (shell-command-to-string (format "cat %s" ignore-file)))
+      "")))
+
+(defadvice eopengrok-create-index (around add-ignore-ad)
+  (message "Dir is %s" dir)
+  (let ((eopengrok-ignore-file-or-directory
+         (concat eopengrok-ignore-file-or-directory (--read-ignore-file dir))))
+    ad-do-it))
+(ad-activate 'eopengrok-create-index)
+
 (provide 'init-grok)
