@@ -19,11 +19,11 @@
 (require 'init-handy)
 
 (defun* _find-file-or-dir-recursively (path name)
-  (when (equal path "/") (return-from _find-file-or-dir-recursively nil))
+  (when (or (equal path "/") (equal path nil)) (return-from _find-file-or-dir-recursively nil))
   (let ((possible-name (concat path name)))
     (if (file-exists-p possible-name)
         (progn
-          (message "find compile file: %s\n" possible-name)
+          (message "find %s as %s\n" name possible-name)
           (return-from _find-file-or-dir-recursively possible-name))
       (_find-file-or-dir-recursively (file-name-directory (directory-file-name path)) name))))
 
