@@ -165,9 +165,9 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
                      (format "\\\[%s:.*\\\]" field)
                      (format "[%s:%s]" field name)
                      buf-name)))
-      (if (equal buf-name to-name)
-          (rename-buffer (format "%s[%s:%s]" buf-name field name))
-        (rename-buffer to-name)))))
+      (if (string-match (format "\\\[%s:.*\\\]" field) buf-name)
+          (rename-buffer to-name)
+          (rename-buffer (format "%s[%s:%s]" buf-name field name))))))
 
 (defun terminal-name-rm-field (term-id)
   (with-current-buffer (get-term-buffer term-id)
