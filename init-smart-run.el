@@ -49,6 +49,7 @@
 ;;----------------------------------------------------------------------------
 ;; run-program with a list of run list, each list formated like
 ;; (key (requried_file_list) command_to_execute)
+(require 'init-common-utils)
 (defun run-program-with-input-selection(execute-name)
   (let* ((input-file-name (ido-read-file-name "read-input-file: "))
          (output-file-name (concat (file-name-sans-extension input-file-name) ".out"))
@@ -64,7 +65,7 @@
                            (dolist (name in-out-flist ret)
                                     (setq ret (concat ret "\n" name))))))
       (dolist (name in-out-flist)
-        (my-trash-file name)))))
+        (cu-trash-file name)))))
 
 (require 'init-windows)
 (defun edit-an-input-file (file-name)

@@ -14,7 +14,8 @@
     (org-bullets yapfify swift-mode flycheck-swift helm-flycheck exec-path-from-shell flycheck yari yaml-mode whole-line-or-region wgrep w3m visual-regexp unfill undo-tree tabbar switch-window smex smart-compile skewer-mode session scratch ruby-electric ruby-additional rsense rinari regex-tool rainbow-delimiters racket-mode project-local-variables pointback paredit paper-theme pandoc-mode page-break-lines ox-pandoc org-fstree openwith noflet mwe-log-commands multiple-cursors multi-term move-text mic-paren maxframe markdown-mode+ json-mode jedi idomenu ido-ubiquitous ibuffer-vc htmlize helm-pydoc glsl-mode ggtags fill-column-indicator expand-region eopengrok elpy edit-server-htmlize dired-narrow dired+ diminish cpputils-cmake confluence color-theme-sanityinc-tomorrow cmake-mode clang-format browse-kill-ring auctex apples-mode anything ace-jump-mode ac-inf-ruby ac-helm)))
  '(safe-local-variable-values
    (quote
-    ((eval let*
+    ((bug-reference-bug-regexp . "#\\(?2:[0-9]+\\)")
+     (eval let*
            ((x
              (dir-locals-find-file default-directory))
             (this-directory
