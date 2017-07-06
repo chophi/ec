@@ -35,9 +35,9 @@
   (setq path (file-name-directory (expand-file-name path)))
   (_find-file-or-dir-recursively path "compile.el"))
 
-(defun choose-buffer-local-terminal ()
-  (interactive)
-  (when (or (not (boundp 'choosed-terminal)) (not (buffer-live-p choosed-terminal)))
+(defun choose-buffer-local-terminal (to-select)
+  (interactive "P")
+  (when (or (not (boundp 'choosed-terminal)) (not (buffer-live-p choosed-terminal)) to-select)
     (set (if (not (boundp 'choosed-terminal))
              (make-local-variable 'choosed-terminal)
            'choosed-terminal)
@@ -227,10 +227,10 @@
     (setq ret (cons (cadr temp-choosed-li) ret))
     (reverse ret)))
 
-(defun* cp-custom-compile (path)
+(defun* cp-custom-compile (to-select-terminal)
   (interactive "P")
-  (when (not path) (setq path default-directory))
-  (let* ((choice-arr
+  (let* ((path default-directory)
+         (choice-arr
           (_reshape-ndim-list
            (cp-process-duplicate-and-reshape
             (cp-make-compile-exprs path))
@@ -274,7 +274,7 @@
             ('run (shell-command command-string))
             ('term
              (send-command-to-terminal
-              (choose-buffer-local-terminal)
+              (choose-buffer-local-terminal to-select-terminal)
               (format "cd %s &&\\\n %s" project-root command-string)))
             ('t (message "Unknown command type, exiting")
                 (return-from cp-custom-compile nil))))))))
