@@ -1,4 +1,4 @@
-(when *is-windows-system-p*
+(when *windows?*
   (setq save-buffer-coding-system 'utf-8-unix)
   (setq locale-coding-system 'utf-8-unix)
   (set-default-coding-systems 'utf-8-unix)

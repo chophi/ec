@@ -31,4 +31,5 @@
       (substring str 0 (1- (length str)))
       )))
 
+
 (provide 'init-common-utils)

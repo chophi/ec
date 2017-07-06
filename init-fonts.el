@@ -34,10 +34,6 @@ by the :height face attribute."
 (global-set-key (kbd "C-M-=") 'sanityinc/increase-default-font-height)
 (global-set-key (kbd "C-M--") 'sanityinc/decrease-default-font-height)
 
-;; (defun set-ascii-font (type size)
-;;   (set-face-attribute
-;;    'default nil :font (concat type " " (number-to-string size))))
-
 (defun set-ascii-font (type size &optional weight)
   (if weight
       (set-face-attribute
@@ -96,7 +92,7 @@ by the :height face attribute."
     (set-cjk-font "SimSun" 15.0) 
   (set-ascii-font "Consolas" 14.5))
 
-(when (and *is-amazon-machine*
+(when (and *amazon-machine?*
 	   (window-system))
   (set-cjk-font "SimSun" 16.3)
   (defvar *current-font-index* -1)
@@ -117,7 +113,7 @@ by the :height face attribute."
   (next-font))
 
 ;;; DONE: cjk-font working now
-(when *is-mac-machine*
+(when *mac?*
   (setq *toggle-font-size* nil)
   (defun toggle-font-size ()
     (interactive)
@@ -129,10 +125,6 @@ by the :height face attribute."
              (set-ascii-font "Monaco" 19 'ultra-light)
              (setq *toggle-font-size* t))))
   (toggle-font-size))
-
-;; (when (eq window-system 'w32)
-;;   (set-cjk-font "SimSun" 14.3) 
-;;   (set-ascii-font "Monaco" 12.0))
 
 (defun zoom-frame (&optional n frame amt)
   "Increase the default size of text by AMT inside FRAME N times.

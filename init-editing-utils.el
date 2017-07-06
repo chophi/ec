@@ -288,7 +288,7 @@
 (when (executable-find "ag")
   (require-package 'ag))
 
-(when *is-linux-system-p*
+(when *linux?*
   (defun sudo-find-file ()
     (interactive)
     (find-file (concat "/sudo::"  (ido-read-file-name "Sudo Open File: ")))))

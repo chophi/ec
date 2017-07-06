@@ -124,7 +124,7 @@
 
 (put 'erase-buffer 'disabled nil)
  
-(load-file custom-file)
+(load-file *custom-file*)
 
 ;;;(when (not *is-mac-machine*)
 (require 'init-system-default-frame-alist)
