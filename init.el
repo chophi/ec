@@ -6,7 +6,8 @@
 
 (add-to-list 'load-path user-emacs-directory)
 (setq warning-suppress-types '((initialization)))
-(require 'init-system-check)
+(load-file "init-system-check.el")
+
 (require 'init-common-utils)
 (require 'init-global-settings)
 
