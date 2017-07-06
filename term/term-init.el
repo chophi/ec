@@ -33,6 +33,6 @@
 
 (require 'init-maxframe)
 (require 'init-windows)
-(if *is-linux-system-p*
+(if *linux?*
     (maximize-frame "Emacs::Terminal")
   (w32-maximize-frame))

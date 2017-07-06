@@ -2,7 +2,7 @@
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/gnuserv-3.12.8/")
 ;; (require 'init-server)
 (require-package 'w3m)
-(if *is-windows-system-p*
+(if *linux?*
     (add-to-list 'exec-path "D:/progenv/w3m/"))
 
 
@@ -18,7 +18,7 @@
   (split-right-at-83-column nil))
 
 (defvar topcoder-applet-file-path
-  (if *is-windows-system-p*  "D:/progenv/topcoder/ContestAppletProd.jnlp"))
+  (if *windows?*  "D:/progenv/topcoder/ContestAppletProd.jnlp"))
 
 (defun open-topcoder-contest-applet ()
   (interactive)

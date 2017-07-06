@@ -81,7 +81,7 @@ See also \\[c-hungry-delete-forward]."
 
 (setq explorer-command
       (if (eq system-type 'gnu/linux) "gnome-open"
-        (if *is-mac-machine*
+        (if *mac?*
             "open"
           "explorer")))
 (defun my-explore-curdir()
@@ -223,7 +223,7 @@ end of the line."
 ;; program for getting and setting the contents of the X selection"
 ;; (unless window-system
 (when (and  (getenv "DISPLAY")
-            *is-linux-system-p*
+            *linux?*
             (not (equal (shell-command-to-string "which xsel") "")))
     ;; Callback for when user cuts
     (defun xsel-cut-function (text &optional push)

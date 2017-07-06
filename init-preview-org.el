@@ -57,7 +57,7 @@
 
   (org-publish-all)
 
-  (when *is-mac-machine*
+  (when *mac?*
     (shell-command
      (format "open %s/www/%s.%s" *org-blog-root*
              (if with-file

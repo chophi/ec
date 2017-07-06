@@ -66,10 +66,10 @@
             (define-key scheme-mode-map (kbd "<f5>") 'scheme-send-last-sexp-split-window)
             (define-key scheme-mode-map (kbd "<f6>") 'scheme-send-definition-split-window)))
 
-(when *is-mac-machine*
+(when *mac?*
   (add-to-list 'exec-path "/Applications/Racket v6.9/bin/"))
 
-(when *is-linux-system-p*
+(when *linux?*
   (add-to-list 'exec-path "~/software/racket/bin"))
 
 (provide 'init-lisps)

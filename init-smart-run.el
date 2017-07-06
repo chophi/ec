@@ -73,7 +73,7 @@
   (find-file-other-window file-name))
 
 (defun compose-c-run-program-list()
-  (let ((execute-str (if *is-linux-system-p* "./%n" "%n.exe")))
+  (let ((execute-str (if *linux?* "./%n" "%n.exe")))
     `((?e (,execute-str) ,(format "%s &" execute-str))
       (?i nil (edit-an-input-file "%n.in"))
       (?< (,execute-str) ,(format "%s < %%n.in &" execute-str))

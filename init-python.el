@@ -1,4 +1,4 @@
-(when *is-windows-system-p*
+(when *windows?*
   (setq python-shell-interpreter "D:\\ProgEnv\\Python34\\python.exe"
         python-shell-interpreter-args "-i D:\\ProgEnv\\Python34\\Scripts\\ipython-script.py"
         python-shell-prompt-regexp "In \\[[0-9]+\\]: "

@@ -120,7 +120,7 @@
       (switch-to-buffer-other-window wiki-buffer)
       )))
 
-(when *is-amazon-machine*
+(when *amazon-machine?*
   (add-to-list 'org/ruhoh-keys '("w" . org-update-related-wiki-page))
   (add-to-list 'org/ruhoh-keys '("r" . org-read-related-wiki-page))
   )

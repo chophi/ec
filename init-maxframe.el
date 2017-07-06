@@ -6,7 +6,7 @@
 (autoload 'restore-frame "maxframe" "" t)
 
 
-(when *is-linux-system-p*
+(when *linux?*
   (defvar *wmctrl-exist-p* (not (equal (shell-command-to-string "which wmctrl") "")))
   (defvar *xwininfo-exist-p* (not (equal (shell-command-to-string "which xwininfo") "")))
 
@@ -36,7 +36,7 @@
                (sanityinc/maximized-p sanityinc/prev-frame))
       (maximize-frame))))
 
-(when (not *is-mac-machine*)
+(when (not *mac?*)
   (add-hook 'after-make-frame-functions 'sanityinc/maybe-maximize-frame)
   (add-hook 'after-init-hook 'sanityinc/maybe-maximize-frame))
 

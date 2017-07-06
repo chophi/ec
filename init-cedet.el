@@ -74,7 +74,7 @@
 ;; (defvar x-include-path-list
 ;;   '(""))
 
-;; (defvar include-path-list (if *is-windows-system-p* w32-include-path-list x-include-path-list))
+;; (defvar include-path-list (if *windows?* w32-include-path-list x-include-path-list))
 ;; (defvar-mode-local c++-mode semantic-dependency-system-include-path
 ;;   `(,@include-path-list
 ;;     "include" "../include" "inc" "../inc" "~/utils/include" "~/utils/src/"))

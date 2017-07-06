@@ -45,9 +45,9 @@
 
 (require 'init-maxframe)
 (require 'init-windows)
-(when *is-linux-system-p*
+(when *linux?*
   (maximize-frame "Emacs::IDE"))
-(when *is-windows-system-p*
+(when *windows?*
   (w32-maximize-frame))
 
 
@@ -113,7 +113,6 @@
 (require 'init-smali)
 (require 'init-cc-format)
 
-
 (require 'init-logcat-mode)
 (require 'init-markdown-mode)
 (require 'init-yml-mode)
@@ -124,23 +123,23 @@
  
 (load-file *custom-file*)
 
-;;;(when (not *is-mac-machine*)
+;;;(when (not *mac?*)
 (require 'init-system-default-frame-alist)
 ;;;)
 
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
-(when (or *is-linux-system-p* *is-mac-machine*) 
+(when (or *linux?* *mac?*) 
   (add-to-list 'load-path (concat user-emacs-directory "term"))
   (require 'term-inside-ide-init))
 
-;; (when *is-linux-system-p*
+;; (when *linux?*
 ;;   (require 'init-ibus))
 
 (require 'init-dmesg-mode)
 (require 'init-dictionary)
 
-(when (and *is-mac-machine* *is-mac-machine*)
+(when (or *mac?* *linux?*)
   (setq shell-file-name "/bin/bash"))
 
 (require 'init-work-with-repo)
@@ -148,7 +147,7 @@
 
 (require 'init-ediff-binary)
 
-(when (and *is-amazon-linux*)
+(when (and *amazon-machine?*)
   (add-to-list 'exec-path "/usr/share-2/bin")
   (require 'init-amazon-linux))
 

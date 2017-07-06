@@ -36,7 +36,7 @@
             (set-face-background 'org-hide global-background-color)
             (set-face-foreground 'org-hide global-background-color)) t)
 
-;; (when *is-a-mac*
+;; (when *mac?*
 ;;   (require-package 'org-mac-link-grabber)
 ;;   (require-package 'org-mac-iCal))
 
@@ -91,7 +91,7 @@
 
 
 ;; ;; Show iCal calendars in the org agenda
-;; (when (and *is-a-mac* (require 'org-mac-iCal nil t))
+;; (when (and *mac?* (require 'org-mac-iCal nil t))
 ;;   (setq org-agenda-include-diary t
 ;;         org-agenda-custom-commands
 ;;         '(("I" "Import diary from iCal" agenda ""
@@ -119,7 +119,7 @@
 ;;      (define-key org-mode-map (kbd "C-M-<up>") 'org-up-element)
 ;;      (require 'org-exp)
 ;;      (require 'org-clock)
-;;      (when *is-a-mac*
+;;      (when *mac?*
 ;;        (require 'org-mac-link-grabber)
 ;;        (define-key org-mode-map (kbd "C-c g") 'omlg-grab-link))
 ;;      ;;(require 'org-checklist)
