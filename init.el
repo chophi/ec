@@ -78,7 +78,6 @@
 (require 'init-image-support)
 
 ;; (require 'init-w32-symlinks)
-;; (require 'init-groovy)
 (require 'init-glsl-mode)
 ;; (require 'init-lua)
 
@@ -114,7 +113,6 @@
 (require 'init-smali)
 (require 'init-cc-format)
 
-(require 'init-groovy)
 
 (require 'init-logcat-mode)
 (require 'init-markdown-mode)
