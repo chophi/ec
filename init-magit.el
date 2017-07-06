@@ -1,6 +1,11 @@
 (require-package 'dash)
 (require-package 'magit)
 
+;; using magit to manage git
+(delete 'Git vc-handled-backends)
+;; not use SVN
+(delete 'SVN vc-handled-backends)
+
 (global-set-key "\C-xg" 'magit-status)
 
 ;; (when *is-mac-machine*

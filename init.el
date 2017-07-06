@@ -112,7 +112,6 @@
 (require 'init-image-support)
 
 ;; (require 'init-w32-symlinks)
-;; (require 'init-egg)
 ;; (require 'init-groovy)
 (require 'init-glsl-mode)
 ;; (require 'init-lua)
