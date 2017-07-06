@@ -307,7 +307,7 @@
                          (format-time-string "%Y-%m-%d"))))
 
 (defconst org/ruhoh-keys
-  (if *is-amazon-machine*
+  (if *amazon-machine?*
       '()
     '(("u" . ruhoh-rackup)
       ("d" . ruhoh-rackdown)

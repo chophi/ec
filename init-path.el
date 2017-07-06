@@ -1,4 +1,5 @@
 (require 'init-common-utils)
+(require 'cl)
 
 (defun add-to-path(path &optional as-head)
   (when (cu-is-dir-or-dirlink? path)

@@ -15,7 +15,7 @@
           (if *mac?* "1" "0")
           (if *amazon-machine?* "1" "0")))
 
-(when (and (not (file-exists-p *custom-file*)) (file-exists-p "~/.emacs.d/custom.el")
-           (rename-file "~/.emacs.d/custom.el" *custom-file*)
+(when (and (not (file-exists-p *custom-file*)) (file-exists-p "~/.emacs.d/custom.el"))
+  (rename-file "~/.emacs.d/custom.el" *custom-file*))
 
 (provide 'init-system-check)

@@ -6,7 +6,8 @@
 
 (add-to-list 'load-path user-emacs-directory)
 (setq warning-suppress-types '((initialization)))
-(load-file "init-system-check.el")
+(require 'init-elpa)
+(require 'init-system-check)
 
 (require 'init-common-utils)
 (require 'init-global-settings)
@@ -16,7 +17,6 @@
 
 (require 'init-server)
 
-(require 'init-elpa)
 (require 'init-path)
 (require 'init-benchmarking)
 

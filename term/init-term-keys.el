@@ -83,11 +83,11 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (let* ((random-uuid (generate-random-uuid))
          (process-environment
           (nconc
-           (list (format "TERM_UUID=%s" random-uuid))
+           (list (format "term--uuid=%s" random-uuid))
            process-environment)))
+    (set (make-local-variable 'term--uuid) random-uuid)
     ad-do-it
     (update-terms-name)
-    (setq-local TERM_UUID random-uuid)
     ))
 (ad-activate 'multi-term)
 
@@ -160,7 +160,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (let (buf)
     (dolist (term multi-term-buffer-list)
       (with-current-buffer term
-        (when (and (boundp 'TERM_UUID) (equal TERM_UUID term-id))
+        (when (and (boundp 'term--uuid) (equal term--uuid term-id))
           (setq buf term))))
     buf))
 
@@ -200,16 +200,14 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (interactive "P")
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (when (not (boundp 'TERM_UUID))
-    (error "TERM_UUID was not bound"))
-  (let ((term-id TERM_UUID))
-    (if clear
-        (terminal-name-rm-field term-id)
-      (let ((term-id TERM_UUID)
-            (field (read-string "Field: "))
-            (name (read-string "Name: ")))
-        (terminal-name-add-field term-id field name)
-        ))))
+  (when (not (boundp 'term--uuid))
+    (error "term--uuid was not bound"))
+  (if clear
+      (terminal-name-rm-field term--uuid)
+    (let ((field (read-string "Field: "))
+          (name (read-string "Name: ")))
+      (terminal-name-add-field term--uuid field name)
+      )))
 
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)

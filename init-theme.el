@@ -1,6 +1,6 @@
 ;; Not necessary, but silences flycheck errors for referencing free
 ;; variables.
-(when (equal use-theme "paper")
+(when (equal global-use-theme "paper")
   (require-package 'paper-theme)
   ;; It's not necessary to modify these variables, they all have sane
   ;; defaults.
@@ -9,7 +9,7 @@
   ;; Activate the theme.
   (load-theme 'paper t))
 
-(when (equal use-theme "sanityinc-tommorrow")
+(when (equal global-use-theme "sanityinc-tommorrow")
   (require 'custom)
   (require-package 'color-theme-sanityinc-tomorrow)
   ;;(color-theme-sanityinc-tomorrow-night)
