@@ -3,6 +3,8 @@
   (interactive)
   (message "disabled return key"))
 
+(defvar-local term--uuid nil "Terminal UUID")
+
 (defun generate-random-uuid ()
   "Generate a random UUID.
 Example of a UUID: 1df63142-a513-c850-31a3-535fc3520c3d
@@ -83,11 +85,11 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (let* ((random-uuid (generate-random-uuid))
          (process-environment
           (nconc
-           (list (format "term--uuid=%s" random-uuid))
+           (list (format "TERM_UUID=%s" random-uuid))
            process-environment)))
-    (set (make-local-variable 'term--uuid) random-uuid)
     ad-do-it
     (update-terms-name)
+    (setq term--uuid random-uuid)
     ))
 (ad-activate 'multi-term)
 
@@ -160,7 +162,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (let (buf)
     (dolist (term multi-term-buffer-list)
       (with-current-buffer term
-        (when (and (boundp 'term--uuid) (equal term--uuid term-id))
+        (when (and (equal term--uuid term-id))
           (setq buf term))))
     buf))
 
@@ -200,8 +202,6 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (interactive "P")
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (when (not (boundp 'term--uuid))
-    (error "term--uuid was not bound"))
   (if clear
       (terminal-name-rm-field term--uuid)
     (let ((field (read-string "Field: "))
