@@ -1,4 +1,3 @@
-(global-unset-key (kbd "\C-z"))
 (global-unset-key (kbd "C-SPC"))
 
 (global-set-key (kbd "C-x vq") 'vr/query-replace)
