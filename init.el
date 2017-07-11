@@ -71,7 +71,6 @@
 (require 'init-org-publish-settings)
 ;; (require 'init-org-remember)
 
-(require 'init-keybind)
 (require 'init-cedet)
 (require 'init-cmake)
 
@@ -148,7 +147,7 @@
 
 (require 'init-ediff-binary)
 
-(when (and *amazon-machine?*)
+(when (and *amazon-machine?* *linux?*)
   (add-to-list 'exec-path "/usr/share-2/bin")
   (require 'init-amazon-linux))
 
@@ -164,21 +163,4 @@
 (require 'init-flycheck)
 (require 'init-swift)
 
-
-
-(defun make-shell-command-key-lambda (command)
-  `(lambda () (interactive)
-     (if *is-mac-machine*
-         (shell-command ,command)
-       (ssh-shell-command ,command)))
-  )
-
-(global-set-key "\C-\M-g" (make-shell-command-key-lambda "open \"/Applications/Google Chrome.app/\""))
-(global-set-key "\C-\M-x" (make-shell-command-key-lambda "open \"/Applications/Xcode.app/\""))
-(global-set-key "\C-\M-t" (make-shell-command-key-lambda "open \"/Applications/iTerm.app/\""))
-(global-set-key "\C-\M-l" (make-shell-command-key-lambda "open \"/Applications/Microsoft Lync.app/\""))
-(global-set-key "\C-\M-o" (make-shell-command-key-lambda "open \"/Applications/Microsoft Outlook.app/\""))
-(global-set-key "\C-\M-p" (make-shell-command-key-lambda "open \"/Applications/Preview.app/\""))
-(define-key emacs-lisp-mode-map "\C-\M-x" nil)
-(define-key org-mode-map "\C-\M-t" nil)
-(define-key paredit-mode-map "\C-\M-p" nil)
+(require 'init-keybind)
