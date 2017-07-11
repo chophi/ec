@@ -30,7 +30,7 @@
 (defun find-custom-compile-file (path)
   (interactive "P")
   (when (not path) (setq path default-directory))
-  (when (and (existed-directory? path) (not (equal (substring path (1- (length path))) "/")))
+  (when (and (cu-is-dir-or-dirlink? path) (not (equal (substring path (1- (length path))) "/")))
     (setq path (concat path "/")))
   (setq path (file-name-directory (expand-file-name path)))
   (_find-file-or-dir-recursively path "compile.el"))
