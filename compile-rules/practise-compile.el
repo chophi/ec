@@ -33,7 +33,12 @@
                               (term ,(format "ndk-build")))
                         (unit "run"
                               (term (let ((executable 
-                                           (ido-completing-read "Executable: " (split-string (shell-command-to-string "find ../libs -type f -executable")))))
+                                           (ido-completing-read "Executable: "
+                                                                (split-string
+                                                                 (shell-command-to-string
+                                                                  (if *mac?*
+                                                                      "find ../libs -type f -perm +111"
+                                                                    "find ../libs -type f -executable"))))))
                                     (format "adb root &&\n adb push %s /data/ &&\n adb shell chmod 555 /data/%s &&\n echo -e \"\\n\\n== begin run program == \" &&\n adb shell /data/%s"
                                             executable
                                             (file-name-nondirectory executable)

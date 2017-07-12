@@ -57,6 +57,18 @@
                    (shell-command command)
                    )
                  )))
+        (unit "run"
+              (term (let ((executable
+                           (ido-completing-read
+                            "Executable: "
+                            (split-string (shell-command-to-string
+                                           (format
+                                            (if *mac?*
+                                                "cd %s && find ./bin -type f -perm +111"
+                                              "cd %s && find ./bin -type f -executable")
+                                                   ,project-root))))))
+                      (format "./%s"
+                              executable))))
         ,@(let ((target-compile-list '()))
            (dolist (target target-list target-compile-list)
              (add-to-list 'target-compile-list
