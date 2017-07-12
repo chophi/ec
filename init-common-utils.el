@@ -31,5 +31,29 @@
       (substring str 0 (1- (length str)))
       )))
 
+(defun cu-no-comment-content (buf comment-prefix)
+  (let (str-list
+        (content ""))
+    (when (not buf)
+      (setq buf (current-buffer)))
+    (setq str-list
+          (with-current-buffer buf
+            (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")))
+    (dolist (str str-list content)
+      (when (or (< (length str) (length comment-prefix))
+                (not (equal comment-prefix
+                            (substring str 0 (length comment-prefix))))) 
+        (setq content (concat content "\n" str))))
+    content))
+
+(defun cu-extract-list(buf comment-prefix regex part)
+  (let ((pos 1)
+        (result '())
+        (str (cu-no-comment-content buf comment-prefix)))
+    (while (and (< pos (point-max))
+                (string-match regex str pos))
+      (add-to-list 'result (match-string part str))
+      (setq pos (match-end part)))
+    result))
 
 (provide 'init-common-utils)
