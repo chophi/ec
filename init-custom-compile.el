@@ -73,7 +73,9 @@
           (error "the buffer wasn't existed %s" compile-log-name))
       compile-log-name)))
 
-(defvar *global-compile-directory* "~/vif/elisp-compile-files")
+(defvar *global-compile-directory-list*
+  '("~/vif/elisp-compile-files"
+    "~/.emacs.d/compile-rules/"))
 
 (require 'cl-lib)
 (defun cp-make-compile-exprs (path)
@@ -91,25 +93,26 @@
                                       ,compile-config
                                       ,(eval-file-as-lisp-expression compile-config))))
       )
-    (when (file-exists-p *global-compile-directory*)
-      (dolist (compile-file
-               (cl-remove-if-not
-                (lambda (str)
-                  (and (> (length str) 3) (equal (substring str (- (length str) 3) (length str)) ".el")))
-                (directory-files *global-compile-directory*)))
-        (let ((compile-config (concat *global-compile-directory* "/" compile-file))
-              (is-processed-file nil))
-          (dolist (file processed-config)
-            (if (equal (file-truename (file-chase-links file))
-                       (file-truename (file-chase-links compile-config)))
-                (setq is-processed-file t)))
-          (when (not is-processed-file)
-            (dolist (compile-expr (eval-file-as-lisp-expression compile-config))
-              (add-to-list 'compile-exprs (list (car compile-expr)
-                                                compile-config
-                                                (cadr compile-expr)
-                                                )))
-            (push compile-config processed-config)))))
+    (dolist (global-compile-dir *global-compile-directory-list*)
+      (when (file-exists-p global-compile-dir)
+        (dolist (compile-file
+                 (cl-remove-if-not
+                  (lambda (str)
+                    (and (> (length str) 3) (equal (substring str (- (length str) 3) (length str)) ".el")))
+                  (directory-files global-compile-dir)))
+          (let ((compile-config (concat global-compile-dir "/" compile-file))
+                (is-processed-file nil))
+            (dolist (file processed-config)
+              (if (equal (file-truename (file-chase-links file))
+                         (file-truename (file-chase-links compile-config)))
+                  (setq is-processed-file t)))
+            (when (not is-processed-file)
+              (dolist (compile-expr (eval-file-as-lisp-expression compile-config))
+                (add-to-list 'compile-exprs (list (car compile-expr)
+                                                  compile-config
+                                                  (cadr compile-expr)
+                                                  )))
+              (push compile-config processed-config))))))
     compile-exprs))
 
 (defun cp-process-duplicate-and-reshape (compile-exprs)
@@ -276,6 +279,7 @@
              (send-command-to-terminal
               (choose-buffer-local-terminal to-select-terminal)
               (format "cd %s &&\\\n %s" project-root command-string)))
+            ('nop nil)
             ('t (message "Unknown command type, exiting")
                 (return-from cp-custom-compile nil))))))))
 
