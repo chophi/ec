@@ -1,18 +1,20 @@
 ;; suez make file
 (progn
   (defun cmake--precondition-check (project-root mode)
-    (when (not (file-exists-p (concat project-root "/" mode)))
-      (make-directory (concat project-root "/" mode)))
-    (when (not (file-exists-p (concat project-root "/" mode "/Makefile")))
-      (compile (format "cd %s && cmake %s .."
-                       (concat project-root "/" mode)
-                       (cond ((equal "release" mode)
-                              "-DCMAKE_BUILD_TYPE=Release")
-                             (t
-                              "-DCMAKE_BUILD_TYPE=Debug"))))))
+    (let ((build-dir (concat project-root "/" mode)))
+      (when (not (file-exists-p build-dir))
+        (make-directory build-dir))
+      (when (not (file-exists-p (concat build-dir "/Makefile")))
+        (compile (format "cd %s && cmake %s .."
+                         build-dir
+                         (cond ((equal "release" mode)
+                                "-DCMAKE_BUILD_TYPE=Release")
+                               (t
+                                "-DCMAKE_BUILD_TYPE=Debug")))))
+      ))
 
   (defun _make-cmake-compile-exprs (project-root)
-    (let* ((cmake-file (concat project-root "/" "CMakeLists.txt"))
+    (let* ((cmake-file (concat project-root "CMakeLists.txt"))
            (mode (with-current-buffer (find-file-noselect cmake-file)
                    (if (boundp 'cmake--compile-mode)
                        cmake--compile-mode
@@ -23,6 +25,18 @@
                          "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)))
       `((unit "generate"
               (nop (cmake--precondition-check ,project-root ,(symbol-name mode))))
+        (unit "set-mode"
+              (nop (with-current-buffer (find-file-noselect ,cmake-file)
+                     (when (not (boundp 'cmake--compile-mode))
+                       (error "cmake--compile-mode was not bound for %s" ,cmake-file))
+                     (if (equal
+                            (ido-completing-read
+                             (format "Choose compile mode for %s: " ,cmake-file)
+                             '("debug" "release"))
+                            "release")
+                         (setq-local cmake--compile-mode 'release)
+                       (setq-local cmake--compile-mode 'debug)
+                       ))))
         (unit "all"
               (compile (cmake--compile-string "make all")))
         (unit "clean"
