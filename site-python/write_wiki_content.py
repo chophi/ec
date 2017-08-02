@@ -1,6 +1,27 @@
 import xmlrpclib
 import argparse
+import re
 
+def pre_extract_tables(content):
+    table_map = {}
+    counter = 0
+    for table in re.findall(
+            r"(<table.*?>.*?</table>)",
+            content,
+            re.M | re.I | re.S | re.MULTILINE
+    ):
+        key = "table-dfelkakdllfek-{0}".format(counter)
+        content = content.replace(table, key)
+        counter = counter + 1
+        table_map[key] = table
+    print("content: {0}, table_map: {1}".format(content, table_map))
+    return content, table_map
+
+def post_insert_tables(content, table_map):
+    for key, value in table_map.items():
+        content = content.replace(key, value)
+    print("post content: {0}".format(content))
+    return content
 
 def main(args):
     client = xmlrpclib.Server(args.confluence_url, verbose = 0)
@@ -23,10 +44,13 @@ def main(args):
                        url=page['url']
                    ))
         else:
-            page['content'] = client.confluence2.convertWikiToStorageFormat(
-                auth_token,
-                args.content
-            )
+            if args.markup is "true":
+                page['content'] = client.confluence2.convertWikiToStorageFormat(
+                    auth_token,
+                    args.content
+                )
+            else:
+                page['content'] = args.content
             result = client.confluence2.storePage(auth_token, page)
             if result:
                 print("The content of {0} was updated just now!".format(
@@ -48,6 +72,14 @@ if __name__ == "__main__" :
         help=('crowd username.'),
         required=True
     )
+
+    parser.add_argument(
+        '-m',
+        '--markup',
+        type=str,
+        help=('markup'),
+    )
+
     parser.add_argument(
         '-p',
         '--password',
