@@ -22,8 +22,9 @@
 (defun cu-kill-cur-path ()
   "kill current buffer file name to ring"
   (interactive)
-  (when (buffer-file-name)
-    (kill-new (buffer-file-name))))
+  (if (buffer-file-name)
+      (kill-new (buffer-file-name))
+    (kill-new default-directory)))
 
 (defun cu-shell-command-output (command)
   (let ((str (shell-command-to-string command)))

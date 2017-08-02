@@ -61,11 +61,11 @@
   (when (boundp 'choosed-terminal)
     (setq choosed-terminal nil)))
 
-(defun cp-get-custom-compile-log (&optional not-switch-to)
+(defun cp-get-custom-compile-log (dir &optional not-switch-to)
   (interactive "P")
   (let ((compile-log-name
          (format "*custom-compile-log[%s]*"
-                 (let ((str (find-custom-compile-file default-directory)))
+                 (let ((str dir))
                    (sha1 (if str str ""))))))
     (if (not not-switch-to)
         (if (get-buffer compile-log-name)
@@ -233,6 +233,7 @@
 (defun* cp-custom-compile (to-select-terminal)
   (interactive "P")
   (let* ((path default-directory)
+         (compile-log (cp-get-custom-compile-log default-directory t))         
          (choice-arr
           (_reshape-ndim-list
            (cp-process-duplicate-and-reshape
@@ -249,8 +250,7 @@
          (command-name (car choosed-command))
          (project-root (cadr choosed-command))
          (lisp-compile-file (caddr choosed-command))
-         (commands (nthcdr 2 (nth 3 choosed-command)))
-         (compile-log (cp-get-custom-compile-log t)))
+         (commands (nthcdr 2 (nth 3 choosed-command))))
 
     (dolist (command commands)
       (let ((command-type (car command))
