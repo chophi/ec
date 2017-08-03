@@ -1,12 +1,20 @@
 (require 'init-private-custom)
 (require 'ox-confluence)
 
-(defconst org-confluence-export-use-html-engine nil)
+(defconst org-confluence-export-use-html-engine nil
+  (concat "Whether to use html engine to export the confluence org files\n"
+          "You can also force using html-engine with #+USE_HTML: true")
+  )
 
-(defun org-confluence-export-buffer-name ()
-  (if org-confluence-export-use-html-engine
-      "*Org HTML Export*"
-    "*org CONFLUENCE Export*"))
+(defun org-export-use-html-engine()
+  (interactive)
+  (let ((use-html (save-excursion
+                    (goto-char (point-min))
+                    (re-search-forward "#\\+\\([uU][sS][eE]_[hH][tT][mM][lL]\\):\s*\\([a-z]+\\)\s*$" nil t)
+                    (match-string-no-properties 2))))
+    (if (equal use-html "true")
+        t
+      (if (equal use-html "false") nil org-confluence-export-use-html-engine))))
 
 (defun org-export-buffer-to-wiki-and-view ()
   (interactive)
@@ -14,32 +22,40 @@
 
 (defun org-export-buffer-to-wiki(buffer-name &optional switch)
   (with-current-buffer (get-buffer buffer-name)
-    (save-current-buffer
-      (if org-confluence-export-use-html-engine
-          (let ((org-html-format-table-no-css t))
-            (org-html-export-as-html nil nil nil t))
-          (org-confluence-export-as-confluence nil nil nil nil))
-      ))
-  (when switch
-    (switch-to-buffer-other-window (org-confluence-export-buffer-name)))
-  )
+    (let ((org-use-html-engine (org-export-use-html-engine)))
+      (save-current-buffer
+        (if org-use-html-engine
+            (let ((org-html-format-table-no-css t))
+              (org-html-export-as-html nil nil nil t))
+            (org-confluence-export-as-confluence nil nil nil nil)))
+      (when switch
+        (switch-to-buffer-other-window
+         (if org-use-html-engine
+             "*Org HTML Export*"
+           "*org CONFLUENCE Export*"))))))
 
 (defun org-publish-buffer-to-wiki(buffer-name wiki-page-id &optional)
   (org-export-buffer-to-wiki buffer-name nil)
-  (let ((str
-         (with-current-buffer (get-buffer (org-confluence-export-buffer-name))
-           (buffer-string))))
-    (message
-     (shell-command-to-string
-      (format "python %s -u %s -p %s -P %s -c %s -C %s -a store-wiki-content -m %s"
-              *custom-write-wiki-script-path*
-              *custom-confluence-username*
-              (custom-input-confluence-password)
-              wiki-page-id
-              (shell-quote-argument str)
-              *custom-confluence-root-url*
-              (if org-confluence-export-use-html-engine "true" "false"))
-      ))))
+  (with-current-buffer (get-buffer buffer-name)
+    (let* ((org-use-html-engine (org-export-use-html-engine))
+           (str (with-current-buffer
+                    (get-buffer (if org-use-html-engine
+                                    "*Org HTML Export*"
+                                  "*org CONFLUENCE Export*"))
+                  (buffer-string))))
+      (print "org-use-html-engine is:")
+      (print org-use-html-engine)
+      (message
+       (shell-command-to-string
+        (format "python %s -u %s -p %s -P %s -c %s -C %s -a store-wiki-content -m %s"
+                *custom-write-wiki-script-path*
+                *custom-confluence-username*
+                (custom-input-confluence-password)
+                wiki-page-id
+                (shell-quote-argument str)
+                *custom-confluence-root-url*
+                (if org-use-html-engine "false" "true"))
+        )))))
 
 (defun org-get-wiki-page-id()
   (interactive)
@@ -70,12 +86,13 @@
 
 (defun* org-update-related-wiki-page ()
   (interactive)
-  (let ((wiki-page-id (org-get-wiki-page-id)))
+  (let ((curbuf (current-buffer))
+        (wiki-page-id (org-get-wiki-page-id)))
     (when (not wiki-page-id)
       (return-from 'org-update-related-wiki-page "wiki page id error"))
     (when (y-or-n-p (format "Update the buffer to following wiki:\n%s"
                             (get-wiki-desc wiki-page-id)))
-      (org-publish-buffer-to-wiki (current-buffer) wiki-page-id))))
+      (org-publish-buffer-to-wiki curbuf wiki-page-id))))
 
 (defun* org-read-related-wiki-page ()
   (interactive)

@@ -233,7 +233,7 @@
 (defun* cp-custom-compile (to-select-terminal)
   (interactive "P")
   (let* ((path default-directory)
-         (compile-log (cp-get-custom-compile-log default-directory t))         
+         (compile-log (cp-get-custom-compile-log default-directory t))
          (choice-arr
           (_reshape-ndim-list
            (cp-process-duplicate-and-reshape

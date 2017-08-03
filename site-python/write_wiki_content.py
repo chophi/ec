@@ -44,12 +44,15 @@ def main(args):
                        url=page['url']
                    ))
         else:
-            if args.markup is "true":
+            print("args.markup is {0}".format(args.markup))
+            if args.markup == "true":
+                print("Is wiki markup and need to convert to internal storage")
                 page['content'] = client.confluence2.convertWikiToStorageFormat(
                     auth_token,
                     args.content
                 )
             else:
+                print("Is html, no need to convert to internal storage")
                 page['content'] = args.content
             result = client.confluence2.storePage(auth_token, page)
             if result:
