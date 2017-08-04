@@ -161,21 +161,28 @@ a communication channel."
 (defun org-confluence-strike-through (strike-through contents info)
   (format "-%s-" contents))
 
+(require 'ox-html)
+(require 'table)
 (defun org-confluence-table (table contents info)
-  contents)
+  (if (eq (org-element-property :type table) 'table.el)
+      ;; "table.el" table.  Convert it using appropriate tools.
+      (org-html-table--table.el-table table info)
+  contents))
 
 (defun org-confluence-table-row  (table-row contents info)
-  (concat
-   (if (org-string-nw-p contents) (format "|%s" contents)
-     "")
-   (when (org-export-table-row-ends-header-p table-row info)
-     "|")))
+  (when (eq (org-element-property :type table-row) 'standard)
+    (concat
+     (if (org-string-nw-p contents) (format "|%s" contents)
+       "")
+     (when (org-export-table-row-ends-header-p table-row info)
+       "|"))))
 
 (defun org-confluence-table-cell  (table-cell contents info)
-  (let ((table-row (org-export-get-parent table-cell)))
-    (concat (and (org-export-table-row-starts-header-p table-row info) "|")
-            (if (= (length contents) 0) " " contents)
-            "|")))
+  (when (eq (org-element-property :type table-cell) 'standard)
+    (let ((table-row (org-export-get-parent table-cell)))
+      (concat (and (org-export-table-row-starts-header-p table-row info) "|")
+              (if (= (length contents) 0) " " contents)
+              "|"))))
 
 (defun org-confluence-template (contents info)
   (let ((depth (plist-get info :with-toc)))

@@ -45,17 +45,16 @@
                   (buffer-string))))
       (print "org-use-html-engine is:")
       (print org-use-html-engine)
-      (message
-       (shell-command-to-string
-        (format "python %s -u %s -p %s -P %s -c %s -C %s -a store-wiki-content -m %s"
-                *custom-write-wiki-script-path*
-                *custom-confluence-username*
-                (custom-input-confluence-password)
-                wiki-page-id
-                (shell-quote-argument str)
-                *custom-confluence-root-url*
-                (if org-use-html-engine "false" "true"))
-        )))))
+      (shell-command
+       (format "python %s -u %s -p %s -P %s -c %s -C %s -a store-wiki-content -m %s"
+               *custom-write-wiki-script-path*
+               *custom-confluence-username*
+               (custom-input-confluence-password)
+               wiki-page-id
+               (shell-quote-argument str)
+               *custom-confluence-root-url*
+               (if org-use-html-engine "false" "true"))
+       "*Org Write Wiki[OUTPUT]*" "*Org Write Wiki[ERROR]*"))))
 
 (defun org-get-wiki-page-id()
   (interactive)
@@ -75,14 +74,15 @@
            *custom-confluence-root-url*)))
 
 (defun get-wiki-content (wiki-page-id)
-  (shell-command-to-string
+  (shell-command
    (format "python %s -u %s -p %s -P %s -c %s -C %s -a print-wiki-content"
            *custom-write-wiki-script-path*
            *custom-confluence-username*
            (custom-input-confluence-password)
            wiki-page-id
            "none"
-           *custom-confluence-root-url*)))
+           *custom-confluence-root-url*)
+   "*Org Write Wiki[OUTPUT]*" "*Org Write Wiki[ERROR]*"))
 
 (defun* org-update-related-wiki-page ()
   (interactive)

@@ -2,25 +2,45 @@ import xmlrpclib
 import argparse
 import re
 
+def post_process_table_content(table):
+    header_row = re.findall(
+        r"(<tr.*?>.*?</tr>)\n*",
+        table,
+        re.M | re.I | re.S | re.MULTILINE
+    )
+    if header_row:
+        old_header_row = "{0}".format(header_row[0])
+        header_row[0] = header_row[0].replace("<td", "<th")
+        header_row[0] = header_row[0].replace("</td>", "</th>")
+        table = table.replace(old_header_row, header_row[0])
+    for link in re.findall(
+            r'(https?://[^ ]+[0-9]+)',
+            table,
+            re.M | re.I | re.S | re.MULTILINE
+    ):
+        table = table.replace(link, "<a href=\"{0}\">{0}</a>".format(link))
+    return table
+
 def pre_extract_tables(content):
     table_map = {}
     counter = 0
+    content = re.sub(r'<!-- .*? -->\n*', "", content, re.MULTILINE)
     for table in re.findall(
-            r"(<table.*?>.*?</table>)",
+            r"(<table.*?>.*?</table>)\n*",
             content,
             re.M | re.I | re.S | re.MULTILINE
     ):
-        key = "table-dfelkakdllfek-{0}".format(counter)
+        key = "table-2a08be209cd4ee4ce1ff43e08e48158ae12aa92f-{0}".format(counter)
         content = content.replace(table, key)
         counter = counter + 1
-        table_map[key] = table
-    print("content: {0}, table_map: {1}".format(content, table_map))
+        table_map[key] = post_process_table_content(table)
+    # print("content: {0}, table_map: {1}".format(content, table_map))
     return content, table_map
 
 def post_insert_tables(content, table_map):
     for key, value in table_map.items():
         content = content.replace(key, value)
-    print("post content: {0}".format(content))
+    # print("post content: {0}".format(content))
     return content
 
 def main(args):
@@ -44,16 +64,20 @@ def main(args):
                        url=page['url']
                    ))
         else:
-            print("args.markup is {0}".format(args.markup))
+            # print("args.markup is {0}".format(args.markup))
             if args.markup == "true":
                 print("Is wiki markup and need to convert to internal storage")
-                page['content'] = client.confluence2.convertWikiToStorageFormat(
+                content, table_map = pre_extract_tables(args.content)
+                content = client.confluence2.convertWikiToStorageFormat(
                     auth_token,
-                    args.content
+                    content
                 )
+                content = post_insert_tables(content, table_map)
+                page['content'] = content
             else:
                 print("Is html, no need to convert to internal storage")
                 page['content'] = args.content
+            print("PAGE content is {0}".format(page['content']))
             result = client.confluence2.storePage(auth_token, page)
             if result:
                 print("The content of {0} was updated just now!".format(
