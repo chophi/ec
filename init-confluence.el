@@ -84,13 +84,17 @@
            *custom-confluence-root-url*)
    "*Org Write Wiki[OUTPUT]*" "*Org Write Wiki[ERROR]*"))
 
-(defun* org-update-related-wiki-page ()
-  (interactive)
+(defun* org-update-related-wiki-page (&optional draft-wiki)
+  (interactive "P")
   (let ((curbuf (current-buffer))
-        (wiki-page-id (org-get-wiki-page-id)))
+        (wiki-page-id
+         (if draft-wiki
+             "269528852"
+             (org-get-wiki-page-id))))
     (when (not wiki-page-id)
       (return-from 'org-update-related-wiki-page "wiki page id error"))
-    (when (y-or-n-p (format "Update the buffer to following wiki:\n%s"
+    (when (y-or-n-p (format "Update the buffer to following wiki%s:\n%s"
+                            (if draft-wiki "[DRAFT]" "")
                             (get-wiki-desc wiki-page-id)))
       (org-publish-buffer-to-wiki curbuf wiki-page-id))))
 
@@ -107,6 +111,8 @@
       )))
 
 (when *amazon-machine?*
+  (add-to-list 'org/ruhoh-keys
+               '("d" . (lambda () (interactive) (org-update-related-wiki-page t))))
   (add-to-list 'org/ruhoh-keys '("w" . org-update-related-wiki-page))
   (add-to-list 'org/ruhoh-keys '("r" . org-read-related-wiki-page))
   (add-to-list 'org/ruhoh-keys '("v" . org-export-buffer-to-wiki-and-view))
