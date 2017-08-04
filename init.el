@@ -162,5 +162,6 @@
 (require 'init-preview-org)
 (require 'init-flycheck)
 (require 'init-swift)
-
+(require 'init-polymode)
+(require 'init-adaptive-wrap)
 (require 'init-keybind)
