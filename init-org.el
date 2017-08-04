@@ -131,4 +131,7 @@
 ;; (setq org-bullets-bullet-list '("◉" "◎"))
 (setq org-bullets-bullet-list '("⚇" "⚉"))
 
+(define-derived-mode org-tbl-mode org-mode "ORG-TBL")
+(add-to-list 'auto-mode-alist '("\\.tbl.org" . org-tbl-mode))
+(add-hook 'org-tbl-mode-hook (lambda () (visual-line-mode -1) (toggle-truncate-lines 1)) t)
 (provide 'init-org)
