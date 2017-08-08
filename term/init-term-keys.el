@@ -79,6 +79,14 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
       (with-current-buffer buf
         (rename-buffer (replace-regexp-in-string "<[0-9]*>" (format "<%d>" order) bufname))))))
 
+(defun move-terminal-as-first ()
+  (interactive)
+  (when (not (eq 'term-mode major-mode))
+    (error "only use this command with term-mode buffer"))
+  (setq multi-term-buffer-list (delete (current-buffer) multi-term-buffer-list))
+  (setq multi-term-buffer-list (add-to-list 'multi-term-buffer-list (current-buffer)))
+  (update-terms-name))
+
 (defadvice multi-term (around multi-term-ad)
   (when (>= (length multi-term-buffer-list) max-terminal-count)
     (error "too many terminal now, try to reuse!"))
@@ -89,8 +97,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
            process-environment)))
     ad-do-it
     (update-terms-name)
-    (setq term--uuid random-uuid)
-    ))
+    (setq term--uuid random-uuid)))
 (ad-activate 'multi-term)
 
 (defadvice term-paste (around check-paste-length)
