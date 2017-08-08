@@ -37,4 +37,6 @@
     ad-do-it))
 (ad-activate 'eopengrok-create-index)
 
+(setq eopengrok-ignore-file-or-directory
+      (concat eopengrok-ignore-file-or-directory ":.scripts:.log"))
 (provide 'init-grok)
