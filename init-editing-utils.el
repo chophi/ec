@@ -46,7 +46,6 @@
 
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
-
 (require-package 'undo-tree)
 (global-undo-tree-mode)
 
@@ -239,9 +238,9 @@
 ;;----------------------------------------------------------------------------
 ;; Cut/copy the current line if no region is active
 ;;----------------------------------------------------------------------------
-(whole-line-or-region-mode t)
-(diminish 'whole-line-or-region-mode)
-(make-variable-buffer-local 'whole-line-or-region-mode)
+;; (whole-line-or-region-global-mode)
+;; (diminish 'whole-line-or-region-mode)
+;; (make-variable-buffer-local 'whole-line-or-region-mode)
 
 (defun suspend-mode-during-cua-rect-selection (mode-name)
   "Add an advice to suspend `MODE-NAME' while selecting a CUA rectangle."
@@ -277,13 +276,9 @@
         (sort-subr nil 'forward-line 'end-of-line nil nil
                    (lambda (s1 s2) (eq (random 2) 0)))))))
 
-
-
 (require-package 'visual-regexp)
 (global-set-key [remap query-replace-regexp] 'vr/query-replace)
 (global-set-key [remap replace-regexp] 'vr/replace)
-
-
 
 (when (executable-find "ag")
   (require-package 'ag))
