@@ -3,8 +3,8 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 ;; (package-initialize)
-
-(add-to-list 'load-path user-emacs-directory)
+(defconst user-lisp-directory (concat user-emacs-directory "lisp"))
+(add-to-list 'load-path user-lisp-directory)
 (setq warning-suppress-types '((initialization)))
 (require 'init-elpa)
 (require 'init-system-check)
@@ -12,7 +12,7 @@
 (require 'init-common-utils)
 (require 'init-global-settings)
 
-(when (file-exists-p (concat user-emacs-directory "init-private-custom.el"))
+(when (file-exists-p (concat user-lisp-directory "init-private-custom.el"))
   (require 'init-private-custom))
 
 (require 'init-server)

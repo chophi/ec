@@ -1,5 +1,4 @@
 (require-package 'unfill)
-(require-package 'whole-line-or-region)
 
 (when (fboundp 'electric-pair-mode)
   (setq-default electric-pair-mode 1))
@@ -238,9 +237,10 @@
 ;;----------------------------------------------------------------------------
 ;; Cut/copy the current line if no region is active
 ;;----------------------------------------------------------------------------
-;; (whole-line-or-region-global-mode)
-;; (diminish 'whole-line-or-region-mode)
-;; (make-variable-buffer-local 'whole-line-or-region-mode)
+(require-package 'whole-line-or-region)
+(whole-line-or-region-mode t)
+(diminish 'whole-line-or-region-mode)
+(make-variable-buffer-local 'whole-line-or-region-mode)
 
 (defun suspend-mode-during-cua-rect-selection (mode-name)
   "Add an advice to suspend `MODE-NAME' while selecting a CUA rectangle."

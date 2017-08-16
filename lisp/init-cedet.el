@@ -79,8 +79,8 @@
 ;;   `(,@include-path-list
 ;;     "include" "../include" "inc" "../inc" "~/utils/include" "~/utils/src/"))
 
-(when (not (file-exists-p "~/.emacs.d/init-ede-projects.el"))
-  (copy-file "~/.emacs.d/init-ede-projects.sample.el" "~/.emacs.d/init-ede-projects.el"))
+(when (not (file-exists-p "~/.emacs.d/lisp/init-ede-projects.el"))
+  (copy-file "~/.emacs.d/lisp/init-ede-projects.sample.el" "~/.emacs.d/lisp/init-ede-projects.el"))
 
 (require 'init-ede-projects)
 

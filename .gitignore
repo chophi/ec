@@ -28,6 +28,7 @@ lisp-snippets/az-common-env.el
 /recentf
 /ido.last
 /init-private-custom.el
+/lisp/init-private-custom.el
 /server/
 # /custom.el
 /elpa/archives/gnu/archive-contents
@@ -37,3 +38,4 @@ lisp-snippets/az-common-env.el
 /links.html
 /.opengrok/
 /init-amazon-linux.el
+/lisp/init-amazon-linux.el
