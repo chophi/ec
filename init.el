@@ -79,7 +79,7 @@
 
 ;; (require 'init-w32-symlinks)
 (require 'init-glsl-mode)
-;; (require 'init-lua)
+(require 'init-lua)
 
 (require 'init-magit)
 (require 'init-latex)
