@@ -99,4 +99,6 @@
   (global-set-key "\C-xd" 'delete-other-window)
   (global-set-key "\C-xc" 'delete-other-window))
 
+(setq focus-follows-mouse t)
+
 (provide 'init-windows)
