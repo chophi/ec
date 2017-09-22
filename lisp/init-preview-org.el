@@ -9,7 +9,7 @@
   `(
     ;; These are the main web files
     ("org-notes"
-     :base-directory ,(concat project-root "org-export/") ;; Change this to your local dir
+     :base-directory ,(concat project-root "publish/") ;; Change this to your local dir
      :base-extension "org"
      :publishing-directory ,(concat project-root "www")
      :recursive t
@@ -45,7 +45,7 @@
            (when (not (file-directory-p (concat dir relative-path)))
              (make-directory (concat dir relative-path) t)
              ))))
-    (funcall make-dir-if-not-exist "org-export")
+    (funcall make-dir-if-not-exist "publish")
     (funcall make-dir-if-not-exist "material/css")
     (funcall make-dir-if-not-exist "www")
     (when (not (file-exists-p (concat dir "material/css/stylesheet.css")))
@@ -62,7 +62,7 @@
     (when (or (not (eq major-mode 'org-mode))
               (not (equal (file-name-extension (buffer-name)) "org"))) 
       (error "This command only works in org-mode and on org file"))
-    (write-file (format (org-blog-preview "org-export/%s") (buffer-name))))
+    (write-file (format (org-blog-preview "publish/%s") (buffer-name))))
 
   (publish-org-files-in-dir *org-preview-root*)
 
