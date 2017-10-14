@@ -358,7 +358,7 @@ by using nxml's indentation rules."
   (defun is-separator (str i)
     (let ((ret nil)
           (ch (elt str i)))
-      (dolist (c (append "\n,\"; " nil) ret)
+      (dolist (c (append "\n,\"; :" nil) ret)
         (when (equal ch c) (setq ret t)))
       ))
   (let* ((start (max (- (point) 256) 1))
@@ -375,6 +375,6 @@ by using nxml's indentation rules."
          (maybe-filename (substring str start end)))
     (when (file-exists-p maybe-filename)
       (find-file-other-window maybe-filename))))
-(global-set-key (kbd "C-c C-o") 'my-open-link)
+(global-set-key (kbd "C-z o") 'my-open-link)
 
 (provide 'init-handy)
