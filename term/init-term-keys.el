@@ -79,6 +79,27 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
       (with-current-buffer buf
         (rename-buffer (replace-regexp-in-string "<[0-9]*>" (format "<%d>" order) bufname))))))
 
+(defun move-terminal-as-nth ()
+  (interactive)
+  (when (not (eq 'term-mode major-mode))
+    (error "only use this command with term-mode buffer"))
+  (let ((n (read-number
+            (format
+             "Please enter the number you want to move this terminal to be nth (1-%d): "
+             (length multi-term-buffer-list))))
+        (cur-buf (current-buffer))
+        (temp-list '())
+        (old-list multi-term-buffer-list))
+    (setq old-list (delete (current-buffer) old-list))
+    (dotimes (i (1- n))
+      (add-to-list 'temp-list (car old-list) t)
+      (setq old-list (cdr old-list)))
+    (add-to-list 'temp-list cur-buf t)
+    (setq temp-list (append temp-list old-list))
+    (setq multi-term-buffer-list temp-list)
+    
+    ))
+
 (defun move-terminal-as-first ()
   (interactive)
   (when (not (eq 'term-mode major-mode))
