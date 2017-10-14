@@ -2,9 +2,10 @@
 (require-package 'magit)
 
 ;; using magit to manage git
-(delete 'Git vc-handled-backends)
+;; (delete 'Git vc-handled-backends)
 ;; not use SVN
-(delete 'SVN vc-handled-backends)
+;; (delete 'SVN vc-handled-backends)
+(setq vc-handled-backends nil)
 
 (global-set-key "\C-xg" 'magit-status)
 
