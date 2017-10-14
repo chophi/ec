@@ -2,7 +2,7 @@
 (require 'ox-publish)
 
 (when (file-exists-p "init-private-custom.el") (require 'init-private-custom))
-(when (not (boundp '*org-preview-root*)) (setq *org-preview-root* "~/org-preview/"))
+(when (not (boundp '*org-preview-root*)) (setq *org-preview-root* "~/blog/preview/"))
 (when (not (boundp '*org-blog-root*)) (setq *org-blog-root* "~/blog/"))
 
 (defun make-org-project-list (project-root)
@@ -62,7 +62,10 @@
     (when (or (not (eq major-mode 'org-mode))
               (not (equal (file-name-extension (buffer-name)) "org"))) 
       (error "This command only works in org-mode and on org file"))
-    (write-file (format (org-blog-preview "publish/%s") (buffer-name))))
+
+    (when (not (file-directory-p (format "%s/public/" *org-preview-root*)))
+      (make-directory (format "%s/public/" *org-preview-root*) t))
+    (write-file (format "%s/publish/%s" *org-preview-root* (buffer-name))))
 
   (publish-org-files-in-dir *org-preview-root*)
 
