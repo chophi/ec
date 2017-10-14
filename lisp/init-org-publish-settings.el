@@ -42,12 +42,13 @@
 ;;-----------------------------------------------------------------------------
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((R . t)
+ `((R . t)
    (emacs-lisp . t)
    (matlab . t)
    (C . t)
    (perl . t)
-   (sh . t)
+   ,(when (not (equal (substring emacs-version 0 2) "27"))
+        '(sh . t))
    (ditaa . t)
    (python . t)
    (haskell . t)
