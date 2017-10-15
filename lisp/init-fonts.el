@@ -118,11 +118,11 @@ by the :height face attribute."
   (defun toggle-font-size ()
     (interactive)
     (if *toggle-font-size*
-        (progn (set-cjk-font "STFangsong" 18 'ultra-light)
-               (set-ascii-font "Monaco" 15 'ultra-light)
+        (progn (set-cjk-font "STFangsong" 18)
+               (set-ascii-font "Monaco" 15)
                (setq *toggle-font-size* nil))
-      (progn (set-cjk-font "STFangsong" 22 'ultra-light)
-             (set-ascii-font "Monaco" 19 'ultra-light)
+      (progn (set-cjk-font "STFangsong" 22)
+             (set-ascii-font "Monaco" 19)
              (setq *toggle-font-size* t))))
   (toggle-font-size))
 
