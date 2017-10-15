@@ -242,6 +242,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (global-set-key "\C-zr" 'uf-term-rename-buffer)
 (global-set-key "\C-zs" 'uf-switch-to-term-buffer)
 (global-set-key "\C-zl" 'uf-clear-prompt-command)
+(global-set-key "\C-zo" 'my-open-link)
 
 (provide 'init-term-keys)
 

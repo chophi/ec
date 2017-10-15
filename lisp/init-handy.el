@@ -375,6 +375,5 @@ by using nxml's indentation rules."
          (maybe-filename (substring str start end)))
     (when (file-exists-p maybe-filename)
       (find-file-other-window maybe-filename))))
-(global-set-key (kbd "C-z o") 'my-open-link)
 
 (provide 'init-handy)
