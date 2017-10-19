@@ -122,7 +122,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (ad-activate 'multi-term)
 
 (defadvice term-paste (around check-paste-length)
-  (when (> (length (current-kill 0)) 256)
+  (when (> (length (current-kill 0)) 1024)
     (error "the item to paste is too long"))
   ad-do-it)
 (ad-activate 'term-paste)
