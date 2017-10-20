@@ -118,7 +118,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
            process-environment)))
     ad-do-it
     (update-terms-name)
-    (setq term--uuid random-uuid)))
+    (setq-local term--uuid random-uuid)))
 (ad-activate 'multi-term)
 
 (defadvice term-paste (around check-paste-length)
