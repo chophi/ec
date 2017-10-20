@@ -9,7 +9,7 @@
 
 (global-set-key "\C-xg" 'magit-status)
 
-;; (when *is-mac-machine*
+;; (when (eq os 'macos)
 ;;   (setq magit-git-executable "/opt/local/bin/git"))
 
 ;; (setq magit-last-seen-setup-instructions "1.4.0")

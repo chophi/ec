@@ -2,7 +2,7 @@
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/gnuserv-3.12.8/")
 ;; (require 'init-server)
 (require-package 'w3m)
-(if *linux?*
+(if (eq os 'linux)
     (add-to-list 'exec-path "D:/progenv/w3m/"))
 
 

@@ -1,6 +1,4 @@
 (require 'cc-mode)
-(add-to-list 'load-path "~/.emacs.d/site-lisp")
-
 (require 'google-c-style)
 (add-hook 'c-mode-common-hook 'google-set-c-style)
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
@@ -8,16 +6,16 @@
 (add-hook 'c-mode-common-hook
           (lambda ()
             (c-toggle-auto-hungry-state 1)
-            (c-toggle-auto-newline 1)
-            ))
+            (c-toggle-auto-newline 1)))
 
 (setq-default tab-width 4
               tab-stop-list (number-sequence 4 120 4))
 
 ;;; use the // comment in c code.
 (add-hook 'c-mode-hook
-          (lambda () (setq comment-start "// "
-                           comment-end "")))
+          (lambda ()
+            (setq comment-start "// "
+                  comment-end "")))
 
 ;;; automatic insert matched pairs
 (add-hook 'c-mode-common-hook
@@ -39,6 +37,7 @@
   (tool-bar-mode 1)
   (gud-tooltip-mode 1)
   (global-semantic-tag-folding-mode -1))
+
 (defun my-gud-kill-buffer-hook()
   (if (eq major-mode 'gud-mode)
       (progn
@@ -47,6 +46,7 @@
         (global-semantic-tag-folding-mode 1)
         ;; (ecb-activate)
         )))
+
 (add-hook 'gud-mode-hook 'my-gud-mode-entering-hook)
 (add-hook 'kill-buffer-hook 'my-gud-kill-buffer-hook)
 
@@ -93,6 +93,7 @@
 		    ("\\<\\(xstring\\|xchar\\)\\>" . font-lock-type-face)
 		    ))
 	     ) t)
+
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 (defun cpplint-analyze()
@@ -102,4 +103,5 @@
                          (buffer-file-name))))
 (add-hook 'c++-mode-hook
           (lambda() (local-set-key "\C-c\C-l" 'cpplint-analyze)))
+
 (provide 'init-cc-mode)

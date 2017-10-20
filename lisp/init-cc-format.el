@@ -1,7 +1,4 @@
-(defun program-exist(program)
-  (not (equal (shell-command-to-string (concat "which "  program)) "")))
-
-(when (program-exist "astyle")
+(when (program-exists-p "astyle")
   (defun astyle-this-buffer(pmin pmax)
     (interactive "r")
     (shell-command-on-region pmin pmax

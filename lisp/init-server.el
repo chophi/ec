@@ -2,7 +2,7 @@
 
 (when (not server-clients)
 
-  (when *windows?*
+  (when (eq os 'windows)
     (setq server-auth-dir "~/.emacs.d/server"
           server-name "emacs-server-file")
     (make-directory server-auth-dir t)

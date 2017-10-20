@@ -80,8 +80,8 @@ See also \\[c-hungry-delete-forward]."
 (delete (rassoc 'doc-view-mode-maybe auto-mode-alist) auto-mode-alist)
 
 (setq explorer-command
-      (if (eq system-type 'gnu/linux) "gnome-open"
-        (if *mac?*
+      (if (eq os 'linux) "gnome-open"
+        (if (eq os 'macos)
             "open"
           "explorer")))
 (defun my-explore-curdir()
@@ -223,7 +223,7 @@ end of the line."
 ;; program for getting and setting the contents of the X selection"
 ;; (unless window-system
 (when (and  (getenv "DISPLAY")
-            *linux?*
+            (eq os 'linux)
             (not (equal (shell-command-to-string "which xsel") "")))
     ;; Callback for when user cuts
     (defun xsel-cut-function (text &optional push)

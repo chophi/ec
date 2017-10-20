@@ -1,14 +1,14 @@
 (require-package 'openwith)
 (openwith-mode)
 
-(when *linux?*
+(when (eq os 'linux)
   (setq openwith-associations
         '(("\\.pdf$" "evince" (file))
           ("\\.mp3$" "mplayer" (file) )
           ("\\.mov\\|\\.RM$\\|\\.RMVB$\\|\\.avi$\\|\\.AVI$\\|\\.flv$\\|\\.mp4\\|\\.mkv$\\|\\.rmvb$" "mplayer" (file) )
           ("\\.CHM$\\|\\.chm$" "chmsee"  (file) ))))
 
-(when *windows?*
+(when (eq os 'windows)
   (let ((extra-openwith-associations
          '(("\\.docx$" "explorer" (file))
            ("\\.doc$" "explorer" (file))
@@ -24,7 +24,7 @@
     (dolist (p extra-openwith-associations)
       (add-to-list 'openwith-associations p))))
 
-(when *mac?*
+(when (eq os 'macos)
   (setq openwith-associations
         '(("\\.pdf$\\|\\.png$\\|\\.jpeg$\\|\\.jpg$" "open" (file)))))
 

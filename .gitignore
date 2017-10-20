@@ -27,7 +27,6 @@ lisp-snippets/az-common-env.el
 /lisp-snippets/.az-temp-commands.el
 /recentf
 /ido.last
-/init-private-custom.el
 /lisp/init-private-custom.el
 /server/
 # /custom.el

@@ -17,7 +17,7 @@
 (define-key dired-mode-map (kbd "F") 'dired-narrow)
 
 ;;; be available
-(if *mac?*
+(if (eq os 'macos)
     ;; installed by brew install coreutils
     (setq insert-directory-program "/usr/local/opt/coreutils/libexec/gnubin/ls"))
 

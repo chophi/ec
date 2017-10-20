@@ -162,7 +162,7 @@
     cmakefile))
 
 
-(if *linux?*
+(if (eq os 'linux)
     (setq *ndk-build-bin-path* "~/software/android-ndk-r10e")
   (setq *ndk-build-bin-path* "path-to-android-ndk-build"))
 

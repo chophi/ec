@@ -1,5 +1,3 @@
-(defconst site-lisp-directory "~/.emacs.d/site-lisp")
-
 (require 'cedet)
 (require 'semantic)
 (require 'cedet-files)

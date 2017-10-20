@@ -65,7 +65,7 @@
                            (dolist (name in-out-flist ret)
                                     (setq ret (concat ret "\n" name))))))
       (dolist (name in-out-flist)
-        (cu-trash-file name)))))
+        (delete-file name)))))
 
 (require 'init-windows)
 (defun edit-an-input-file (file-name)
@@ -73,7 +73,7 @@
   (find-file-other-window file-name))
 
 (defun compose-c-run-program-list()
-  (let ((execute-str (if (or *linux?* *mac?* ) "./%n" "%n.exe")))
+  (let ((execute-str (if (memq os '(linux macos)) "./%n" "%n.exe")))
     `((?e (,execute-str) ,(format "%s &" execute-str))
       (?i nil (edit-an-input-file "%n.in"))
       (?< (,execute-str) ,(format "%s < %%n.in &" execute-str))

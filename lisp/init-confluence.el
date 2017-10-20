@@ -110,7 +110,7 @@
       (switch-to-buffer-other-window wiki-buffer)
       )))
 
-(when *amazon-machine?*
+(when (company-computer-p)
   (add-to-list 'org/ruhoh-keys
                '("d" . (lambda () (interactive) (org-update-related-wiki-page t))))
   (add-to-list 'org/ruhoh-keys '("w" . org-update-related-wiki-page))

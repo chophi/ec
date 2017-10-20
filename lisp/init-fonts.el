@@ -34,98 +34,6 @@ by the :height face attribute."
 (global-set-key (kbd "C-M-=") 'sanityinc/increase-default-font-height)
 (global-set-key (kbd "C-M--") 'sanityinc/decrease-default-font-height)
 
-(defun set-ascii-font (type size &optional weight)
-  (if weight
-      (set-face-attribute
-       'default nil :font (font-spec
-                           :family type
-                           :size size
-                           :weight weight))
-    (set-face-attribute
-     'default nil :font (font-spec
-                         :family type
-                         :size size))))
-
-(defun set-cjk-font (type size &optional weight)
-  (if weight
-      (dolist (charset '(kana han symbol cjk-misc bopomofo))
-        (set-fontset-font t
-                          charset
-                          (font-spec
-                           :family type
-                           :size size
-                           :weight weight)))
-    (dolist (charset '(kana han symbol cjk-misc bopomofo))
-      (set-fontset-font t
-                        charset
-                        (font-spec
-                         :family type
-                         :size size)))))
-
-(defun set-ascii-font-size (size)
-  (set-face-attribute
-   'default nil :font (font-spec
-                       :size size)))
-
-(defun set-cjk-font-size (size)
-  (dolist (charset '(kana han symbol cjk-misc bopomofo))
-    (set-fontset-font t
-		      charset
-		      (font-spec
-		       :size size)
-		      )))
-
-(defun set-font-pair(ascii-type ascii-size cjk-type cjk-size)
-   (set-ascii-font ascii-type ascii-size)
-   (set-cjk-font cjk-type cjk-size)
-   )
-
-;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
-;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
-;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-;; (when (eq window-system 'w32)
-;;     (set-cjk-font "SimSun" 18.4) 
-;;   (set-ascii-font "Monaco" 15.0))
-
-
-(when (eq window-system 'w32)
-    (set-cjk-font "SimSun" 15.0) 
-  (set-ascii-font "Consolas" 14.5))
-
-(when (and *amazon-machine?*
-	   (window-system))
-  (set-cjk-font "SimSun" 16.3)
-  (defvar *current-font-index* -1)
-  (defvar font-config-list
-    '(("Monaco" . 14.5)
-      ("Ubuntu Mono" . 16.5)
-      ("Consolas" . 15.0)))
-  (defun next-font ()
-    (interactive)
-    (let* ((len (length font-config-list))
-           (index (mod (1+ *current-font-index*) len))
-           (font-config (nth index font-config-list))
-           (font-name (car font-config))
-           (font-size (cdr font-config)))
-      (set-ascii-font font-name font-size)
-      (setq-default line-spacing 0.05)
-      (setq *current-font-index* index)))
-  (next-font))
-
-;;; DONE: cjk-font working now
-(when *mac?*
-  (setq *toggle-font-size* nil)
-  (defun toggle-font-size ()
-    (interactive)
-    (if *toggle-font-size*
-        (progn (set-cjk-font "STFangsong" 18)
-               (set-ascii-font "Monaco" 15)
-               (setq *toggle-font-size* nil))
-      (progn (set-cjk-font "STFangsong" 22)
-             (set-ascii-font "Monaco" 19)
-             (setq *toggle-font-size* t))))
-  (toggle-font-size))
-
 (defun zoom-frame (&optional n frame amt)
   "Increase the default size of text by AMT inside FRAME N times.
   N can be given as a prefix arg.
@@ -143,9 +51,75 @@ by the :height face attribute."
   (interactive "p")
   (zoom-frame (- n) frame amt))
 
-
 (global-set-key (kbd "C-c z i") 'zoom-frame)
 (global-set-key (kbd "C-c z o") 'zoom-frame-out)
+
+(defun set-font-for-charset (charset type size &optional weight)
+  "Set font for the CHARSET
+CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
+  (if (eq charset 'ascii)
+      (set-face-attribute 'default nil :font
+                          (apply #'font-spec
+                                 :family type
+                                 :size size
+                                 (when weight
+                                   `(:weight ,weight))))
+    (progn
+      (when (not (listp charset))
+        (setq charset
+              (case charset
+                ('cjk '(kana han symbol cjk-misc bopomofo))
+                (t '(nil)))))
+      (dolist (cset charset)
+        (set-fontset-font t cset
+                          (apply #'font-spec
+                                 :family type
+                                 :size size
+                                 (when weight
+                                   `(:weight ,weight))))))))
+
+;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
+;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+(when (eq os 'windows)
+  (set-font-for-charset ) 
+  (set-font-for-charset ))
+
+(defvar preferred-font-config-list
+  (cond
+   ;; for company computer
+   ((and (company-computer-p) (window-system))
+    '(((cjk "SimSun" 16.3) (ascii "Monaco" 14.5))
+      ((cjk "SimSun" 16.3) (ascii "Ubuntu Mono" 16.5))
+      ((cjk "SimSun" 16.3) (ascii "Consolas" 15.0))))
+   ;; for non-company macos
+   ((eq os 'macos)
+    '(((ascii "Monaco" 19) (cjk "STFangsong" 22))
+      ((ascii "Monaco" 15) (cjk "STFangsong" 18))))
+   ;; for windows
+   ((eq os 'windows)
+    '(((cjk "SimSun" 15.0) (ascii "Consolas" 14.5)))))
+  "The preferred font config list which can be rotated use `next-font'")
+
+(defvar selected-font-index -1
+  "The index for selected font in `preferred-font-config-list'")
+
+(defvar selected-font-config nil
+  "The selected font config in `preferred-font-config-list'")
+
+(defun next-font ()
+  (interactive)
+  "Select the next font in `preferred-font-config-list'"
+  (let* ((len (length preferred-font-config-list))
+         (index (mod (1+ selected-font-index) len))
+         (fconf-list (nth index preferred-font-config-list)))
+    (setq selected-font-config fconf-list)
+    (dolist (fc fconf-list) (apply #'set-font-for-charset fc))
+    (setq-default line-spacing 0.05)
+    (setq selected-font-index index)))
+
+;; The first call to use the first font in preferred-font-config-list
+(next-font)
 
 (defun set-perferred-large-screen-fontsize ()
   (interactive)

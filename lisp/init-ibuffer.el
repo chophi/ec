@@ -7,10 +7,11 @@
 
 (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
 
-
-
 (eval-after-load 'ibuffer
   '(progn
+     ;; Explicitly require ibuffer-vc to get its column definitions, which
+     ;; can't be autoloaded
+     '(require 'ibuffer-vc)
      ;; Use human readable Size column instead of original one
      (define-ibuffer-column size-h
        (:name "Size" :inline t)
@@ -18,12 +19,6 @@
         ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
         ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
         (t (format "%8d" (buffer-size)))))))
-
-
-;; Explicitly require ibuffer-vc to get its column definitions, which
-;; can't be autoloaded
-(eval-after-load 'ibuffer
-  '(require 'ibuffer-vc))
 
 ;; Modify the default ibuffer-formats
 (setq ibuffer-formats

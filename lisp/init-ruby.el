@@ -1,10 +1,8 @@
 (require-package 'yari)
 (require 'yari)
 
-(add-hook 'ruby-mode-hook (lambda () (interactive)
-                            (local-set-key [(f9)] 'yari)))
-(add-hook 'yari-mode-hook (lambda () (interactive)
-                            (local-set-key [(f9)] 'yari)))
+(with-eval-after-load "ruby-mode"
+  (define-key ruby-mode-map (kbd "C-c C-d") 'yari))
 
 (require-package 'ac-inf-ruby)
 (ac-inf-ruby-enable)
@@ -16,7 +14,9 @@
 (when (file-exists-p "~/.rvm/scripts/rvm")
   (let ((possible-ruby
          (shell-command-to-string
-          "[[ -s \"$HOME/.rvm/scripts/rvm\" ]] && source \"$HOME/.rvm/scripts/rvm\" && echo -n `which ruby`")))
+          "[[ -s \"$HOME/.rvm/scripts/rvm\" ]] && \
+source \"$HOME/.rvm/scripts/rvm\" && \
+echo -n `which ruby`")))
     (when (not (equal possible-ruby ""))
       (setq yari-ruby-program-name possible-ruby)
       (add-to-list 'exec-path (file-name-directory possible-ruby))

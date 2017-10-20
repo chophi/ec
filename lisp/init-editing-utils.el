@@ -4,6 +4,15 @@
   (setq-default electric-pair-mode 1))
 
 ;;----------------------------------------------------------------------------
+;; Make the emacs window tidy and remove some startup warning messages
+;;----------------------------------------------------------------------------
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+(setq inhibit-startup-message t)
+(setq warning-suppress-types '((initialization)))
+
+;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
 (setq-default
@@ -283,7 +292,7 @@
 (when (executable-find "ag")
   (require-package 'ag))
 
-(when *linux?*
+(when (eq os 'linux)
   (defun sudo-find-file ()
     (interactive)
     (find-file (concat "/sudo::"  (ido-read-file-name "Sudo Open File: ")))))

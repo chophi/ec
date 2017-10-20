@@ -1,4 +1,4 @@
-(when *windows?*
+(when (eq os 'windows)
   (setq save-buffer-coding-system 'utf-8-unix)
   (setq locale-coding-system 'utf-8-unix)
   (set-default-coding-systems 'utf-8-unix)
@@ -13,7 +13,7 @@
 
   (set-coding-system-priority 'utf-8 'utf-8-dos)
 
-  ;; ;; week day 乱码
+  ;; week day 乱码
   (fset 'old-format-time-string (symbol-function 'format-time-string))
   ;; (format-time-string "%a")
   (defun format-time-string-fix-local-week-day(format-string &optional time universal)

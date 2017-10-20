@@ -11,7 +11,7 @@
 
 (defun make-shell-command-key-lambda (command)
   `(lambda () (interactive)
-     (if *mac?*
+     (if (eq os 'macos)
          (shell-command ,command)
        (ssh-shell-command ,command)))
   )

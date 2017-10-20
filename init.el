@@ -1,63 +1,55 @@
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
+;; Don't remove the below line as emacs want to see it as the first line even
+;; it's commented out.
 ;; (package-initialize)
-(defconst user-lisp-directory (concat user-emacs-directory "lisp"))
-(add-to-list 'load-path user-lisp-directory)
-(setq warning-suppress-types '((initialization)))
-(require 'init-elpa)
-(require 'init-system-check)
 
-(require 'init-common-utils)
-(require 'init-global-settings)
-
-(when (file-exists-p (concat user-lisp-directory "init-private-custom.el"))
-  (require 'init-private-custom))
-
-(require 'init-server)
-
-(require 'init-path)
+(add-to-list 'load-path (concat user-emacs-directory "lisp"))
+(add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
 (require 'init-benchmarking)
 
+;; load the private custom file, which is in the gitignore list,
+;; and is basically for toggle some features on different desktops/laptops.
+(defun require-if-exist (feature)
+  "Search FEATURE in the `user-emacs-directory'/lisp folder, load it if exist."
+  (when (file-exists-p
+         (format "%s/lisp/%s.el" user-emacs-directory
+                 (symbol-name feature)))
+    (require feature)))
+(require-if-exist 'init-private-custom)
+
+(require 'init-elpa)
+(require 'init-computer-check)
+
+(require 'init-common-utils)
 (require 'init-theme)
 
+(require 'init-server)
+(require 'init-path)
+
+;; For editing the grep buffer and save the edited contents back.
 (require-package 'wgrep)
-(require-package 'project-local-variables)
-(require-package 'diminish)
-(require-package 'scratch)
+;; Logging the key stroke and the mapped commands.
 (require-package 'mwe-log-commands)
+;; regex testing: show the content, regex and matched text alive in three buffers.
 (require-package 'regex-tool)
 
 (require 'init-fonts)
 (require 'init-locales)
-(require 'init-tidy)
 (require 'init-ibuffer)
 (require 'init-uniquify)
-(require 'init-fci)
+(require 'init-fill-column-indicator)
 (require 'init-editing-utils)
 
 (require 'init-recentf)
 (require 'init-ido)
-;; FIXME: seems no-flet not compatible with other packages.
-;; (require 'kill-ring-ido)
 
 (require 'init-sessions)
 
 (require 'init-maxframe)
 (require 'init-windows)
-(when *linux?*
-  (maximize-frame "Emacs::IDE"))
-(when *windows?*
-  (w32-maximize-frame))
 
-
-;; heavy configures follows
 (require 'init-yasnippet)
 (require 'init-auto-complete)
 (require 'init-python)
-;;(require 'init-helm)
-;;(require 'init-anything)
 (require 'init-ruby)
 
 ;; c++ configuration
@@ -73,7 +65,6 @@
 
 (require 'init-cedet)
 (require 'init-cmake)
-
 
 (require 'init-image-support)
 
@@ -120,7 +111,7 @@
 (require 'init-browse-kill-ring)
 
 (put 'erase-buffer 'disabled nil)
- 
+
 (load-file custom-file)
 
 ;;;(when (not *mac?*)
@@ -129,17 +120,17 @@
 
 ;; !!!!! put the term code the last !!!!!!!!!!!!
 ;; import the multi-term function to linux.
-(when (or *linux?* *mac?*) 
+(when (memq os '(linux macos))
   (add-to-list 'load-path (concat user-emacs-directory "term"))
   (require 'term-inside-ide-init))
 
-;; (when *linux?*
+;; (when (eq os 'linux)
 ;;   (require 'init-ibus))
 
 (require 'init-dmesg-mode)
 (require 'init-dictionary)
 
-(when (or *mac?* *linux?*)
+(when (memq os '(linux macos))
   (setq shell-file-name "/bin/bash"))
 
 (require 'init-work-with-repo)
@@ -147,7 +138,7 @@
 
 (require 'init-ediff-binary)
 
-(when (and *amazon-machine?* *linux?*)
+(when (and (company-computer-p) (eq os 'linux))
   (add-to-list 'exec-path "/usr/share-2/bin")
   (require 'init-amazon-linux))
 
@@ -165,3 +156,6 @@
 (require 'init-polymode)
 (require 'init-adaptive-wrap)
 (require 'init-keybind)
+
+(setq sanityinc/require-times
+      (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
