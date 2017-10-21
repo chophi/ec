@@ -1,5 +1,6 @@
 
 (require 'init-benchmarking)
+(require 'init-computer-check)
 
 ;; load the private custom file, which is in the gitignore list,
 ;; and is basically for toggle some features on different desktops/laptops.
@@ -12,7 +13,6 @@
 (require-if-exist 'init-private-custom)
 
 (require 'init-elpa)
-(require 'init-computer-check)
 
 (require 'init-common-utils)
 (require 'init-theme)

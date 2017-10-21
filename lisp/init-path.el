@@ -1,6 +1,10 @@
 (require 'init-common-utils)
 (require 'cl)
 
+(when (memq window-system '(mac ns))
+  (require-package 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
+
 (defun add-to-path(path &optional as-head)
   "Add the PATH to the environment PATH, append by default
 if AS-HEAD not specified or nil,

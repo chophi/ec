@@ -87,15 +87,15 @@ CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
 
 (defvar preferred-font-config-list
   (cond
+   ;; for non-company macos
+   ((eq os 'macos)
+    '(((cjk "STFangsong" 22) (ascii "Monaco" 19))
+      ((cjk "STFangsong" 18) (ascii "Monaco" 15))))
    ;; for company computer
    ((and (company-computer-p) (window-system))
     '(((cjk "SimSun" 16.3) (ascii "Monaco" 14.5))
       ((cjk "SimSun" 16.3) (ascii "Ubuntu Mono" 16.5))
       ((cjk "SimSun" 16.3) (ascii "Consolas" 15.0))))
-   ;; for non-company macos
-   ((eq os 'macos)
-    '(((ascii "Monaco" 19) (cjk "STFangsong" 22))
-      ((ascii "Monaco" 15) (cjk "STFangsong" 18))))
    ;; for windows
    ((eq os 'windows)
     '(((cjk "SimSun" 15.0) (ascii "Consolas" 14.5)))))
