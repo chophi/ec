@@ -26,5 +26,64 @@ and pretty print the output into *gerrit [<id>]* buffer"
         (json-pretty-print-buffer)))
     (switch-to-buffer-other-window buffer-name)))
 
+(with-eval-after-load "smart-compile"
+  (defun smart-run (run-lists)
+    "Run some commands from RUN-LISTS.
+The run lists look like this:
+((?e (\"./%n\") \"./%n &\")
+ (?i nil (open-the-input-file \"%n.in\"))
+ (?< (\"./%n\") \"./%n < %n.in &\")
+ (?s (\"./%n\") (select-input-file-and-run \"./%n\"))
+ (?t nil (delete-input-output-files)))
+each list formated like: '(key (requried_file_list) command_to_execute),
+and the file name in required_file_list and command_to_execute will be
+re-interpreted via using smart-compile-string.
+"
+    (let ((help-msg "") choices)
+      (dolist (list run-lists)
+        (let* ((run-key (car list))
+               (required-files (cadr list))
+               (run-command (caddr list))
+               (command-string
+                (cond ((stringp run-command)
+                       (smart-compile-string run-command))
+                      ((fboundp (car run-command))
+                       (if (cdr run-command)
+                           (format "(%s %s)" (prin1-to-string (car run-command))
+                                   (reduce
+                                    (lambda (x y) (concat x " " y))
+                                    (mapcar
+                                     (lambda (x)
+                                       (if (stringp x)
+                                           (smart-compile-string x)
+                                         (prin1-to-string x)))
+                                     (cdr run-command))))
+                         (prin1-to-string (car run-command))))
+                      (t (error "command error: %s" prin1-to-string run-command)))))
+          (setq help-msg
+                (concat help-msg
+                        (format "%s : %s\n" (char-to-string run-key) command-string)))
+          (push run-key choices)))
+      
+      (let* ((run-list (assoc (read-char-choice help-msg choices) run-lists))
+             (required-files (cadr run-list))
+             (run-command (caddr run-list))
+             (non-existed-files
+              (seq-filter
+               (lambda (file) (not (file-exists-p file)))
+               (mapcar 'smart-compile-string required-files))))
+        (when non-existed-files
+          (error (concat
+                  "files not exists: "
+                  (reduce (lambda (x y) (concat x ", " y)) non-existed-files))))
+        (cond ((stringp run-command)
+               (shell-command (smart-compile-string run-command)))
+              ((fboundp (car run-command))
+               (apply (car run-command)
+                      (mapcar
+                       (lambda (arg)
+                         (smart-compile-string arg))
+                       (cdr run-command)))))))))
+
 (provide 'init-common-utils)
 

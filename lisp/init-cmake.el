@@ -1,10 +1,5 @@
-;;(require-package 'cmake-project)
-;;(require-package 'company-cmake)
 (require-package 'cpputils-cmake)
 (require-package 'cmake-mode)
-(require 'cmake-mode)
-(require 'ido)
-
 
 (defvar makefile-system-string
   (if (or (eq system-type 'windows-nt)
@@ -144,7 +139,7 @@
 
 ;; redefine the c-mode-base-map
 (require 'init-smart-compile)
-(require 'init-smart-run)
+(require 'init-run-c-progam)
 
 (defun get-maybe-cmake ()
   (let ((bufname (buffer-file-name))
@@ -201,6 +196,7 @@
         (call-interactively 'run-c-program)))))
 
 (define-key c-mode-base-map "\C-c\C-c" 'my-smart-compile)
+
 ;; can't set using define-key, so change to set hook here!
 ;; (define-key c-mode-base-map "\C-c\C-e" 'my-smart-run)
 (add-hook 'c-mode-common-hook

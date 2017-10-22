@@ -50,7 +50,7 @@
 ;; c++ configuration
 (require 'init-cc-mode)
 (require 'init-smart-compile)
-(require 'init-smart-run)
+(require 'init-run-c-progam)
 
 
 ;; org-mode configuration
