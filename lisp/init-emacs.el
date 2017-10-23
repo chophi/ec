@@ -52,11 +52,10 @@
 (require 'init-smart-compile)
 (require 'init-run-c-progam)
 
-
 ;; org-mode configuration
 (require 'init-org)
+(require 'init-org-export-settings)
 (require 'init-org-publish-settings)
-;; (require 'init-org-remember)
 
 (require 'init-cedet)
 (require 'init-cmake)
@@ -145,7 +144,6 @@
 
 (require 'init-applescript-mode)
 (require 'init-custom-compile)
-(require 'init-preview-org)
 (require 'init-flycheck)
 (require 'init-swift)
 (require 'init-polymode)

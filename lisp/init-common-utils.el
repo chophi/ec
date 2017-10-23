@@ -85,5 +85,33 @@ re-interpreted via using smart-compile-string.
                          (smart-compile-string arg))
                        (cdr run-command)))))))))
 
+(defun seq-starts-with (a b)
+  "Check if sequence A starts with B, compare per element with `equal'"
+  (let ((ret nil) (la (length a)) (lb (length b)))
+    (and (>= la lb)
+         (not (catch 'found-not-equal
+                (dotimes (i lb ret)
+                  (when (not (equal (elt a i) (elt b i)))
+                    (throw 'found-not-equal t))))))))
+
+(defun seq-ends-with (a b)
+  "Check if sequence A ends with B, compare per element with `equal'"
+  (let ((ret nil) (la (length a)) (lb (length b))
+        (ai (1- (length a))) (bi (1- (length b))))
+    (and (>= la lb)
+         (not (catch 'found-not-equal
+                (dotimes (i lb ret)
+                  (when (not (equal (elt a (- ai i)) (elt b (- bi i))))
+                    (throw 'found-not-equal t))))))))
+
+(defun cu-join-path (root &rest args)
+  "Join the path with \"/\" and erase the redundant \"/\""
+  (reduce (lambda (a b)
+            (concat (if (seq-ends-with a "/") (substring a 0 -1) a)
+                    "/"
+                    (if (seq-starts-with b "/") (substring b 1) b)))
+          args
+          :initial-value root))
+
 (provide 'init-common-utils)
 
