@@ -67,7 +67,7 @@
     (when (or (not (eq major-mode 'org-mode))
               (not (equal (file-name-extension (buffer-name)) "org"))) 
       (error "This command only works in org-mode and on org file"))
-    (let (writings-dir (cu-join-path org-preview-root "writings"))
+    (let ((writings-dir (cu-join-path org-preview-root "writings")))
       (when (not (file-directory-p writings-dir))
         (make-directory writings-dir t))
       (write-file (cu-join-path writings-dir (buffer-name)))))
@@ -93,3 +93,4 @@
   (define-key org-mode-map [f10] 'org-update-blog))
 
 (provide 'init-org-publish-settings)
+ 
