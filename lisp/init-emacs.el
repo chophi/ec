@@ -59,7 +59,6 @@
 (require 'init-org-export-settings)
 (require 'init-org-publish-settings)
 
-;; (require 'init-w32-symlinks)
 (require 'init-glsl-mode)
 (require 'init-lua)
 
