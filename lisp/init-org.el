@@ -96,6 +96,6 @@
 ;; Add gerrit map in org-mode
 (setq org-mode-gerrit-map (make-keymap))
 (define-key org-mode-map (kbd "C-c g") org-mode-gerrit-map)
-(define-key org-mode-gerrit-map "v" 'show-gerrit-at-point)
+(define-key org-mode-gerrit-map "v" 'cu-show-gerrit-at-point)
 
 (provide 'init-org)

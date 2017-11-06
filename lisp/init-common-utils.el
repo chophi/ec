@@ -1,7 +1,7 @@
-(defun program-exists-p (program)
+(defun cu-program-exists-p (program)
   (not (equal (shell-command-to-string (concat "which " program)) "")))
 
-(defun show-gerrit-at-point (&optional refresh)
+(defun cu-show-gerrit-at-point (&optional refresh)
   "Query the gerrit change at point with
 'ssh -p 9418 <server> gerrit query --current-patch-set <id> --format json'
 and pretty print the output into *gerrit [<id>]* buffer"
@@ -27,7 +27,7 @@ and pretty print the output into *gerrit [<id>]* buffer"
     (switch-to-buffer-other-window buffer-name)))
 
 (with-eval-after-load "smart-compile"
-  (defun smart-run (run-lists)
+  (defun cu-smart-run (run-lists)
     "Run some commands from RUN-LISTS.
 The run lists look like this:
 ((?e (\"./%n\") \"./%n &\")
@@ -85,7 +85,7 @@ re-interpreted via using smart-compile-string.
                          (smart-compile-string arg))
                        (cdr run-command)))))))))
 
-(defun seq-starts-with (a b)
+(defun cu-seq-starts-with (a b)
   "Check if sequence A starts with B, compare per element with `equal'"
   (let ((ret nil) (la (length a)) (lb (length b)))
     (and (>= la lb)
@@ -94,7 +94,7 @@ re-interpreted via using smart-compile-string.
                   (when (not (equal (elt a i) (elt b i)))
                     (throw 'found-not-equal t))))))))
 
-(defun seq-ends-with (a b)
+(defun cu-seq-ends-with (a b)
   "Check if sequence A ends with B, compare per element with `equal'"
   (let ((ret nil) (la (length a)) (lb (length b))
         (ai (1- (length a))) (bi (1- (length b))))
@@ -107,9 +107,9 @@ re-interpreted via using smart-compile-string.
 (defun cu-join-path (root &rest args)
   "Join the path with \"/\" and erase the redundant \"/\""
   (reduce (lambda (a b)
-            (concat (if (seq-ends-with a "/") (substring a 0 -1) a)
+            (concat (if (cu-seq-ends-with a "/") (substring a 0 -1) a)
                     "/"
-                    (if (seq-starts-with b "/") (substring b 1) b)))
+                    (if (cu-seq-starts-with b "/") (substring b 1) b)))
           args
           :initial-value root))
 

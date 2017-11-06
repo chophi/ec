@@ -1,4 +1,4 @@
-(when (program-exists-p "astyle")
+(when (cu-program-exists-p "astyle")
   (defun astyle-this-buffer(pmin pmax)
     (interactive "r")
     (shell-command-on-region pmin pmax

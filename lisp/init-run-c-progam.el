@@ -40,7 +40,7 @@ and there are format specifier can be used as below:
 
 (defun run-c-program ()
   (interactive)
-  (smart-run
+  (cu-smart-run
    (make-run-list-for-c)))
 
 (provide 'init-run-c-progam)

@@ -6,8 +6,8 @@
 (autoload 'restore-frame "maxframe" "" t)
 
 (when (and (eq os 'linux)
-           (program-exists-p "wmctrl")
-           (program-exists-p "xwininfo"))
+           (cu-program-exists-p "wmctrl")
+           (cu-program-exists-p "xwininfo"))
   
   (defun x-maximize-frame-maybe(window-name)
     (interactive)
