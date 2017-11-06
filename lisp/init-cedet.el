@@ -42,14 +42,6 @@
 
 ;;; semantic-idle-scheduler-idle-time
 
-;;; global configuration
-(require-package 'ggtags)
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-              (ggtags-mode 1))))
-
-
 ;;; check and add gtags or exubertant ctags support, if found suitable gtags and ctags.
 ;; FIXME: it open too many buffers when enable global for c-mode
 ;; (require 'cedet-global)
@@ -64,46 +56,10 @@
 ;; (when (cedet-ectag-version-check)
 ;;   (semantic-load-enable-primary-exuberent-ctags-support))
 
-;;; ede for c & c++ setting
-(global-ede-mode t)
-
-;; (defvar w32-include-path-list
-;;   '("D:/ProgEnv/MinGW/lib/gcc/mingw32/4.8.1/include/c++"))
-
-;; (defvar x-include-path-list
-;;   '(""))
-
-;; (defvar include-path-list (if *windows?* w32-include-path-list x-include-path-list))
-;; (defvar-mode-local c++-mode semantic-dependency-system-include-path
-;;   `(,@include-path-list
-;;     "include" "../include" "inc" "../inc" "~/utils/include" "~/utils/src/"))
-
-(when (not (file-exists-p "~/.emacs.d/lisp/init-ede-projects.el"))
-  (copy-file "~/.emacs.d/lisp/init-ede-projects.sample.el" "~/.emacs.d/lisp/init-ede-projects.el"))
-
-(require 'init-ede-projects)
-
-;; helper for boost setup...
-(defun cedet-files-list-recursively (dir re)
-  "Returns list of files in directory matching to given regex"
-  (when (file-accessible-directory-p dir)
-    (let ((files (directory-files dir t))
-          matched)
-      (dolist (file files matched)
-        (let ((fname (file-name-nondirectory file)))
-          (cond
-           ((or (string= fname ".")
-                (string= fname "..")) nil)
-           ((and (file-regular-p file)
-                 (string-match re fname))
-            (setq matched (cons file matched)))
-           ((file-directory-p file)
-            (let ((tfiles (cedet-files-list-recursively file re)))
-              (when tfiles (setq matched (append matched tfiles)))))))))))
-
 (defun c++-setup-boost (boost-root)
   (when (file-accessible-directory-p boost-root)
-    (let ((cfiles (cedet-files-list-recursively boost-root "\\(config\\|user\\)\\.hpp")))
+    (let ((cfiles
+           (cu-list-files-recursively boost-root "\\(config\\|user\\)\\.hpp")))
       (dolist (file cfiles)
         (add-to-list 'semantic-lex-c-preprocessor-symbol-file file)))))
 
@@ -135,55 +91,12 @@
 ;;          :localclasspath '("/relative/path.jar")
 ;;          :classpath '("/absolute/path.jar"))
 
-(require 'auto-complete)
-(defun my-ac/cedet-hook ()
-  ;; (add-to-list 'ac-sources 'ac-source-gtags)
-  (add-to-list 'ac-sources 'ac-source-semantic))
-(add-hook 'c-mode-common-hook 'my-ac/cedet-hook)
+(with-eval-after-load "auto-complete"
+  (defun ac-semantic-hook ()
+    (add-to-list 'ac-sources 'ac-source-semantic))
+  (add-hook 'c-mode-common-hook 'ac-semantic-hook))
 
-;; (defun ac-semantic-complete-self-insert (arg)
-;;   (interactive "p")
-;;   (self-insert-command arg)
-;;   (ac-complete-semantic))
-;; (defun my-cedet-self-insert-hook ()
-;;   (local-set-key "." 'ac-semantic-complete-self-insert)
-;;   (local-set-key ">" 'ac-semantic-complete-self-insert))
-;; (add-hook 'c-mode-common-hook 'my-cedet-self-insert-hook)
-;; (remove-hook 'c-mode-common-hook 'my-cedet-self-insert-hook)
-;;; keymap settings
-(defun my-local-set-keys (prefix map-lists)
-  (let ((help-message "") temp-key)
-    (dolist (mlist map-lists)
-      (dolist (m mlist)
-        (setq temp-key
-              (if (characterp (car m))
-                  (char-to-string (car m))
-                (car m))
-              help-message
-              (concat help-message
-                      temp-key
-                      " "
-                      (symbol-name (cdr m))"\n"))
-        (local-set-key (concat prefix temp-key) (cdr m))))
-    (local-set-key (concat prefix "?") `(lambda () (interactive) (message ,help-message)))))
-
-(defun my-set-global-keys (prefix map-lists)
-  (let ((help-message "") temp-key)
-    (dolist (mlist map-lists)
-      (dolist (m mlist)
-        (setq temp-key
-              (if (characterp (car m))
-                  (char-to-string (car m))
-                (car m))
-              help-message
-              (concat help-message
-                      temp-key
-                      " "
-                      (symbol-name (cdr m))"\n"))
-        (global-set-key (concat prefix temp-key) (cdr m))))
-    (global-set-key (concat prefix "?") `(lambda () (interactive) (message ,help-message)))))
-
-(defconst my-semantic-map
+(defconst semantic-key-bindings
   '((?i . semantic-ia-fast-jump)
     (?p . semantic-analyze-proto-impl-toggle)
     (?b . semantic-mrub-switch-tags)
@@ -198,93 +111,76 @@
     (?m . semantic-ia-complete-symbol-menu)
     (?c . semantic-ia-complete-symbol)
     (?t . semantic-ia-complete-tip))
-  "the map of semantic")
+  "Key bindings for semantic")
 
 (require 'eassist)
-
 
 (add-to-list 'eassist-header-switches '("hh" "cpp" "cc"))
 (add-to-list 'eassist-header-switches '("cc" "h" "hh"))
 
-(setq lib-include-replace-list '(("/libs/" "/include/")
-                                 ("/lib" "/include/")
-                                 ("/media/libstagefright/" "/include/media/stagefright/")
-                                 ("/base/native/android/" "/native/include/android/")))
+(defconst eassist-switch-h-cpp-post-pairs
+  '(("/libs/" "/include/")
+    ("/lib" "/include/")
+    ("/media/libstagefright/" "/include/media/stagefright/")
+    ("/base/native/android/" "/native/include/android/"))
+  "The replace pairs for post processing eassist-switch-h-cpp")
 
-(defun my-eassist-switch-h-cpp ()
-  (interactive)
-  (when (equal (eassist-switch-h-cpp) "There is no corresponding pair (header or body) file.")
-    (let ((fname (buffer-file-name))
-          sufname
-          bname
-          pname)
-      (catch 'file-found
-        (dolist (lib-include-pair lib-include-replace-list)
-          (let ((first (car lib-include-pair))
-                (second (cadr lib-include-pair)))
-            (setq sufname (file-name-extension fname)
-                  bname (file-name-sans-extension fname)
-                  pname (replace-regexp-in-string first second bname))
-            (when (equal pname bname)
-              (setq pname (replace-regexp-in-string second first bname)))
-            ;; (message "sufname %s\n bname %s\n pname %s\n" sufname bname pname)
-            (dolist (suf (cdr (assoc sufname eassist-header-switches)))
-              (let ((toname (concat pname "." suf)))
-                ;; (message toname)
-                (when (file-exists-p toname)
-                  (find-file toname)
+(defun eassist-switch-h-cpp-try-replace (arg)
+  "A wrapper for `eassist-switch-h-cpp'.
+It try to do a string replace with `eassist-switch-h-cpp-post-pairs' and will
+find the existed files with the replaced result."
+  (interactive "P")
+  ;; Can't find the pair
+  (when (equal (eassist-switch-h-cpp)
+               "There is no corresponding pair (header or body) file.")
+    (catch 'file-found
+      (dolist (pair (append eassist-switch-h-cpp-post-pairs
+                            (mapcar 'reverse eassist-switch-h-cpp-post-pairs)))
+        (let* ((get-a-replaced-name
+                (lambda (filename switch-pair)
+                  (let ((replaced-name
+                         (replace-regexp-in-string
+                          (car switch-pair) (cadr switch-pair))))
+                    (when (not (equal replaced-name) filename) replaced-name))))
+               (filename (buffer-file-name))
+               (replaced-name (funcall 'get-a-replaced-name filename pair)))
+          (when replaced-name
+            (let ((suffix-name (file-name-extension replaced-name)))
+              (dolist (assoc-suffix
+                       (cdr (assoc suffix-name eassist-header-switches)))
+                (let ((target-name (format "%s.%s" (file-name-sans-extension replaced-name)
+                                           assoc-suffix))))
+                (when (file-exists-p target-name)
+                  (find-file target-name)
                   (throw 'file-found nil))))))))))
 
-(defun my-new-eassist-switch-h-cpp (arg)
-  (interactive "P")
-  (if (not arg)
-      (if (fboundp 'cl-flet)
-          (cl-flet ((find-file
-                     (name &optional wildcard)
-                     (find-file-other-window name wildcard))
-                    (switch-to-buffer
-                     (name &optional norecord)
-                     (switch-to-buffer-other-window name norecord)))
-            (my-eassist-switch-h-cpp))
-        (my-eassist-switch-h-cpp))
-    (my-eassist-switch-h-cpp)))
+(defadvice eassist-switch-h-cpp-try-replace (around eassist-switch-h-cpp-ad)
+  "Rebind the find-file nad switch-to-buffer to open the found file in another
+window side by side"
+  (if (and (not arg) (fboundp 'cl-letf))
+      (cl-letf
+          (;; rebind find-file and switch-to-buffer to make the eassist
+           ;; switch to file in another window
+           ((symbol-function 'find-file) 'find-file-other-window)
+           ((symbol-function 'switch-to-buffer) 'switch-to-buffer-other-window))
+        (message "function find-file and switch-to-buffer was rebinded")
+        ad-do-it)
+    ad-do-it))
 
+(ad-activate 'eassist-switch-h-cpp-try-replace)
 
-(defconst my-eassist-map
-  '(("g" . my-new-eassist-switch-h-cpp)
-    ("l" . eassist-list-methods)
-    ;;("r" . semantic-symref)
-    ))
+(defconst eassist-key-bindings
+  '(("g" . eassist-switch-h-cpp-try-replace)
+    ("l" . eassist-list-methods))
+  ;;("r" . semantic-symref))
+  "Key bindings for eassist")
 
-(defconst my-ggtags-map
-  '(("j" . ggtags-find-tag-dwim)
-    ("d" . ggtags-find-definition)
-    ("r" . ggtags-find-reference)))
-
-(require 'cc-mode)
-(add-hook 'c-mode-common-hook (lambda () (my-local-set-keys "\C-c\C-s" `(,my-semantic-map ,my-eassist-map ,my-ggtags-map))))
-
-(require 'init-cmake)
-(defun my-semantic-include-dirs ()
-  (interactive)
-  (let (maybe-cmake file-dir dir-list)
-    (setq maybe-cmake (get-maybe-cmake))
-    (when maybe-cmake
-      (setq file-dir (file-name-directory maybe-cmake))
-      (setq dir-list (cddr (directory-files file-dir)))
-      (setq dir-list (remove-if-not (lambda (x) (file-directory-p (concat file-dir x))) dir-list))
-      (setq dir-list (mapcar (lambda (x) (concat file-dir x)) dir-list)))
-     dir-list))
-
-;; doesn't work
-;; (add-hook 'c-mode-common-hook
-;;           (lambda ()
-;;             (setq-local semantic-dependency-include-path (my-semantic-include-dirs))))
-
-;; (require 'lisp-mode)
-;; (add-hook 'emacs-lisp-mode-hook (lambda () (my-local-set-keys "\C-c\C-s" `(,my-semantic-map))))
-
-;; (require 'js)
-;; (add-hook 'js-mode-hook (lambda () (my-local-set-keys "\C-c\C-s" `(,my-semantic-map))))
+(with-eval-after-load "cc-mode"
+  (add-hook 'c-mode-common-hook
+            `(lambda ()
+               (cu-set-key-bindings
+                "\C-c\C-s"
+                `(,semantic-key-bindings ,eassist-key-bindings)
+                'local))))
 
 (provide 'init-cedet)

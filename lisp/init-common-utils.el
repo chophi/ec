@@ -113,5 +113,67 @@ re-interpreted via using smart-compile-string.
           args
           :initial-value root))
 
+(defun __cu-list-files-recursively (dir re depth max-depth)
+  "Private support function for `cu-list-files-recursively'"
+  (when (file-accessible-directory-p dir)
+    (let ((files (directory-files dir t))
+          (matched nil))
+      (dolist (fullname files matched)
+        (let ((basename (file-name-nondirectory fullname)))
+          (cond
+           ;; filter out the "." and ".."
+           ((or (string= basename ".")
+                (string= basename "..")) nil)
+           ;; append the matched regular file to matched
+           ((and (file-regular-p fullname)
+                 (string-match re basename))
+            (setq matched (cons fullname matched)))
+           ;; find the matching files recursively in subdirectories
+           ((and (file-directory-p fullname)
+                 (< depth max-depth))
+            (let ((more-files
+                   (__cu-list-files-recursively fullname re (1+ depth) max-depth)))
+              (when more-files (setq matched (append matched more-files)))))))))))
+
+(defun cu-list-files-recursively (dir re &optional max-depth)
+  "Returns list of files in DIR matching to given regexp RE"
+  (when (not max-depth)
+    (setq max-depth 10))
+  (__cu-list-files-recursively dir re 0 max-depth))
+
+(defun cu-set-key-bindings (prefix binding-lists binding-type)
+  "Binding multiple binding lists to PREFIX and binding PREFIX + ? to print the
+help message.
+There must not be the same key exist in two different list in BINDING-LISTS.
+The BINDING-TYPE should be either global or local, which causing this function
+to call global-set-key or local-set-key to bind the key.
+
+Example:
+(defconst map-1 '((?a . a-func) (?b . b-func)))
+(defconst map-2 '((?c . c-func) (?c . c-func)))
+(cu-set-key-bindings \"\C-c\C-s\" '(map-1 map-2) 'local)"
+  (let ((helpmsg "")
+        (binding-func nil)
+        (unbinding-func nil))
+    (cond ((eq binding-type 'global)
+           (setq binding-func 'global-set-key
+                 unbinding-func 'global-unset-key))
+          ((eq binding-type 'local)
+           (setq binding-func 'local-set-key
+                 unbinding-func 'local-unset-key))
+          (t (error "The binding type should be either 'global or 'local")))
+    (funcall unbinding-func prefix)
+    (dolist (blist binding-lists)
+      (dolist (bitem blist)
+        (let* ((key (car bitem))
+               (key-string (if (characterp key) (char-to-string key) key))
+               (func (cdr bitem))
+               (func-name (symbol-name func)))
+          (setq helpmsg (concat helpmsg (format "%s : %s\n" key-string func-name)))
+          (funcall binding-func (concat prefix key-string) func))))
+    ;; Bind the key "prefix ?" to print the help message
+    (funcall binding-func (concat prefix "?")
+             `(lambda () (interactive) (message ,helpmsg)))))
+
 (provide 'init-common-utils)
 
