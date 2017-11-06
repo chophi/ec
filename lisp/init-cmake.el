@@ -1,12 +1,13 @@
 (require-package 'cpputils-cmake)
 (require-package 'cmake-mode)
 
-(defvar makefile-system-string
+(defvar cmake-generate-makefile-type
   (if (or (eq system-type 'windows-nt)
           (eq system-type 'ms-dos)
           (eq system-type 'cygwin))
       "-G \"MSYS Makefiles\""
-    ""))
+    "")
+  "The extra parameter specifying the makefile type to generate")
 
 (defvar cmake-executable-regexp-pair
   '("add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)
@@ -28,182 +29,111 @@
         (add-to-list 'result
                      (match-string (cadr cmake-executable-regexp-pair) line))))))
 
-(defun my-cmake-compile (arg)
-  (interactive "P")
+(with-eval-after-load "ido"
 
-  (let ((dir (file-name-directory (buffer-file-name)))
-        choose-list
-        choice
-        mode)
+  (defun generate-cmake-target ()
+    "Generate cmake target, it's mode awared, and mode is either debug or release,
+and it's binded to the CMakeLists.txt as a buffer local variable, the mode can be
+set by choosing set-mode in the choise-list"
+    (interactive)
+    (let ((current-cmake
+           (cu-find-nearest-ancestor-match
+            default-directory
+            "CMakeLists.txt")))
+      (when (not current-cmake)
+        (error "Can't find a CMakeLists.txt for %s" default-directory))
+      (let* ((dir (file-name-directory current-cmake))
+             (mode (with-current-buffer (get-file-buffer current-cmake)
+                     (if (boundp 'cmake--local-build-mode)
+                         cmake--local-build-mode
+                       (setq-local cmake--local-build-mode "debug"))))
+             (mode-dir (cu-join-path dir mode))
+             (choice (ido-completing-read
+                      (format "Compile {%s}: " mode)
+                      (append (cmake-get-executable-list (current-buffer))
+                              '("set-mode" "all" "clean" "generate" "dist-clean")))))
+        ;; redefine the compile command to be executed in dir
+        (defmacro __compile (format-spec &rest objects)
+          `(compile (format (concat "cd %s && " ,format-spec)
+                            ,mode-dir ,@objects)))
+        ;; create the directories and generate the makefile if not already exists.
+        (when (not (file-exists-p mode-dir)) (make-directory mode-dir))
 
-    (if arg (setq mode "release")
-      (setq mode "debug"))
+        (cond
+         ;; set buffer local variable cmake--local-build-mode to debug/release
+         ((equal choice "set-mode")
+          (with-current-buffer (get-file-buffer current-cmake)
+            (setq-local cmake--local-build-mode
+                        (ido-completing-read "Set Mode to: " '("debug" "release")))))
+         ;; re-generate the makefile
+         ((equal choice "generate")
+          (__compile "cmake -DCMAKE_BUILD_TYPE=%s .. %s"
+                     (capitalize mode) cmake-generate-makefile-type))
+         ;; remove the whole directory for current mode
+         ((equal choice "dist-clean")
+          (when (y-or-n-p (concat  "rm -rf " mode-dir))
+            (shell-command (concat  "rm -rf " mode-dir))))
+         ;; pass to make <target> directly
+         (t (__compile "make %s" choice)))))))
 
-    (setq choose-list (cmake-get-executable-list (current-buffer)))
-    (setq choose-list (append choose-list '("all" "clean" "generate" "dist-clean")))
-    
-    (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list))
-
-    ;; redefine the compile command to be executed in dir
-    (defmacro my--compile (string &rest objects)
-      `(compile (concat "cd " ,dir ,mode " && " (format ,string ,@objects))))
-
-    (when (not (file-exists-p (concat dir mode))) (make-directory (concat dir mode)))
-    (when (not (file-exists-p (concat dir mode "/Makefile")))
-      (my--compile "cmake .. %s" makefile-system-string))
-
-    (cond ((equal choice "generate")
-           (my--compile "cmake %s .. %s"
-                       (if (equal mode "debug")
-                           "-DCMAKE_BUILD_TYPE=Debug"
-                         "-DCMAKE_BUILD_TYPE=Release")
-                       makefile-system-string))
-          ((or (equal choice "all")
-               (equal choice "clean"))
-           (my--compile  "make %s"
-                        choice))
-          ((equal choice "dist-clean")
-           (when (y-or-n-p (concat  "rm -rf " dir mode))
-             (shell-command (concat  "rm -rf " dir mode))))
-          (t
-           (my--compile "make %s"
-                       choice)))))
 
 (defun* directory-executable-files (dir)  
   (let ((ret '()))
     (when (not (file-directory-p dir))
       (return-from directory-executable-files ret))
-    (dolist (f  (cddr (directory-files dir)) ret)
-      ;; (message f)
-      (when (file-executable-p (concat dir "/" f))
-        (add-to-list 'ret f)))
-    ret))
+    (dolist (f (directory-files dir) ret)
+      (when (and (not (equal f "."))
+                 (not (equal f ".."))
+                 (file-executable-p (concat dir "/" f)))
+        (add-to-list 'ret f)))))
 
-(defun my-cmake-run(arg)
-  (interactive "P")
-  (let (choice cmake-target-list bin-list mode suffix choice-list)
-
-    (if arg (setq mode "release" suffix "_r")
-      (setq mode "debug" suffix "_d"))
-    
-    (setq cmake-target-list
-          (cmake-get-executable-list (current-buffer))
-          bin-list
-          (directory-executable-files "bin"))
-    (dolist (target cmake-target-list)
-      (when (and (file-exists-p (concat mode "/" target))
-                 (file-executable-p (concat mode "/" target)))
-        (push (concat mode "/" target) choice-list)))
-    (setq cmake-target-list (mapcar (lambda (x) (concat x suffix)) cmake-target-list))
-    (setq bin-list (remove-if-not (lambda (x) (member x cmake-target-list)) bin-list))
-    (dolist (bin-file bin-list)
-      (push (concat "bin/" bin-file) choice-list))
-    (setq choice (ido-completing-read "RUN EXE: " choice-list))
-    (compile choice)))
+(defun run-cmake-target ()
+  "Run the cmake built target."
+  (interactive)
+  (let ((current-cmake
+         (cu-find-nearest-ancestor-match
+          default-directory
+          "CMakeLists.txt")))
+    (when (not current-cmake)
+      (error "Can't find a CMakeLists.txt for %s" default-directory))
+    (let* ((dir (file-name-directory current-cmake))
+           (mode (with-current-buffer (get-file-buffer current-cmake)
+                   (if (boundp 'cmake--local-build-mode)
+                       cmake--local-build-mode
+                     (setq-local cmake--local-build-mode "debug"))))
+           (suffix (if (equal mode "debug") "_d" "_r"))
+           (cmake-target-list (cmake-get-executable-list
+                               (get-file-buffer current-cmake)))
+           (bin-list (directory-executable-files "bin"))
+           (choice-list (seq-filter
+                         (lambda (filename) (and (file-exists-p filename)
+                                                 (file-executable-p filename)))
+                         (mapcar `(lambda (target)
+                                    (cu-join-path ,mode target))
+                                 cmake-target-list))))
+      (setq cmake-target-list
+            (mapcar (lambda (x) (concat x suffix)) cmake-target-list))
+      (setq bin-list
+            (remove-if-not (lambda (x) (member x cmake-target-list)) bin-list))
+      (dolist (bin-file bin-list)
+        (push (concat "bin/" bin-file) choice-list))
+      (setq choice (ido-completing-read "RUN EXE: " choice-list))
+      (compile choice))))
 
 (defun my-cmake-help ()
   (interactive)
-  (cmake-help-command)
-  )
-
-(defun my-cmake-test (arg)
-  (interactive "P")
-  (let (mode)
-    (if arg (setq mode "release") (setq mode "debug"))
-    ;; ctest -V : print the test info
-    (compile (format "cd %s && ctest -V" mode))))
+  (cmake-help-command))
 
 (add-hook 'cmake-mode-hook
           (lambda () (interactive)
-            (local-set-key "\C-c\C-c" 'my-cmake-compile)
-            (local-set-key "\C-c\C-e" 'my-cmake-run)
-            (local-set-key "\C-c\C-t" 'my-cmake-test)
-            (local-set-key "\C-ch" 'my-cmake-help)))
+            (local-set-key "\C-c\C-c" 'generate-cmake-target)
+            (local-set-key "\C-c\C-e" 'run-cmake-target)
+            (local-set-key "\C-ch" 'cmake-help-command)))
 
-;; add cmake gtest error string
+;; Add cmake gtest error string
 (require 'compile)
-(add-to-list 'compilation-error-regexp-alist '("^[0-9]+: \\(.*?\\):\\([0-9]+\\): Failure$" 1 2))
-
-(defvar cmake-project-lists '())
-
-(let ((f "~/.emacs.d/.cmake-project-lists.el"))
-  (when (file-exists-p f)
-    (load-file f)))
-
-;; redefine the c-mode-base-map
-(require 'init-smart-compile)
-(require 'init-run-c-progam)
-
-(defun get-maybe-cmake ()
-  (let ((bufname (buffer-file-name))
-        (maybe-cmake nil)
-        (cmakefile nil))
-    (catch 'loop
-      (dolist (proj cmake-project-lists)
-        (setq maybe-cmake (concat proj "/CMakeLists.txt"))
-        ;; (message "[%s,%s]" proj (substring bufname 0 (length proj)))
-        (when (and (file-exists-p maybe-cmake)
-                   (<= (length proj) (length bufname))
-                   (equal proj (substring bufname 0 (length proj))))
-          (setq cmakefile maybe-cmake)
-          (throw 'loop cmakefile))))
-    cmakefile))
-
-
-(if (eq os 'linux)
-    (setq *ndk-build-bin-path* "~/software/android-ndk-r10e")
-  (setq *ndk-build-bin-path* "path-to-android-ndk-build"))
-
-(defun my-smart-compile ()
-  (interactive)
-  (if (file-exists-p (format "%s/%s"
-                             (file-name-directory (buffer-file-name))
-                             "Android.mk"))
-      (progn (compile (format "PATH=$PATH:%s ndk-build"
-                              *ndk-build-bin-path*)))
-    (let ((maybe-cmake nil))
-      (setq maybe-cmake (get-maybe-cmake))
-      (if maybe-cmake
-          (progn (find-file-noselect maybe-cmake)
-                 (with-current-buffer (get-file-buffer maybe-cmake)
-                   (call-interactively 'my-cmake-compile)))
-        (call-interactively 'smart-compile)))))
-
-(require 'init-custom-compile)
-(defun my-smart-run ()
-  (interactive)
-  (if (file-exists-p (format "%s/%s"
-                             (file-name-directory (buffer-file-name))
-                             "Android.mk"))
-      (let ((binary (ido-read-file-name "Select a binary to run: "
-                                        "../libs/")))
-        (send-command-to-terminal
-         (choose-buffer-local-terminal)
-         (format "adb push %s /data/ && adb wait-for-device && adb shell /data/%s"
-                 binary (file-name-nondirectory binary))))
-    (let ((maybe-cmake (get-maybe-cmake)))
-      (if maybe-cmake
-          (progn (find-file-noselect maybe-cmake)
-                 (with-current-buffer (get-file-buffer maybe-cmake)
-                   (call-interactively 'my-cmake-run)))
-        (call-interactively 'run-c-program)))))
-
-(define-key c-mode-base-map "\C-c\C-c" 'my-smart-compile)
-
-;; can't set using define-key, so change to set hook here!
-;; (define-key c-mode-base-map "\C-c\C-e" 'my-smart-run)
-(add-hook 'c-mode-common-hook
-          (lambda () (local-set-key "\C-c\C-e" 'my-smart-run)))
-
-(defun my-jump-to-cmake ()
-  (interactive)
-  (let ((maybe-cmake (get-maybe-cmake)))
-     (if maybe-cmake
-         (find-file-other-window maybe-cmake)
-       (error "no cmake file related"))))
-
-(add-hook 'c-mode-common-hook
-          (lambda () (local-set-key "\C-cm" 'my-jump-to-cmake)))
+(add-to-list 'compilation-error-regexp-alist
+             '("^[0-9]+: \\(.*?\\):\\([0-9]+\\): Failure$" 1 2))
 
 (provide 'init-cmake)
 

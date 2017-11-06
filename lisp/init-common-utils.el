@@ -1,3 +1,4 @@
+(require 'cl)
 (defun cu-program-exists-p (program)
   (not (equal (shell-command-to-string (concat "which " program)) "")))
 
@@ -187,6 +188,39 @@ Example:
                         (substring str 0 (length comment-prefix))))))
       (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n"))
      "")))
+
+(defun cu-is-dir-or-dirlink-p (path)
+  (and (file-exists-p path)
+       (let ((first-attr (car (file-attributes path))))
+         (or (eq first-attr t)
+             (and (stringp first-attr) (cu-is-dir-or-dirlink-p first-attr))))))
+
+(defun* __cu-find-nearest-ancestor-match (dir filename &optional is-regexp)
+  (when (or (not dir) (equal dir "/"))
+    (return-from __cu-find-nearest-ancestor-match nil))
+  ;; check if there's a match in current folder.
+  (if is-regexp
+      (dolist (file (directory-files dir))
+        (when (string-match-p filename file)
+          (return-from __cu-find-nearest-ancestor-match (cu-join-path dir file))))
+    (let ((file (cu-join-path dir filename)))
+      (when (file-exists-p file)
+        (return-from __cu-find-nearest-ancestor-match file))))
+  (__cu-find-nearest-ancestor-match
+   (file-name-directory (directory-file-name dir))
+   filename is-regexp))
+
+(defun cu-find-nearest-ancestor-match (path filename &optional is-regexp)
+  "Search the nearest ancestor file, begin at DIR, whose name matches FILENAME,
+if IS-REGEXP is not nil, use `string-match-p' to search the match file, otherwise
+just compare the filename with `string='"
+  ;; append "/" for directory.
+  (when (and (cu-is-dir-or-dirlink-p path)
+             (not (equal (substring path (1- (length path))) "/")))
+    (setq path (concat path "/")))
+  ;; extract the dir part.
+  (setq path (file-name-directory (expand-file-name path)))
+  (__cu-find-nearest-ancestor-match path filename is-regexp))
 
 (provide 'init-common-utils)
 
