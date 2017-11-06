@@ -8,31 +8,25 @@
       "-G \"MSYS Makefiles\""
     ""))
 
+(defvar cmake-executable-regexp-pair
+  '("add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)
+  "The regexp for searching exectuable in cmake makefiles")
 
-(defun no-comment-content (buf comment-prefix)
-  (let (str-list
-        (content ""))
-    (when (not buf)
-      (setq buf (current-buffer)))
-    (setq str-list
-          (with-current-buffer buf
-            (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")))
-    (dolist (str str-list content)
-      (when (or (< (length str) (length comment-prefix))
-                (not (equal comment-prefix
-                            (substring str 0 (length comment-prefix))))) 
-        (setq content (concat content "\n" str))))
-    content))
+(defvar cmake-comment-prefix
+  "#"
+  "The prefix for comment line")
 
-(defun extract-list(buf comment-prefix regex part)
-  (let ((pos 1)
-        (result '())
-        (str (no-comment-content buf comment-prefix)))
-    (while (and (< pos (point-max))
-                (string-match regex str pos))
-      (add-to-list 'result (match-string part str))
-      (setq pos (match-end part)))
-    result))
+(defun cmake-get-executable-list (buf)
+  "Get a exectuable list from a CMakeLists.txt buffer"
+  (let ((result '()))
+    (dolist (line
+             (split-string
+              (cu-buffer-content-without-comment-lines buf cmake-comment-prefix)
+              "\n")
+             result)
+      (when (string-match (car cmake-executable-regexp-pair) line)
+        (add-to-list 'result
+                     (match-string (cadr cmake-executable-regexp-pair) line))))))
 
 (defun my-cmake-compile (arg)
   (interactive "P")
@@ -45,8 +39,7 @@
     (if arg (setq mode "release")
       (setq mode "debug"))
 
-    (setq choose-list
-          (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1))
+    (setq choose-list (cmake-get-executable-list (current-buffer)))
     (setq choose-list (append choose-list '("all" "clean" "generate" "dist-clean")))
     
     (setq choice (ido-completing-read (format "COMPILE{%s}: " mode)  choose-list))
@@ -94,7 +87,7 @@
       (setq mode "debug" suffix "_d"))
     
     (setq cmake-target-list
-          (extract-list nil "#" "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)
+          (cmake-get-executable-list (current-buffer))
           bin-list
           (directory-executable-files "bin"))
     (dolist (target cmake-target-list)

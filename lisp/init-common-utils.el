@@ -175,5 +175,18 @@ Example:
     (funcall binding-func (concat prefix "?")
              `(lambda () (interactive) (message ,helpmsg)))))
 
+(defun cu-buffer-content-without-comment-lines (buf comment-prefix)
+  "Return the content in BUF with comment lines removed"
+  (with-current-buffer buf
+    (seq-reduce
+     (lambda (a b) (concat a b "\n"))
+     (seq-filter
+      (lambda (str)
+        (or (< (length str) (length comment-prefix))
+            (not (equal comment-prefix
+                        (substring str 0 (length comment-prefix))))))
+      (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n"))
+     "")))
+
 (provide 'init-common-utils)
 

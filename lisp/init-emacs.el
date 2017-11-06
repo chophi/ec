@@ -50,7 +50,7 @@
 ;; c++ configuration
 (require 'init-cc-mode)
 (require 'init-cc-misc-support)
-
+(require 'init-cmake)
 (require 'init-smart-compile)
 (require 'init-run-c-progam)
 
@@ -58,8 +58,6 @@
 (require 'init-org)
 (require 'init-org-export-settings)
 (require 'init-org-publish-settings)
-
-(require 'init-cmake)
 
 (require 'init-image-support)
 
