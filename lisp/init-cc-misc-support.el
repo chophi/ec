@@ -183,4 +183,4 @@ window side by side"
                 `(,semantic-key-bindings ,eassist-key-bindings)
                 'local))))
 
-(provide 'init-cedet)
+(provide 'init-cc-misc-support)
