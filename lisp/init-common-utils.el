@@ -222,5 +222,19 @@ just compare the filename with `string='"
   (setq path (file-name-directory (expand-file-name path)))
   (__cu-find-nearest-ancestor-match path filename is-regexp))
 
+(defun cu-check-image-support ()
+  "Check if the image types: '(png jpeg tiff gif xpm svg) are supported.
+Return a list that a supported"
+  (interactive)
+  (seq-filter (lambda (type)
+                (if (image-type-available-p type)
+                    (progn
+                      (message (format "%s is supported" (symbol-name type)))
+                      t)
+                  (progn
+                    (message (format "%s is not supported" (symbol-name type)))
+                    nil)))
+              '(png jpeg tiff gif xpm svg)))
+
 (provide 'init-common-utils)
 
