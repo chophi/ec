@@ -2,15 +2,6 @@
 ;;; org-mode
 (require 'ido)
 
-(defun insert-absolute-path(absolute)
-  (interactive "P")
-  (let ((path (ido-read-file-name "Insert a Abstract: ")))
-    (if absolute
-        (insert path)
-      (insert (replace-regexp-in-string (getenv "HOME") "~" path )))))
-(define-key global-map "\C-c\C-l" 'insert-absolute-path)
-
-
 ;;; auto indent when paste some code.
 (dolist (command '(yank yank-pop))
   (eval

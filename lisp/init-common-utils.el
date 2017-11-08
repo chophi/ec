@@ -236,5 +236,44 @@ Return a list that a supported"
                     nil)))
               '(png jpeg tiff gif xpm svg)))
 
+;; TODO: make it a absolute and relative pair
+(with-eval-after-load "ido"
+
+  (defun _cu-insert-path(replace-home)
+    (let ((path (ido-read-file-name "Insert a Abstract: ")))
+      (if replace-home
+          (insert (replace-regexp-in-string (getenv "HOME") "~" path))
+        (insert path))))
+  (defun cu-insert-path-replace-home () (interactive) (_cu-insert-path t))
+  (defun cu-insert-path-absolute-home () (interactive) (_cu-insert-path nil))
+  (defun cu-save-current-file-path ()
+    (interactive)
+    (kill-new
+     (replace-regexp-in-string (getenv "HOME") "~" (buffer-file-name))))
+
+  (defun cu-save-current-file-path-org-style ()
+    (interactive)
+    (let ((name (replace-regexp-in-string
+                 (getenv "HOME") "~" (buffer-file-name))))
+      (kill-new (format "[[%s][%s]]" name (file-name-nondirectory name)))))
+  
+  (defconst cu-path-util-map
+    '((?i . cu-insert-path-replace-home)
+      (?I . cu-insert-path-absolute-home)
+      (?s . cu-save-current-file-path)
+      (?o . cu-save-current-file-path-org-style))
+    "Util key map for path saving to ring / paste, etc")
+
+  (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
+  (with-eval-after-load "java-mode" (define-key java-mode-map "\C-c\C-l" nil))
+  (cu-set-key-bindings "\C-c\C-l" `(,cu-path-util-map) 'global)
+
+  (with-eval-after-load "org"
+    (add-hook 'org-mode-hook             
+              (lambda ()
+                 (cu-set-key-bindings "\C-c\C-l"
+                                     `(,cu-path-util-map ((?l . org-insert-link)))
+                                     'local)))))
+
 (provide 'init-common-utils)
 
