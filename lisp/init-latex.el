@@ -1,11 +1,10 @@
 (require-package 'auctex)
-(add-hook
- 'LaTeX-mode-hook
+(add-hook 'LaTeX-mode-hook
  (lambda()
-   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
-   (add-to-list 'TeX-command-list '("XeLaTeX(minted)" "%`xelatex%(mode) -shell-escape %' %t" TeX-run-TeX nil t))
+   (push '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t) TeX-command-list)
+   (push '("XeLaTeX(minted)" "%`xelatex%(mode) -shell-escape %' %t" TeX-run-TeX nil t)
+    TeX-command-list)
    (setq TeX-command-default "XeLaTeX(minted)")
    (setq TeX-save-querynil )
-   (setq TeX-show-compilation t)
-   ))
+   (setq TeX-show-compilation t)))
 (provide 'init-latex)

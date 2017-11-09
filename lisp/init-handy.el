@@ -2,26 +2,31 @@
 ;;; org-mode
 (require 'ido)
 
+(defvar often-used-mode-list
+  '(emacs-lisp-mode
+    lisp-mode
+    clojure-mode
+    scheme-mode
+    haskell-mode
+    ruby-mode
+    rspec-mode
+    python-mode
+    c-mode
+    c++-mode
+    objc-mode
+    latex-mode
+    js-mode
+    plain-tex-mode
+    racket-mode)
+  "Some often used mode which I'd like to enable some features
+like: auto indent after pasting, fci mode, etc..")
+
 ;;; auto indent when paste some code.
 (dolist (command '(yank yank-pop))
   (eval
    `(defadvice ,command (after indent-region activate)
       (and (not current-prefix-arg)
-           (member major-mode
-                   '(emacs-lisp-mode
-                     lisp-mode
-                     clojure-mode
-                     scheme-mode
-                     haskell-mode
-                     ruby-mode
-                     rspec-mode
-                     python-mode
-                     c-mode
-                     c++-mode
-                     objc-mode
-                     latex-mode
-                     js-mode
-                     plain-tex-mode))
+           (member major-mode often-used-mode-list)
            (let ((mark-even-if-inactive transient-mark-mode))
              (indent-region (region-beginning) (region-end) nil))))))
 
@@ -32,17 +37,17 @@ This function skips over horizontal and vertical whitespace and line
 continuations."
   (if limit
       `(let ((limit (or ,limit (point-min))))
-	 (while (progn
-		  ;; skip-syntax-* doesn't count \n as whitespace..
-		  (skip-chars-backward " \t\n\r\f\v" limit)
-		  (and (eolp)
-		       (eq (char-before) ?\\)
-		       (> (point) limit)))
-	   (backward-char)))
+	     (while (progn
+		          ;; skip-syntax-* doesn't count \n as whitespace..
+		          (skip-chars-backward " \t\n\r\f\v" limit)
+		          (and (eolp)
+		               (eq (char-before) ?\\)
+		               (> (point) limit)))
+	       (backward-char)))
     '(while (progn
-	      (skip-chars-backward " \t\n\r\f\v")
-	      (and (eolp)
-		   (eq (char-before) ?\\)))
+	          (skip-chars-backward " \t\n\r\f\v")
+	          (and (eolp)
+		           (eq (char-before) ?\\)))
        (backward-char))))
 
 (defun my-hungry-delete-backwards ()
@@ -55,6 +60,7 @@ See also \\[c-hungry-delete-forward]."
     (if (/= (point) here)
 	(delete-region (point) here)
       (backward-delete-char-untabify 1))))
+
 (define-key global-map (kbd "<backspace>") 'my-hungry-delete-backwards)
 
 ;;; match paren with %
@@ -64,20 +70,25 @@ See also \\[c-hungry-delete-forward]."
   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
 	((looking-at "\\s\)") (forward-char 1) (backward-list 1))
 	(t (self-insert-command (or arg 1)))))
+
 (global-set-key "%" 'match-paren)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; doc-view-mode-maybe is boring, here i delete doc associatiation with it.
 (delete (rassoc 'doc-view-mode-maybe auto-mode-alist) auto-mode-alist)
 
-(setq explorer-command
-      (if (eq os 'linux) "gnome-open"
-        (if (eq os 'macos)
-            "open"
-          "explorer")))
+(defvar file-explorer-command
+  (case os
+    ('macos "open")
+    ('linux "gnome-open")
+    ('windows "explorer")
+    (t (error "unknown system, can't set file-explorer-command")))
+  "Command to open file in file explorer")
+
 (defun my-explore-curdir()
   (interactive)
-  (shell-command (concat "cd \"" default-directory "\" && " explorer-command " .")))
+  (shell-command
+   (format "cd \"%s\" && %s ." default-directory file-explorer-command)))
 
 ;;----------------------------------------------------------------------------
 ;; if no region selected, comment/uncomment current line
@@ -93,19 +104,12 @@ end of the line."
   (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
       (comment-or-uncomment-region (line-beginning-position) (line-end-position))
     (comment-dwim arg)))
+
 (global-unset-key "\M-;")
 (global-set-key "\M-;" 'comment-line-dwim)
 
-
-(fset 'yes-or-no-p 'y-or-n-p)
-(setq compilation-scroll-output 1)
-;;; I need the echo area to see key bind message, sometimes it may be a long list.
-(setq max-mini-window-height 0.5)
-
-
 ;; change backup and auto-save directory
-(setq backup-directory-alist 
-      '(("[:ascii:]*" . "~/.emacs.d/backup-file")))
+(setq backup-directory-alist '(("[:ascii:]*" . "~/.emacs.d/backup-file")))
 
 (let ((auto-save-file-directory "~/.emacs.d/auto-save-file"))
   (when (not (file-exists-p auto-save-file-directory))
@@ -113,29 +117,15 @@ end of the line."
   (setq auto-save-file-name-transforms 
         `((".*" ,(concat auto-save-file-directory "/\\2") t))))
 
-(defun my-practise-dir ()
-  (interactive)
-  (dired "~/practise"))
-
-(when (eq window-system 'w32)
-  (setq visible-bell t)
-  (setq desktop-dirname "d:/emacs-24.3/")
-  (setq smart-compile-make-program "mingw32-make ")  
-  )
-
-
-(defun my-ring-bell-function ()
-  (message "try to ring bell"))
 (setq visible-bell t
-      ring-bell-function 'my-ring-bell-function)
+      ring-bell-function (lambda () (message "Try to ring bell")))
 
 ;; Prevent issues with the Windows null device (NUL)
 ;; when using cygwin find with rgrep.
-(defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
+(defadvice grep-compute-defaults (around set-null-device activate)
   "Use cygwin's /dev/null as the null-device."
   (let ((null-device "/dev/null"))
     ad-do-it))
-(ad-activate 'grep-compute-defaults)
 
 (add-hook 'prog-mode-hook
           (lambda ()
@@ -144,7 +134,6 @@ end of the line."
                                       ("\\<\\(FIXME\\|MODIFIED\\|DEBUG\\|UPDATED\\|TODO\\):" 1 'font-lock-warning-face prepend)))))
 
 (global-set-key (kbd "C-!") 'shell-command)
-
 (global-set-key (kbd "\C-xf") 'other-frame)
 
 (defun handy-scratch()
@@ -205,8 +194,7 @@ end of the line."
   (with-temp-buffer
     (insert-file-contents filename)
     (goto-char (buffer-end 1))
-    (eval-last-sexp t)
-    ))
+    (eval-last-sexp t)))
 
 ;; If emacs is run in a terminal, the clipboard- functions have no
 ;; effect. Instead, we use of xsel, see
