@@ -256,12 +256,38 @@ Return a list that a supported"
     (let ((name (replace-regexp-in-string
                  (getenv "HOME") "~" (buffer-file-name))))
       (kill-new (format "[[%s][%s]]" name (file-name-nondirectory name)))))
+
+  (defun cu-open-link ()
+    (interactive)
+
+    (defun is-separator (str i)
+      "To check if the char at I of STR is a separator"
+      (let ((ret nil)
+            (ch (elt str i)))
+        (dolist (c (append "\n,\"; :" nil) ret)
+          (when (equal ch c) (setq ret t)))))
+    
+    (let* ((start (max (- (point) 256) 1))
+           (end (min (+ (point) 256) (buffer-size)))
+           (cur (- (point) start))
+           (str (buffer-substring-no-properties start end))
+           (len (length str))
+           (start (do ((i cur))
+                      ((or (< i 0) (is-separator str i)) (1+ i))
+                    (decf i)))
+           (end (do ((i cur))
+                    ((or (>= i len) (is-separator str i)) i)
+                  (incf i)))
+           (maybe-filename (substring str start end)))
+      (when (file-exists-p maybe-filename)
+        (find-file-other-window maybe-filename))))
   
   (defconst cu-path-util-map
     '((?i . cu-insert-path-replace-home)
       (?I . cu-insert-path-absolute-home)
       (?s . cu-save-current-file-path)
-      (?o . cu-save-current-file-path-org-style))
+      (?o . cu-save-current-file-path-org-style)
+      (?j . cu-open-link))
     "Util key map for path saving to ring / paste, etc")
 
   (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
@@ -274,6 +300,14 @@ Return a list that a supported"
                  (cu-set-key-bindings "\C-c\C-l"
                                      `(,cu-path-util-map ((?l . org-insert-link)))
                                      'local)))))
+
+(defun cu-eval-file (file)
+  "Return the eval result of filename as expression"
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (buffer-end 1))
+    (eval-last-sexp t)))
+
 
 (provide 'init-common-utils)
 

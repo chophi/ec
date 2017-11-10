@@ -12,6 +12,17 @@
     (require feature)))
 (require-if-exist 'init-private-custom)
 
+(defmacro with-parameters-bounded (parameters &rest body)
+  `(let ((all-para-bounded t))
+     (dolist (p ,parameters)
+       (when (not (boundp p))
+         (message
+          "%s is not bounded, please define it in init-private-custom"
+          (symbol-name p))
+         (setq all-para-bounded nil)))
+     (when all-para-bounded
+       ,@body)))
+
 (require 'init-elpa)
 
 (require 'init-common-utils)
@@ -66,6 +77,7 @@
 (require 'init-latex)
 (require 'init-openwith)
 (require 'init-handy)
+(require 'init-binary-coding)
 (require 'init-js)
 (require 'init-ruhoh)
 

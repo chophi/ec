@@ -91,7 +91,7 @@
         (push compile-config processed-config)
         (add-to-list 'compile-exprs `(,(file-name-directory compile-config)
                                       ,compile-config
-                                      ,(eval-file-as-lisp-expression compile-config))))
+                                      ,(cu-eval-file compile-config))))
       )
     (dolist (global-compile-dir *global-compile-directory-list*)
       (when (file-exists-p global-compile-dir)
@@ -107,7 +107,7 @@
                          (file-truename (file-chase-links compile-config)))
                   (setq is-processed-file t)))
             (when (not is-processed-file)
-              (dolist (compile-expr (eval-file-as-lisp-expression compile-config))
+              (dolist (compile-expr (cu-eval-file compile-config))
                 (add-to-list 'compile-exprs (list (car compile-expr)
                                                   compile-config
                                                   (cadr compile-expr)
