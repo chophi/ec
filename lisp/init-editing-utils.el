@@ -12,6 +12,8 @@
 (setq inhibit-startup-message t)
 (setq warning-suppress-types '((initialization)))
 
+(fset 'yes-or-no-p 'y-or-n-p)
+
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
