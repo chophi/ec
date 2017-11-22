@@ -22,7 +22,7 @@
 ;; http://ergoemacs.org/emacs/emacs_key_notation_return_vs_RET.html
 (define-key eopengrok-mode-map (kbd "RET") 'eopengrok-jump-to-source)
 
-(cu-set-key-bindings "\C-c\C-g" `(,my-opengrok-map) 'global)
+(cu-set-key-bindings global-map "\C-c\C-g" `(,my-opengrok-map))
 
 (defun --read-ignore-file (dir)
   (let ((ignore-file (concat dir ".opengrok_ignore")))

@@ -317,34 +317,8 @@
       ("v" . org/ruhoh-view-post)
       ("g" . org/ruhoh-publish-to-github))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; duplicated, can make it shared
-(defun ts-help-with-key-binds(keys)
-  "get the help message from the key binds variables and read key, then exec"
-  ;; get help message
-  (let (msg)
-    (dolist (key keys)
-      (setq msg (concat msg (format "{[%s]: %s} \n" (car key) (cdr key)))))
-    (message msg))
-
-  ;; read key and get it run;
-  (let* ((key (read-key))
-	 (func (cdr (assoc (format "%c" key) keys))))
-    (if func
-	(funcall func)
-      (error "key <%s> was not binded\n" key))
-    ))
-
-;; (assoc (format "%c" (read-key)) android-mode-keys)
-
-
-(define-key global-map (kbd "\C-c\C-p")
-  (lambda() (interactive)
-    (ts-help-with-key-binds org/ruhoh-keys)))
-
-(define-key org-mode-map (kbd "\C-c\C-p")
-  (lambda() (interactive)
-    (ts-help-with-key-binds org/ruhoh-keys)))
+(cu-set-key-bindings global-map "\C-c\C-p" org/ruhoh-keys)
+(cu-set-key-bindings org-mode-map "\C-c\C-p" org/ruhoh-keys)
 
 ;; (defun msg-me (process event)
 ;;   (princ

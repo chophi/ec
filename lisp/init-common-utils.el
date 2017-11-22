@@ -142,7 +142,7 @@ re-interpreted via using smart-compile-string.
     (setq max-depth 10))
   (__cu-list-files-recursively dir re 0 max-depth))
 
-(defun cu-set-key-bindings (prefix binding-lists binding-type)
+(defun _deprecated_cu-set-key-bindings (prefix binding-lists binding-type)
   "Binding multiple binding lists to PREFIX and binding PREFIX + ? to print the
 help message.
 There must not be the same key exist in two different list in BINDING-LISTS.
@@ -176,6 +176,48 @@ Example:
     (funcall binding-func (concat prefix "?")
              `(lambda () (interactive) (message ,helpmsg)))))
 
+(defun _make-commands-map-with-help-msg (binding-lists)
+  (let ((converted-list nil)
+        (to-test (caar binding-lists))
+        (list-copy nil))
+    (if (or (stringp to-test) (characterp to-test))
+        (setq converted-list binding-lists)
+      (progn (setq to-test (caaar binding-lists))
+             (when (not (or (stringp to-test) (characterp to-test)))
+               (error "invalid parameter 'binding-lists'"))
+             (setq converted-list (seq-reduce 'append binding-lists nil))))
+    (dolist (ele converted-list)
+      (when (not (or (stringp (car ele)) (characterp (car ele))))
+        (error "the key should be character or string"))
+      (setq list-copy
+            (if (characterp (car ele))
+                (add-to-list 'list-copy `(,(char-to-string (car ele)) . ,(cdr ele)))
+              (add-to-list 'list-copy ele))))
+    `(lambda () (interactive)
+       (let (msg)
+         (dolist (key ',list-copy)
+           (setq msg (concat msg (format "{ [%s] => %-70s } \n" (car key) (cdr key)))))
+         (message msg))
+       ;; read key and get it run;
+       (let* ((key (read-key))
+	          (func (cdr (assoc (format "%c" key) ',list-copy))))
+         (if func
+	         (funcall func)
+           (error "key <%s> was not binded\n" key))))))
+
+(defun cu-set-key-bindings (keymap prefix binding-lists)
+  "Binding multiple binding lists to PREFIX and binding PREFIX + ? to print the
+help message.
+There must not be the same key exist in two different list in BINDING-LISTS.
+The BINDING-TYPE should be either global or local, which causing this function
+to call global-set-key or local-set-key to bind the key.
+
+Example:
+(defconst map-1 '((?a . a-func) (?b . b-func)))
+(defconst map-2 '((?c . c-func) (?c . c-func)))
+(cu-set-key-bindings \"\C-c\C-s\" '(map-1 map-2) 'local)"
+  (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists)))
+  
 (defun cu-buffer-content-without-comment-lines (buf comment-prefix)
   "Return the content in BUF with comment lines removed"
   (with-current-buffer buf
@@ -292,14 +334,10 @@ Return a list that a supported"
 
   (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
   (with-eval-after-load "java-mode" (define-key java-mode-map "\C-c\C-l" nil))
-  (cu-set-key-bindings "\C-c\C-l" `(,cu-path-util-map) 'global)
-
+  (cu-set-key-bindings global-map "\C-c\C-l" `(,cu-path-util-map))
   (with-eval-after-load "org"
-    (add-hook 'org-mode-hook             
-              (lambda ()
-                 (cu-set-key-bindings "\C-c\C-l"
-                                     `(,cu-path-util-map ((?l . org-insert-link)))
-                                     'local)))))
+    (cu-set-key-bindings org-mode-map "\C-c\C-l"
+                           `(,cu-path-util-map ((?l . org-insert-link))))))
 
 (defun cu-eval-file (file)
   "Return the eval result of filename as expression"
