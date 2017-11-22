@@ -2,7 +2,12 @@
 
 (global-set-key (kbd "C-x vq") 'vr/query-replace)
 (global-set-key (kbd "C-x vr") 'vr/replace)
-(global-set-key (kbd "\C-xo") 'switch-window)
+(global-set-key (kbd "\C-xw")
+                (lambda ()
+                  (interactive)
+                  (when (one-window-p)
+                    (split-window-horizontally-instead))
+                  (switch-window)))
 
 
 (add-hook 'emacs-lisp-mode-hook (lambda ()  (define-key emacs-lisp-mode-map "\C-\M-x" nil)))
