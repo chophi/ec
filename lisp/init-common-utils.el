@@ -346,6 +346,12 @@ Return a list that a supported"
     (goto-char (buffer-end 1))
     (eval-last-sexp t)))
 
+(defun cu-add-exec-path-maybe (path &optional append)
+  "Add the path to exec-path if PATH exists and it's a directory,
+ add the path to last if APPEND is not nil"
+  (if (cu-is-dir-or-dirlink-p path)
+      (add-to-list 'exec-path path append)
+    (message "WARNING: %s is not a directory" path)))
 
 (provide 'init-common-utils)
 

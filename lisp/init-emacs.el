@@ -79,12 +79,8 @@
 (require 'init-handy)
 (require 'init-binary-coding)
 (require 'init-js)
-(require 'init-ruhoh)
 
-;;; deprecated from windows
-;; (require 'init-topcoder)
-
-(require 'init-lisps)
+(require 'init-lisp-and-scheme)
 (require 'init-rainbow-delimiters)
 
 
