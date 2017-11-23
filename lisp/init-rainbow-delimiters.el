@@ -1,4 +1,12 @@
 (require-package 'rainbow-delimiters)
-(add-hook 'emacs-lisp-mode-hook (lambda () (rainbow-delimiters-mode)))
-(add-hook 'c-mode-common-hook (lambda () (rainbow-delimiters-mode)))
+
+(defun turn-on-rainbow-delimiters-mode ()
+  (rainbow-delimiters-mode 1))
+
+(dolist (hook
+         '(emacs-lisp-mode
+           racket-mode
+           c-mode-common-hook))
+  (add-hook hook 'turn-on-rainbow-delimiters-mode))
+
 (provide 'init-rainbow-delimiters)

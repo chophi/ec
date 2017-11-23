@@ -21,8 +21,6 @@
     ;; installed by brew install coreutils
     (setq insert-directory-program "/usr/local/opt/coreutils/libexec/gnubin/ls"))
 
-
-
 (defun dired-do-command (command)
   "Run COMMAND on marked files. Any files not already open will be opened.
 After this command has been run, any buffers it's modified will remain
@@ -62,5 +60,25 @@ open and unsaved."
          (?n (dired-narrow))
          (?f (dired-narrow-fuzzy))
          (?r (dired-narrow-regexp))))))
+
+(defun my-dired-sort-func ()
+  (interactive)
+  (let (choice choice-switcher-list switcher)
+    (setq choice (read-char
+                  "Sort Dir By: s[size] x[extension] c[ctime] u[utime] t[time] o[no extra]")
+          choice-switcher-list '((?s "S")
+                                 (?x "X")
+                                 (?c "ct")
+                                 (?u "ut")
+                                 (?t "t")
+                                 (?o ""))
+          switcher (cadr (assoc choice choice-switcher-list)))
+    (dired-sort-other (concat dired-listing-switches switcher))))
+
+(setq dired-listing-switches
+      (concat "--group-directories-first " dired-listing-switches))
+
+(require 'dired)
+(define-key dired-mode-map (kbd "s") 'my-dired-sort-func)
 
 (provide 'init-dired)

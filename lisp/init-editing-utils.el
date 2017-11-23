@@ -11,6 +11,7 @@
 (menu-bar-mode -1)
 (setq inhibit-startup-message t)
 (setq warning-suppress-types '((initialization)))
+(setq delete-by-moving-to-trash t)
 
 (fset 'yes-or-no-p 'y-or-n-p)
 

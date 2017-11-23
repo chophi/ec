@@ -79,24 +79,11 @@
 (require 'init-handy)
 (require 'init-binary-coding)
 (require 'init-js)
-(require 'init-ruhoh)
 
-;;; deprecated from windows
-;; (require 'init-topcoder)
-
-(require 'init-lisps)
+(require 'init-lisp-and-scheme)
 (require 'init-rainbow-delimiters)
 
-
-;; (require 'init-metapost)
 (require 'init-pandoc)
-
-(require 'important-parameter-settings)
-;; (require 'init-chrome-emacs)
-
-(require 'init-load-snippets)
-(require 'init-sort-dired)
-
 
 (require 'init-dired)
 (require 'init-uniform-env)
