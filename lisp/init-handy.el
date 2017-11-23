@@ -2,7 +2,7 @@
 ;;; org-mode
 (require 'ido)
 
-(defvar often-used-mode-list
+(defconst often-used-mode-list
   '(emacs-lisp-mode
     lisp-mode
     clojure-mode
@@ -10,7 +10,6 @@
     haskell-mode
     ruby-mode
     rspec-mode
-    python-mode
     c-mode
     c++-mode
     objc-mode
