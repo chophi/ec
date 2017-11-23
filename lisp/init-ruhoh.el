@@ -306,19 +306,17 @@
                          ruhoh-blog-root-directory
                          (format-time-string "%Y-%m-%d"))))
 
-(defconst org/ruhoh-keys
-  (if (company-computer-p)
-      '()
+(when (not (company-computer-p))
+  (defconst org/ruhoh-keys
     '(("u" . ruhoh-rackup)
       ("d" . ruhoh-rackdown)
       ("r" . ruhoh-rack-restart)
       ("n" . org/ruhoh-new-post)
       ("p" . org/ruhoh-publish-post)
       ("v" . org/ruhoh-view-post)
-      ("g" . org/ruhoh-publish-to-github))))
-
-(cu-set-key-bindings global-map "\C-c\C-p" org/ruhoh-keys)
-(cu-set-key-bindings org-mode-map "\C-c\C-p" org/ruhoh-keys)
+      ("g" . org/ruhoh-publish-to-github)))
+  (cu-set-key-bindings global-map "\C-c\C-p" org/ruhoh-keys)
+  (cu-set-key-bindings org-mode-map "\C-c\C-p" org/ruhoh-keys))
 
 ;; (defun msg-me (process event)
 ;;   (princ

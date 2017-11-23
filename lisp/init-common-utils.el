@@ -152,7 +152,7 @@ to call global-set-key or local-set-key to bind the key.
 Example:
 (defconst map-1 '((?a . a-func) (?b . b-func)))
 (defconst map-2 '((?c . c-func) (?c . c-func)))
-(cu-set-key-bindings \"\C-c\C-s\" '(map-1 map-2) 'local)"
+(_deprecated_cu-set-key-bindings \"\C-c\C-s\" '(map-1 map-2) 'local)"
   (let ((helpmsg "")
         (binding-func nil)
         (unbinding-func nil))
@@ -215,7 +215,7 @@ to call global-set-key or local-set-key to bind the key.
 Example:
 (defconst map-1 '((?a . a-func) (?b . b-func)))
 (defconst map-2 '((?c . c-func) (?c . c-func)))
-(cu-set-key-bindings \"\C-c\C-s\" '(map-1 map-2) 'local)"
+(cu-set-key-bindings global-map \"\C-c\C-s\" '(map-1 map-2))"
   (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists)))
   
 (defun cu-buffer-content-without-comment-lines (buf comment-prefix)

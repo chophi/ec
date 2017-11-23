@@ -176,11 +176,7 @@ window side by side"
   "Key bindings for eassist")
 
 (with-eval-after-load "cc-mode"
-  (add-hook 'c-mode-common-hook
-            `(lambda ()
-               (cu-set-key-bindings
-                "\C-c\C-s"
-                `(,semantic-key-bindings ,eassist-key-bindings)
-                'local))))
+  (cu-set-key-bindings c-mode-map
+   "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
 
 (provide 'init-cc-misc-support)
