@@ -93,7 +93,7 @@
     (ue-update-env-alist))))
 
 (cu-set-key-bindings global-map "\C-c\C-f"
-                     '((?f ue-env-find-file)
-                       (?i ue-insert-to-env-list)))
+                     '((?f . ue-env-find-file)
+                       (?i . ue-insert-to-env-list)))
 
 (provide 'init-uniform-env)
