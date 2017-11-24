@@ -43,4 +43,9 @@ but can also be added to head if AS-HEAD is not nil"
         (as-head (cadr extra-path-list)))
     (add-to-path path as-head)))
 
+;; source emacs global variable
+(setenv "LD_LIBRARY_PATH"
+        (concat (getenv "LD_LIBRARY_PATH")
+                ":/usr/local/lib:/usr/local/lib32:/usr/local/lib64"))
+
 (provide 'init-path)
