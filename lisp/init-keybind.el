@@ -18,7 +18,9 @@
   `(lambda () (interactive)
      (if (eq os 'macos)
          (shell-command ,command)
-       (ssh-shell-command ,command)))
-  )
+       (ssh-shell-command ,command))))
+
+(when (fboundp 'control-x-f)
+  (global-set-key (kbd "C-x f") 'control-x-f))
 
 (provide 'init-keybind)
