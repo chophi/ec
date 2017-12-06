@@ -34,7 +34,7 @@
              "*Org HTML Export*"
            "*org CONFLUENCE Export*"))))))
 
-(defun org-publish-buffer-to-wiki(buffer-name wiki-page-id &optional)
+(defun org-publish-buffer-to-wiki(buffer-name wiki-page-id)
   (org-export-buffer-to-wiki buffer-name nil)
   (with-current-buffer (get-buffer buffer-name)
     (let* ((org-use-html-engine (org-export-use-html-engine))
