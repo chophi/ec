@@ -202,7 +202,7 @@ Example:
        (let* ((key (read-key))
 	          (func (cdr (assoc (format "%c" key) ',list-copy))))
          (if func
-	         (funcall func)
+	         (call-interactively func)
            (error "key <%s> was not binded\n" key))))))
 
 (defun cu-set-key-bindings (keymap prefix binding-lists)
