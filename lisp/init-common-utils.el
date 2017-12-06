@@ -353,5 +353,22 @@ Return a list that a supported"
       (add-to-list 'exec-path path append)
     (message "WARNING: %s is not a directory" path)))
 
+(defun cu-strip-string (str beforep afterp)
+    "Strip STR of any leading (if BEFOREP) and/or trailing (if AFTERP) space."
+    (string-match (concat "\\`" (if beforep "\\s-*")
+			            "\\(.*?\\)" (if afterp "\\s-*\n?")
+			            "\\'") str)
+    (match-string 1 str))
+
+(defun cu-search-brew-executable (program)
+  (let* ((command
+          (format "brew list %s | grep \"bin/%s\"" program program))
+         (possible-name
+          (cu-strip-string (shell-command-to-string command) t t)))
+    (if (and possible-name
+             (file-executable-p possible-name))
+        possible-name
+      nil)))
+
 (provide 'init-common-utils)
 

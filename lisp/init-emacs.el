@@ -44,6 +44,7 @@
 (require 'init-uniquify)
 (require 'init-fill-column-indicator)
 (require 'init-editing-utils)
+(require 'init-spell-check)
 
 (require 'init-recentf)
 (require 'init-ido)
