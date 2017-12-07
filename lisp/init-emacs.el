@@ -45,6 +45,7 @@
 (require 'init-fill-column-indicator)
 (require 'init-editing-utils)
 (require 'init-spell-check)
+(require 'init-google-translate)
 
 (require 'init-recentf)
 (require 'init-ido)
