@@ -12,4 +12,14 @@
                               (?f . flyspell-mode)
                               (?c . flyspell-auto-correct-word)))))))
 
+(when (and (equal os 'linux) (executable-find "hunspell"))
+  (setenv "DICTIONARY" "en_US")
+  (setq ispell-program-name (executable-find "hunspell")
+        ispell-dictionary "en_US")
+  (cu-set-key-bindings global-map "\C-c\C-s"
+                       `(((?w . ispell-word)
+                          (?b . ispell-buffer)
+                          (?f . flyspell-mode)
+                          (?c . flyspell-auto-correct-word)))))
+
 (provide 'init-spell-check)
