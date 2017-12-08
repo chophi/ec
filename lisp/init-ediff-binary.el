@@ -1,6 +1,7 @@
 (defvar ediff-do-hexl-diff nil
   "variable used to store trigger for doing diff in hexl-mode")
-(defadvice ediff-files-internal (around ediff-files-internal-for-binary-files activate)
+(defadvice ediff-files-internal
+    (around ediff-files-internal-for-binary-files activate)
   "catch the condition when the binary files differ
 
 the reason for catching the error out here (when re-thrown from the inner advice)
@@ -24,7 +25,8 @@ isn't there and triggers an error"
              (ediff-buffers buf-A buf-B))
          (error (error-message-string err)))))))
 
-(defadvice ediff-setup-diff-regions (around ediff-setup-diff-regions-for-binary-files activate)
+(defadvice ediff-setup-diff-regions
+    (around ediff-setup-diff-regions-for-binary-files activate)
   "when binary files differ, set the variable "
   (condition-case err
       (progn

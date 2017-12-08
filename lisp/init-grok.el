@@ -25,7 +25,9 @@
 (defun --read-ignore-file (dir)
   (let ((ignore-file (concat dir ".opengrok_ignore")))
     (if (file-exists-p ignore-file)
-        (replace-regexp-in-string "\n" ":" (shell-command-to-string (format "cat %s" ignore-file)))
+        (replace-regexp-in-string
+         "\n" ":"
+         (shell-command-to-string (format "cat %s" ignore-file)))
       "")))
 
 (defadvice eopengrok-create-index (around add-ignore-ad)
@@ -37,4 +39,5 @@
 
 (setq eopengrok-ignore-file-or-directory
       (concat eopengrok-ignore-file-or-directory ":.scripts:.log"))
+
 (provide 'init-grok)
