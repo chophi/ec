@@ -127,11 +127,6 @@
 
 (require 'init-ediff-binary)
 
-(when (and (company-computer-p) (eq os 'linux))
-  (add-to-list 'exec-path "/usr/share-2/bin")
-  (require 'init-amazon-linux))
-
-
 (require 'init-patch-buffer)
 (require 'init-json)
 (require 'init-confluence)
