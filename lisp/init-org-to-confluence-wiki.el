@@ -1,4 +1,3 @@
-(require 'init-private-custom)
 (require 'ox-confluence)
 
 (defconst org-confluence-export-use-html-engine nil
@@ -123,4 +122,4 @@
   (cu-set-key-bindings global-map "\C-c\C-p" org/ruhoh-keys)
   (cu-set-key-bindings org-mode-map "\C-c\C-p" org/ruhoh-keys))
 
-(provide 'init-confluence)
+(provide 'init-org-to-confluence-wiki)

@@ -128,7 +128,7 @@
 (require 'init-ediff-binary)
 
 (require 'init-json)
-(require 'init-confluence)
+(require 'init-org-to-confluence-wiki)
 (require 'init-protobuf)
 
 (require 'init-applescript-mode)
