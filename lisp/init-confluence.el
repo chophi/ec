@@ -110,9 +110,13 @@
       (switch-to-buffer-other-window wiki-buffer)
       )))
 
+(defun org-update-to-draft-page ()
+  (interactive)
+  (lambda () (interactive) (org-update-related-wiki-page t)))
+
 (when (company-computer-p)
   (defconst org/ruhoh-keys
-    '(("d" . (lambda () (interactive) (org-update-related-wiki-page t)))
+    '(("d" . org-update-to-draft-page)
       ("w" . org-update-related-wiki-page)
       ("r" . org-read-related-wiki-page)
       ("v" . org-export-buffer-to-wiki-and-view)))
