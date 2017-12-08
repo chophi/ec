@@ -142,40 +142,6 @@ re-interpreted via using smart-compile-string.
     (setq max-depth 10))
   (__cu-list-files-recursively dir re 0 max-depth))
 
-(defun _deprecated_cu-set-key-bindings (prefix binding-lists binding-type)
-  "Binding multiple binding lists to PREFIX and binding PREFIX + ? to print the
-help message.
-There must not be the same key exist in two different list in BINDING-LISTS.
-The BINDING-TYPE should be either global or local, which causing this function
-to call global-set-key or local-set-key to bind the key.
-
-Example:
-(defconst map-1 '((?a . a-func) (?b . b-func)))
-(defconst map-2 '((?c . c-func) (?c . c-func)))
-(_deprecated_cu-set-key-bindings \"\C-c\C-s\" '(map-1 map-2) 'local)"
-  (let ((helpmsg "")
-        (binding-func nil)
-        (unbinding-func nil))
-    (cond ((eq binding-type 'global)
-           (setq binding-func 'global-set-key
-                 unbinding-func 'global-unset-key))
-          ((eq binding-type 'local)
-           (setq binding-func 'local-set-key
-                 unbinding-func 'local-unset-key))
-          (t (error "The binding type should be either 'global or 'local")))
-    (funcall unbinding-func prefix)
-    (dolist (blist binding-lists)
-      (dolist (bitem blist)
-        (let* ((key (car bitem))
-               (key-string (if (characterp key) (char-to-string key) key))
-               (func (cdr bitem))
-               (func-name (symbol-name func)))
-          (setq helpmsg (concat helpmsg (format "%s : %s\n" key-string func-name)))
-          (funcall binding-func (concat prefix key-string) func))))
-    ;; Bind the key "prefix ?" to print the help message
-    (funcall binding-func (concat prefix "?")
-             `(lambda () (interactive) (message ,helpmsg)))))
-
 (defun _make-commands-map-with-help-msg (binding-lists)
   (let ((converted-list nil)
         (to-test (caar binding-lists))
