@@ -1,9 +1,12 @@
 ;;; polymode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
-;;;### (autoloads nil "poly-R" "poly-R.el" (22916 6539 0 0))
+;;;### (autoloads nil "poly-R" "poly-R.el" (0 0 0 0))
 ;;; Generated autoloads from poly-R.el
  (autoload 'poly-noweb+r-mode "poly-R")
  (autoload 'poly-markdown+r-mode "poly-R")
@@ -15,49 +18,75 @@
  (autoload 'poly-ess-help+r-mode "poly-R")
  (autoload 'poly-Rd-mode "poly-R")
 
-;;;***
-
-;;;### (autoloads nil "poly-c" "poly-c.el" (22916 6539 0 0))
-;;; Generated autoloads from poly-c.el
- (autoload 'poly-noweb+c-mode "poly-c")
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-R" '("poly-" "pm-")))
 
 ;;;***
 
-;;;### (autoloads nil "poly-erb" "poly-erb.el" (22916 6539 0 0))
+;;;### (autoloads nil "poly-base" "poly-base.el" (0 0 0 0))
+;;; Generated autoloads from poly-base.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-base" '("pm-")))
+
+;;;***
+
+;;;### (autoloads nil "poly-c" "poly-c.el" (0 0 0 0))
+;;; Generated autoloads from poly-c.el
+ (autoload 'poly-noweb+c-mode "poly-c")
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-c" '("pm-" "poly-noweb+c-mode")))
+
+;;;***
+
+;;;### (autoloads nil "poly-erb" "poly-erb.el" (0 0 0 0))
 ;;; Generated autoloads from poly-erb.el
  (autoload 'poly-coffee+erb-mode "poly-erb")
  (autoload 'poly-javascript+erb-mode "poly-erb")
  (autoload 'poly-html+erb-mode "poly-erb")
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-erb" '("pm-" "poly-")))
+
 ;;;***
 
-;;;### (autoloads nil "poly-markdown" "poly-markdown.el" (22916 6539
-;;;;;;  0 0))
+;;;### (autoloads nil "poly-lock" "poly-lock.el" (0 0 0 0))
+;;; Generated autoloads from poly-lock.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-lock" '("poly-lock-")))
+
+;;;***
+
+;;;### (autoloads nil "poly-markdown" "poly-markdown.el" (0 0 0 0))
 ;;; Generated autoloads from poly-markdown.el
  (autoload 'poly-markdown-mode "poly-markdown")
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-markdown" '("pm-" "poly-markdown-")))
+
 ;;;***
 
-;;;### (autoloads nil "poly-noweb" "poly-noweb.el" (22916 6539 0
-;;;;;;  0))
+;;;### (autoloads nil "poly-noweb" "poly-noweb.el" (0 0 0 0))
 ;;; Generated autoloads from poly-noweb.el
  (autoload 'poly-noweb-mode "poly-noweb")
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-noweb" '("poly-noweb-" "pm-")))
+
 ;;;***
 
-;;;### (autoloads nil "poly-org" "poly-org.el" (22916 6539 0 0))
+;;;### (autoloads nil "poly-org" "poly-org.el" (0 0 0 0))
 ;;; Generated autoloads from poly-org.el
  (autoload 'poly-org-mode "poly-org")
 
-;;;***
-
-;;;### (autoloads nil "poly-slim" "poly-slim.el" (22916 6539 0 0))
-;;; Generated autoloads from poly-slim.el
- (autoload 'poly-slim-mode "poly-slim")
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-org" '("pm-" "poly-org-mode")))
 
 ;;;***
 
-;;;### (autoloads nil "polymode" "polymode.el" (22916 6539 0 0))
+;;;### (autoloads nil "poly-slim" "poly-slim.el" (0 0 0 0))
+;;; Generated autoloads from poly-slim.el
+ (autoload 'poly-slim-mode "poly-slim")
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "poly-slim" '("pm-" "poly-slim-mode")))
+
+;;;***
+
+;;;### (autoloads nil "polymode" "polymode.el" (0 0 0 0))
 ;;; Generated autoloads from polymode.el
 
 (autoload 'define-polymode "polymode" "\
@@ -109,13 +138,67 @@ BODY contains code to be executed after the complete
 
 \(fn MODE CONFIG &optional KEYMAP &rest BODY)" nil t)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode" '("pm--kill-span" "poly")))
+
 ;;;***
 
-;;;### (autoloads nil nil ("poly-base.el" "poly-lock.el" "polymode-classes.el"
-;;;;;;  "polymode-compat.el" "polymode-configuration.el" "polymode-core.el"
-;;;;;;  "polymode-debug.el" "polymode-export.el" "polymode-methods.el"
-;;;;;;  "polymode-pkg.el" "polymode-tangle.el" "polymode-weave.el")
-;;;;;;  (22916 6539 0 0))
+;;;### (autoloads nil "polymode-classes" "polymode-classes.el" (0
+;;;;;;  0 0 0))
+;;; Generated autoloads from polymode-classes.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode-classes" '("pm-")))
+
+;;;***
+
+;;;### (autoloads nil "polymode-compat" "polymode-compat.el" (0 0
+;;;;;;  0 0))
+;;; Generated autoloads from polymode-compat.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode-compat" '("pm-" "polymode-switch-buffer-keep-evil-state-maybe" "*span*")))
+
+;;;***
+
+;;;### (autoloads nil "polymode-core" "polymode-core.el" (0 0 0 0))
+;;; Generated autoloads from polymode-core.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode-core" '("polymode-")))
+
+;;;***
+
+;;;### (autoloads nil "polymode-debug" "polymode-debug.el" (0 0 0
+;;;;;;  0))
+;;; Generated autoloads from polymode-debug.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode-debug" '("pm-")))
+
+;;;***
+
+;;;### (autoloads nil "polymode-export" "polymode-export.el" (0 0
+;;;;;;  0 0))
+;;; Generated autoloads from polymode-export.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode-export" '("polymode-" "pm-")))
+
+;;;***
+
+;;;### (autoloads nil "polymode-methods" "polymode-methods.el" (0
+;;;;;;  0 0 0))
+;;; Generated autoloads from polymode-methods.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode-methods" '("pm-")))
+
+;;;***
+
+;;;### (autoloads nil "polymode-weave" "polymode-weave.el" (0 0 0
+;;;;;;  0))
+;;; Generated autoloads from polymode-weave.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "polymode-weave" '("pm-" "polymode-")))
+
+;;;***
+
+;;;### (autoloads nil nil ("polymode-configuration.el" "polymode-pkg.el"
+;;;;;;  "polymode-tangle.el") (0 0 0 0))
 
 ;;;***
 
@@ -123,5 +206,6 @@ BODY contains code to be executed after the complete
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; polymode-autoloads.el ends here
