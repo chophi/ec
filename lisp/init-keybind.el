@@ -10,9 +10,12 @@
                   (switch-window)))
 
 
-(add-hook 'emacs-lisp-mode-hook (lambda ()  (define-key emacs-lisp-mode-map "\C-\M-x" nil)))
-(add-hook 'org-mode-hook (lambda () (define-key org-mode-map "\C-\M-t" nil)))
-(add-hook 'paredit-mode-hook (lambda () (define-key paredit-mode-map "\C-\M-p" nil)))
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()  (define-key emacs-lisp-mode-map "\C-\M-x" nil)))
+(add-hook 'org-mode-hook
+          (lambda () (define-key org-mode-map "\C-\M-t" nil)))
+(add-hook 'paredit-mode-hook
+          (lambda () (define-key paredit-mode-map "\C-\M-p" nil)))
 
 (defun make-shell-command-key-lambda (command)
   `(lambda () (interactive)
