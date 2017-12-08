@@ -7,15 +7,13 @@
 (add-to-path (concat (getenv "HOME") "/.emacs-pkg") t)
 
 (defconst my-opengrok-map
-  '(;;(?i . eopengrok-make-index)
-    ;;(?I . eopengrok-make-index-with-enable-projects)
-    (?d . eopengrok-find-definition)
+  '((?d . eopengrok-find-definition)
     (?f . eopengrok-find-file)
     (?s . eopengrok-find-reference)
     (?t . eopengrok-find-text)
     (?h . eopengrok-find-history)
     (?r . eopengrok-resume)
-    (?p . print-eopengrok-map-help)))
+    (?c . eopengrok-make-index)))
 
 (define-key eopengrok-mode-map "o" 'eopengrok-jump-to-source)
 ;; following is the link explains the differences between "RET" and [(return)]

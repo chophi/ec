@@ -11,7 +11,7 @@
       "http://translate.google.cn/")
 
 (cu-set-key-bindings global-map "\C-c\C-t"
-                     `(((?t . google-translate-at-point)
-                        (?r . google-translate-at-point-reverse))))
+                     `((?t . google-translate-at-point)
+                       (?r . google-translate-at-point-reverse)))
 
 (provide 'init-google-translate)
