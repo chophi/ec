@@ -90,7 +90,6 @@
 (require 'init-dired)
 (require 'init-uniform-env)
 
-
 (require 'init-neotree)
 (require 'init-smali)
 (require 'init-cc-format)
@@ -119,7 +118,6 @@
 ;;   (require 'init-ibus))
 
 (require 'init-dmesg-mode)
-(require 'init-dictionary)
 
 (when (memq os '(linux macos))
   (setq shell-file-name "/bin/bash"))
