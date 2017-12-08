@@ -13,7 +13,7 @@
     (?t . eopengrok-find-text)
     (?h . eopengrok-find-history)
     (?r . eopengrok-resume)
-    (?c . eopengrok-make-index)))
+    (?c . eopengrok-create-index)))
 
 (define-key eopengrok-mode-map "o" 'eopengrok-jump-to-source)
 ;; following is the link explains the differences between "RET" and [(return)]

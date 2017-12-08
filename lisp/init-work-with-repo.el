@@ -1,104 +1,65 @@
 (require 'init-custom-compile)
 
-(defun repo-root ()
+(defvar g-repo-directory "~/.platform_script" "Dir where repo executable locates")
+(defvar g-repo-ws (or (getenv "DEFAULT_REPO_WS")
+                      (if (boundp 'g-default-repo-ws) g-default-repo-ws nil))
+  "The workspace for repo project")
+(defvar g-repo-proj-list nil "The default project list")
+
+(defun repo-ws ()
   (interactive)
-  (let ((repo (_find-file-or-dir-recursively default-directory ".repo")))
+  (let ((repo (cu-find-nearest-ancestor-match default-directory ".repo")))
     (when (not repo)
       (error "repo not found"))
-    (file-name-directory repo)
-    ))
+    (file-name-directory repo)))
 
-(defconst *repo-directory* "~/.platform_script")
-(defun _repo-list-raw (&optional root)
+(defun current-repo-ws ()
+  (or g-repo-ws (repo-ws)))
+
+(defun gen-repo-list (&optional root)
   (interactive)
-  (shell-command-to-string (format "cd %s && %s/repo list" root *repo-directory*)))
+  (setq root (or root (current-repo-ws)))
+  (let* ((raw (shell-command-to-string
+               (format "cd %s && %s/repo list"
+                       root g-repo-directory)))
+         (proj-list (split-string raw "\n")))
+    (setq proj-list
+          (mapcar
+           (lambda (unit) (split-string unit " : "))
+           proj-list))
+    (setq proj-list
+          (remove-if-not
+           (lambda (unit)
+             (and (equal (length unit) 2)
+                  (or (file-exists-p (format "%s/%s" root (car unit)))
+                      (file-exists-p (format "%s/%s" root (cadr unit))))))
+           proj-list))))
 
-(defun _parse-repo-list (string root)
-  (let (repo-list)
-    (setq repo-list (split-string string "\n"))
-    (setq repo-list (mapcar (lambda (unit) (split-string unit " : ")) repo-list))
-    (setq repo-list (remove-if-not
-                     (lambda (unit) (and (equal (length unit) 2)
-                                         (or (file-exists-p (format "%s/%s" root (car unit)))
-                                             (file-exists-p (format "%s/%s" root (cadr unit))))))
-                                   repo-list))))
-
-(defun repo-list-buffer-name (root)
-  (format "[*Repo List{%s}*]" root))
-
-(defun repo-list-buffer(root)
-  (get-buffer (repo-list-buffer-name root)))
-
-(defun repo-project-list (root)
-  (if (repo-list-buffer root)
-    (with-current-buffer (repo-list-buffer root)
-      (buffer-local-value 'buffer-local-repo-project-list (current-buffer)))
-    (with-current-buffer (get-buffer-create (repo-list-buffer-name root))
-      (setq-local buffer-local-repo-project-list (_parse-repo-list (_repo-list-raw root) root)))))
-
-(defun repo-list-projects (&optional root)
+(defun change-repo-ws ()
   (interactive)
-  (when (not root) (setq root (repo-root)))
-  (let* ((project-list (repo-project-list root))
-         (buffer (repo-list-buffer root)))
-    (with-current-buffer buffer
-      (read-only-mode -1)
-      (erase-buffer)
-      (goto-char 1)
-      (mapcar (lambda (unit)
-                (when (cadr unit)
-                  (insert (format "%-70s %s\n" (car unit) (cadr unit)))))
-              project-list)
-      (switch-to-buffer buffer)
-      (line-select-mode)
-      (read-only-mode 1)
-      (setq-local buffer-local-line-list (split-string (buffer-string) "\n"))
-      (goto-char 1)
-      (local-set-key "f" '_filter-line-base-on-input)
-      (local-set-key "g" `(lambda () (interactive) (_jump-to-project-at-point ,root)))
-      (local-set-key [return] `(lambda () (interactive) (_jump-to-project-at-point ,root)))
-      (local-set-key (kbd "RET") `(lambda () (interactive) (_jump-to-project-at-point ,root)))
-      (local-set-key "u" '_update-content)
-      (local-set-key "?" (lambda () (interactive) (message "f : filter line\ng: jump to project\nreturn: jump to project\nu: update content"))))))
+  (let ((dir (read-directory-name
+              (message "Current workspace is: %s\nChange to: " g-repo-ws))))
+    (when (not (file-exists-p (cu-join-path dir ".repo")))
+      (error "There's no repo in %s" dir))
+    (when (not (equal dir g-repo-ws))
+      (setq g-repo-ws dir
+            g-repo-proj-list (gen-repo-list dir)))))
 
-(defun _filter-line-base-on-input ()
+(defun repo-goto-project ()
   (interactive)
-  (let (input)
-    (setq input (read-input "Please input filter: "))
-    (read-only-mode -1)
-    (erase-buffer)
-    (mapcar (lambda (unit) (when (and unit (string-match-p input unit))
-                             (insert (format "%s\n" unit))))
-            (buffer-local-value 'buffer-local-line-list (current-buffer)))
-    (goto-char 1)
-    (read-only-mode 1)))
+  (when (not g-repo-ws)
+    (error "Please set the repo workspace first!"))
+  (when (not (file-exists-p (cu-join-path g-repo-ws ".repo")))
+    (error "There's no repo in %s" g-repo-ws))
+  (when (not g-repo-proj-list)
+    (setq g-repo-proj-list (gen-repo-list g-repo-ws)))
+  (find-file
+   (cu-join-path
+    g-repo-ws
+    (completing-read (format "Goto [ws: %s]:\n  " g-repo-ws) g-repo-proj-list))))
 
-(defun _update-content ()
-  (interactive)
-  (read-only-mode -1)
-  (erase-buffer)
-  (mapcar (lambda (unit) (when unit (insert (format "%s\n" unit))))
-          (buffer-local-value 'buffer-local-line-list (current-buffer)))
-  (read-only-mode 1)
-  (goto-char 1))
-
-(defun _jump-to-project-at-point (&optional root)
-  (let (line-string path full-path)
-    (setq line-string (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-    (setq path (car (split-string line-string " ")))
-    (setq full-path (format "%s/%s" root path))
-    (if (file-exists-p full-path)
-        (dired full-path)
-      (error "path not exist"))))
-
-(define-minor-mode line-select-mode
-  "Select line mode"
-  ;; The initial value.
-  nil
-  ;; The indicator for the mode line.
-  " Line-Select"
-  ;; The minor mode bindings.
-  :group 'line-select)
-
+(cu-set-key-bindings global-map "\C-c\C-r"
+                     '((?c . change-repo-ws)
+                       (?g . repo-goto-project)))
 
 (provide 'init-work-with-repo)
