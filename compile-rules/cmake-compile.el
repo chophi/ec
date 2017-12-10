@@ -13,6 +13,9 @@
                                 "-DCMAKE_BUILD_TYPE=Debug")))))
       ))
 
+  (defun cmake--compile-string (str)
+    (format "cd %s && %s" cmake--compile-mode str))
+  
   (defun _make-cmake-compile-exprs (project-root)
     (let* ((cmake-file (concat project-root "CMakeLists.txt"))
            (mode (with-current-buffer (find-file-noselect cmake-file)
@@ -81,7 +84,7 @@
 
   (let (compile-exprs)
     (setq compile-exprs '())
-    (let ((possible-cmake-file (_find-file-or-dir-recursively default-directory "CMakeLists.txt")))
+    (let ((possible-cmake-file (cu-find-nearest-ancestor-match default-directory "CMakeLists.txt")))
       (when possible-cmake-file
         (message "found a CMakeLists.txt: %s\n" possible-cmake-file)
         (let ((project-root (file-name-directory possible-cmake-file)))

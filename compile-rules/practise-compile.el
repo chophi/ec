@@ -14,7 +14,7 @@
        (project-root (expand-file-name "~/work/practise/ndk"))
        (curdir (expand-file-name default-directory))
        (command-list '())
-       (android-makefile (_find-file-or-dir-recursively default-directory "Android.mk")))
+       (android-makefile (cu-find-nearest-ancestor-match default-directory "Android.mk")))
   (when (string-prefix-p project-root curdir)
     (when android-makefile
       (let ((env_set_list '())
