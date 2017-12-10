@@ -12,7 +12,7 @@
                   (switch-window)))
 
 (global-unset-key (kbd "C-x C-v"))
-(cu-set-key-bindings global-map "\C-x\C-v" '((?s . magit-status)
+(cu-set-key-bindings global-map "\C-c\C-v" '((?s . magit-status)
                                              (?b . magit-blame)
                                              (?B . magit-blame-mode)
                                              (?p . magit-pull)
