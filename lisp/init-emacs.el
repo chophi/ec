@@ -137,6 +137,7 @@
 (require 'init-swift)
 (require 'init-polymode)
 (require 'init-adaptive-wrap)
+(require 'init-sepolicy)
 (require 'init-keybind)
 
 (setq sanityinc/require-times
