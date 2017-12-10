@@ -7,8 +7,6 @@
 ;; (delete 'SVN vc-handled-backends)
 (setq vc-handled-backends nil)
 
-(global-set-key "\C-xg" 'magit-status)
-
 ;; (when (eq os 'macos)
 ;;   (setq magit-git-executable "/opt/local/bin/git"))
 

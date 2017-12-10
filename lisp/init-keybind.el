@@ -2,12 +2,21 @@
 
 (global-set-key (kbd "C-x vq") 'vr/query-replace)
 (global-set-key (kbd "C-x vr") 'vr/replace)
-(global-set-key (kbd "\C-xw")
+
+(global-unset-key (kbd "C-x o"))
+(global-set-key (kbd "C-x w")
                 (lambda ()
                   (interactive)
                   (when (one-window-p)
                     (split-window-horizontally-instead))
                   (switch-window)))
+
+(global-unset-key (kbd "C-x C-v"))
+(cu-set-key-bindings global-map "\C-x\C-v" '((?s . magit-status)
+                                             (?b . magit-blame)
+                                             (?B . magit-blame-mode)
+                                             (?p . magit-pull)
+                                             (?l . magit-log-head)))
 
 
 (add-hook 'emacs-lisp-mode-hook
