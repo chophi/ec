@@ -19,14 +19,14 @@
                    (if (boundp 'cmake--compile-mode)
                        cmake--compile-mode
                      (setq-local cmake--compile-mode 'debug))))
-           (target-list (cu-extract-list
+           (target-list (cu-buffer-matched-lists
                          (find-file-noselect cmake-file)
                          "#"
                          "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)))
       `((unit "generate"
-              (nop (cmake--precondition-check ,project-root ,(symbol-name mode))))
+              (elisp (cmake--precondition-check ,project-root ,(symbol-name mode))))
         (unit "set-mode"
-              (nop (with-current-buffer (find-file-noselect ,cmake-file)
+              (elisp (with-current-buffer (find-file-noselect ,cmake-file)
                      (when (not (boundp 'cmake--compile-mode))
                        (error "cmake--compile-mode was not bound for %s" ,cmake-file))
                      (if (equal
@@ -42,7 +42,7 @@
         (unit "clean"
               (compile (cmake--compile-string "make clean")))
         (unit "dist-clean"
-              (nop
+              (elisp
                (let* ((mode-name ,(symbol-name mode))
                       (make-dir (format "%s%s" ,project-root mode-name))
                       (command (format "rm -rf %s" make-dir)))
@@ -51,7 +51,7 @@
                  (when (and
                         (or (equal mode-name "debug")
                             (equal mode-name "release"))
-                        (cu-is-dir-or-dirlink? make-dir)
+                        (cu-is-dir-or-dirlink-p make-dir)
                         (y-or-n-p (format "Run: %s" command))
                         )
                    (shell-command command)
@@ -63,7 +63,7 @@
                             "Executable: "
                             (split-string (shell-command-to-string
                                            (format
-                                            (if *mac?*
+                                            (if (equal os 'mac)
                                                 "cd %s && find ./bin -type f -perm +111"
                                               "cd %s && find ./bin -type f -executable")
                                                    ,project-root))))))

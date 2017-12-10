@@ -1,5 +1,5 @@
 (let* ((env_list
-        (if *mac?*
+        (if (equal os 'mac)
             '(("JAVA_HOME" "/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/")
               ("ANDROID_SDK" "~/Android/sdk/")
               ("ANDROID_NDK" "~/Android/android-ndk-r10e/")
@@ -10,7 +10,7 @@
             ("ANT_DIR" "/usr/bin/"))
           ))
        (android-platform-target
-        (if *mac?* "android-24" "android-25"))
+        (if (equal os 'mac) "android-24" "android-25"))
        (project-root (expand-file-name "~/work/practise/ndk"))
        (curdir (expand-file-name default-directory))
        (command-list '())
@@ -36,7 +36,7 @@
                                            (ido-completing-read "Executable: "
                                                                 (split-string
                                                                  (shell-command-to-string
-                                                                  (if *mac?*
+                                                                  (if (equal os 'mac)
                                                                       "find ../libs -type f -perm +111"
                                                                     "find ../libs -type f -executable"))))))
                                     (format "adb root &&\n adb push %s /data/ &&\n adb shell chmod 555 /data/%s &&\n echo -e \"\\n\\n== begin run program == \" &&\n adb shell /data/%s"

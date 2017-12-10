@@ -105,6 +105,20 @@ re-interpreted via using smart-compile-string.
                   (when (not (equal (elt a (- ai i)) (elt b (- bi i))))
                     (throw 'found-not-equal t))))))))
 
+(defun* cu-seq-pre-subseq-n-equal-p (seq1 seq2 n)
+  "Check if the pre N length subsequence of SEQ1 and SEQ2 equals.
+And return t if equals, compare the item with `equal'."
+  (when (or (not (listp seq1)) (not (listp seq2)))
+    (return-from cu-seq-pre-subseq-n-equal-p nil))
+  (when (or (< (length seq1) n) (< (length seq2) n))
+    (return-from cu-seq-pre-subseq-n-equal-p nil))
+  (setq n (1- n))
+  (while (>= n 0)
+    (when (not (equal (nth n seq1) (nth n seq2)))
+      (return-from cu-seq-pre-subseq-n-equal-p nil))
+    (setq n (1- n)))
+  t)
+
 (defun cu-join-path (root &rest args)
   "Join the path with \"/\" and erase the redundant \"/\""
   (reduce (lambda (a b)
@@ -184,19 +198,6 @@ Example:
 (cu-set-key-bindings global-map \"\C-c\C-s\" '(map-1 map-2))"
   (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists)))
   
-(defun cu-buffer-content-without-comment-lines (buf comment-prefix)
-  "Return the content in BUF with comment lines removed"
-  (with-current-buffer buf
-    (seq-reduce
-     (lambda (a b) (concat a b "\n"))
-     (seq-filter
-      (lambda (str)
-        (or (< (length str) (length comment-prefix))
-            (not (equal comment-prefix
-                        (substring str 0 (length comment-prefix))))))
-      (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n"))
-     "")))
-
 (defun cu-is-dir-or-dirlink-p (path)
   (and (file-exists-p path)
        (let ((first-attr (car (file-attributes path))))
@@ -336,5 +337,138 @@ Return a list that a supported"
         possible-name
       nil)))
 
+
+;; Buffer regexp search utils
+
+(defun cu-buffer-content-without-comment-lines (buf comment-prefix)
+  "Return the content in BUF with comment lines removed"
+  (with-current-buffer buf
+    (seq-reduce
+     (lambda (a b) (concat a b "\n"))
+     (seq-filter
+      (lambda (str)
+        (or (< (length str) (length comment-prefix))
+            (not (equal comment-prefix
+                        (substring str 0 (length comment-prefix))))))
+      (split-string (buffer-substring-no-properties
+                     (point-min) (point-max)) "\n"))
+     "")))
+
+(defun cu-buffer-matched-lists(buf comment-prefix regex part)
+  "Search the buffer content, and find matches in REGEX and return a list with
+matched PART, the comment lines will be skipped."
+  (let ((pos 1)
+        (result '())
+        (str (cu-buffer-content-without-comment-lines buf comment-prefix)))
+    (while (and (< pos (point-max))
+                (string-match regex str pos))
+      (add-to-list 'result (match-string part str))
+      (setq pos (match-end part)))))
+
+
+
+;; Multi-Level choice list
+
+(defun* cu-reshape-multi-level-choice-list* (li ndim)
+  "Reshape a multi-level choice list, the input list is like this:
+'((\"a\" \"b\" func-1)
+  (\"a\" \"b\" func-2)
+  (\"a\" \"c\" func-3)
+  (\"b\" \"b\" func-4)
+  (\"b\" \"b\" func-5)
+  (\"b\" \"c\" func-6))
+And the reshaped output multi-level list is as below:
+'((\"a\" ((\"b\" func-1) (\"c\" func-3))) (\"b\" ((\"b\" func-4) (\"c\" func-6))))
+"
+  ;; parameter validation.
+  (when (or (not li) (not (listp li))) (return-from cu-reshape-multi-level-choice-list* nil))
+  ;; sort from dim (ndim-1 to 0)
+  (let ((dim (1- ndim)))
+    (while (>= dim 0)
+      (setq li (sort li (lambda (e1 e2) (string-lessp (nth dim e1) (nth dim e2)))))
+      (setq dim (1- dim))))
+  ;; remove duplicate
+  (let ((dim ndim)
+        (index 1)
+        (temp-li (list (car li))))
+    (while (< index (length li))
+      (when (not (cu-seq-pre-subseq-n-equal-p (nth index li) (nth (1- index) li) dim))
+        (push (nth index li) temp-li))
+      (setq index (1+ index)))
+    (setq li (reverse temp-li)))
+  ;; fold the list
+  (let ((dim (1- ndim))
+        (index nil)
+        (temp-li nil)
+        (length nil))
+    ;; fold backword from dim -> 1
+    (while (>= dim 1)
+      (setq index 1
+            temp-li (list (append (subseq (car li) 0 dim)
+                                  (list (list (subseq (car li) dim)))))
+            len (length li))
+      ;; fold the item which previous <dim> subseq are equal.
+      (while (< index len)
+        (if (cu-seq-pre-subseq-n-equal-p (nth index li) (nth (1- index) li) dim)
+            (progn
+              (push (subseq (nth index li) dim) (nth dim (nth 0 temp-li)))
+              (setf (nth dim (nth 0 temp-li)) (reverse (nth dim (nth 0 temp-li)))))
+          (push (append (subseq (nth index li) 0 dim)
+                        (list (list (subseq (nth index li) dim))))
+                temp-li))
+        (setq index (1+ index)))
+      ;; As the items is added with `push', reverse is needed.
+      (setq li (reverse temp-li))
+      (setq dim (1- dim))))
+  li)
+;; (cu-reshape-multi-level-choice-list*-test)
+(defun cu-reshape-multi-level-choice-list*-test ()
+  (assert
+   (equal
+    (cu-reshape-multi-level-choice-list* '(("a" "b" func-1)
+                                           ("a" "b" func-2)
+                                           ("a" "c" func-3)
+                                           ("b" "b" func-4)
+                                           ("b" "b" func-5)
+                                           ("b" "c" func-6)) 2)
+    '(("a" (("b" func-1) ("c" func-3))) ("b" (("b" func-4) ("c" func-6)))))))
+
+(defun cu-choose-from-reshaped-mlcl (li ndim &optional desc_list)
+  "Choose from a reshaped multi-level choice list,
+the input list should be as below:
+'((\"a\" ((\"b\" func-1) (\"c\" func-3))) (\"b\" ((\"b\" func-4) (\"c\" func-6))))
+read input choices with `ido-completing-read' and return the chosed item list.
+NDIM is the dimentions of the choice items.
+"
+  (let ((level 0)
+        (li-copy li)
+        choice choosed-list ret)
+    (while (< level ndim)
+      (setq choice
+            (if (> (length li-copy) 1)
+                (ido-completing-read
+                 (if desc_list
+                     (format "Choose [%s] (%d level): " (nth level desc_list) level)
+                   (format "Choose %d level key: " level))
+                 (mapcar 'car li-copy))
+              (caar li-copy))
+            choosed-list (assoc choice li-copy)
+            li-copy (cadr choosed-list)
+            ret (cons choice ret))
+      (setq level (1+ level)))
+    (setq ret (cons (cadr choosed-list) ret))
+    (reverse ret)))
+ 
+;; (cu-choose-from-reshaped-mlcl-test)
+(defun cu-choose-from-reshaped-mlcl-test ()
+  (cu-choose-from-reshaped-mlcl
+   '(("a" (("b" func-1) ("c" func-3)))
+     ("b" (("b" func-4) ("c" func-6))))
+   3 ;; dimen
+   ;; Naming for diffent level key
+   '("project"
+     "home")))
+
+
 (provide 'init-common-utils)
 

@@ -1,5 +1,5 @@
 (let* ((env_list
-        (if *mac?*
+        (if (equal os 'mac)
             '(("JAVA_HOME" "/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/")
               ("ANDROID_SDK" "~/Android/sdk/")
               ("ANDROID_NDK" "~/Android/android-ndk-r10e/")
@@ -10,7 +10,7 @@
             ("ANT_DIR" "/usr/bin/"))
           ))
        (android-platform-target
-        (if *mac?* "android-24" "android-25"))
+        (if (equal os 'mac) "android-24" "android-25"))
        (project-root (expand-file-name "~/git-repo/opengles3-book"))
        (curdir (expand-file-name default-directory))
        (command-list '()))
