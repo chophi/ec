@@ -12,11 +12,19 @@
                   (switch-window)))
 
 (global-unset-key (kbd "C-x C-v"))
+
+(defun my-magit-log-head-fast()
+  (interactive)
+  (let ((magit-log-arguments (remove "--graph"
+                                     (remove "--decorate" magit-log-arguments))))
+    (magit-log-head)))
 (cu-set-key-bindings global-map "\C-c\C-v" '((?s . magit-status)
                                              (?b . magit-blame)
                                              (?B . magit-blame-mode)
                                              (?p . magit-pull)
-                                             (?l . magit-log-head)))
+                                             (?l . magit-log-head)
+                                             (?L . my-magit-log-head-fast)))
+
 
 
 (add-hook 'emacs-lisp-mode-hook
