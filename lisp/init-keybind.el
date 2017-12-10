@@ -25,8 +25,6 @@
                                              (?l . magit-log-head)
                                              (?L . my-magit-log-head-fast)))
 
-
-
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()  (define-key emacs-lisp-mode-map "\C-\M-x" nil)))
 (add-hook 'org-mode-hook
