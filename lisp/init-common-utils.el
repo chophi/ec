@@ -357,13 +357,15 @@ Return a list that a supported"
 (defun cu-buffer-matched-lists(buf comment-prefix regex part)
   "Search the buffer content, and find matches in REGEX and return a list with
 matched PART, the comment lines will be skipped."
-  (let ((pos 1)
-        (result '())
-        (str (cu-buffer-content-without-comment-lines buf comment-prefix)))
-    (while (and (< pos (point-max))
+  (let* ((pos 1)
+         (result '())
+         (str (cu-buffer-content-without-comment-lines buf comment-prefix))
+         (len (length str)))
+    (while (and (< pos len)
                 (string-match regex str pos))
-      (add-to-list 'result (match-string part str))
-      (setq pos (match-end part)))))
+      (push (match-string part str) result)
+      (setq pos (match-end part)))
+    (delete-dups (reverse result))))
 
 
 
