@@ -290,17 +290,30 @@ Return a list that a supported"
            (maybe-filename (substring str start end)))
       (when (file-exists-p maybe-filename)
         (find-file-other-window maybe-filename))))
+
+  (defun cu-visit-file-follow-symlink ()
+    (interactive)
+    (let* ((curname (buffer-file-name))
+           (truename (file-truename curname)))
+      (when (and (not (equal curname truename))
+                 (y-or-n-p (format
+                            "Change visited file from: \n[%s] -> [%s]\n(y or n?):"
+                            curname truename)))
+        (setq-local buffer-file-name truename)
+        (setq-local default-directory (file-name-directory truename)))))
   
   (defconst cu-path-util-map
     '((?i . cu-insert-path-replace-home)
       (?I . cu-insert-path-absolute-home)
       (?s . cu-save-current-file-path)
       (?o . cu-save-current-file-path-org-style)
-      (?j . cu-open-link))
+      (?j . cu-open-link)
+      (?f . cu-visit-file-follow-symlink))
     "Util key map for path saving to ring / paste, etc")
 
   (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
   (with-eval-after-load "java-mode" (define-key java-mode-map "\C-c\C-l" nil))
+  (with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-l" nil))
   (cu-set-key-bindings global-map "\C-c\C-l" `(,cu-path-util-map))
   (with-eval-after-load "org"
     (cu-set-key-bindings org-mode-map "\C-c\C-l"
@@ -337,9 +350,8 @@ Return a list that a supported"
         possible-name
       nil)))
 
-
-;; Buffer regexp search utils
-
+;; Buffer regexp search utils
+
 (defun cu-buffer-content-without-comment-lines (buf comment-prefix)
   "Return the content in BUF with comment lines removed"
   (with-current-buffer buf
@@ -366,11 +378,10 @@ matched PART, the comment lines will be skipped."
       (push (match-string part str) result)
       (setq pos (match-end part)))
     (delete-dups (reverse result))))
-
+
 
-
-;; Multi-Level choice list
-
+;; Multi-Level choice list
+
 (defun* cu-reshape-multi-level-choice-list* (li ndim)
   "Reshape a multi-level choice list, the input list is like this:
 '((\"a\" \"b\" func-1)
@@ -471,6 +482,6 @@ NDIM is the dimentions of the choice items.
    '("project"
      "home")))
 
-
+
 (provide 'init-common-utils)
 
