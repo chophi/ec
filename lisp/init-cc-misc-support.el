@@ -140,10 +140,10 @@ find the existed files with the replaced result."
                 (lambda (filename switch-pair)
                   (let ((replaced-name
                          (replace-regexp-in-string
-                          (car switch-pair) (cadr switch-pair))))
-                    (when (not (equal replaced-name) filename) replaced-name))))
+                          (car switch-pair) (cadr switch-pair) filename)))
+                    (when (not (equal replaced-name filename)) replaced-name))))
                (filename (buffer-file-name))
-               (replaced-name (funcall 'get-a-replaced-name filename pair)))
+               (replaced-name (funcall get-a-replaced-name filename pair)))
           (when replaced-name
             (let ((suffix-name (file-name-extension replaced-name)))
               (dolist (assoc-suffix
@@ -176,7 +176,6 @@ window side by side"
   "Key bindings for eassist")
 
 (with-eval-after-load "cc-mode"
-  (cu-set-key-bindings c-mode-map
+  (cu-set-key-bindings c-mode-base-map
    "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
-
 (provide 'init-cc-misc-support)
