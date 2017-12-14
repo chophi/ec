@@ -38,8 +38,8 @@
 
 ;;; Code:
 
-(if (< emacs-major-version 21)
-    (error "AUCTeX requires Emacs 21 or later")) ;FIXME: Really?
+(if (< emacs-major-version 24)
+    (error "AUCTeX requires Emacs 24 or later"))
 
 (unless (or (fboundp 'TeX-modes-set)     ;Avoid inf-looping.
             (fboundp 'TeX-tex-mode))     ;auctex-autoloads is not loaded.
@@ -60,7 +60,7 @@
   :load "tex" :load "latex" :load "tex-style")
 
 (defvar TeX-lisp-directory
-  @lisppackagelispdir@
+  (file-name-directory load-file-name)
   "The directory where most of the AUCTeX lisp files are located.
 For the location of lisp files associated with
 styles, see the variables TeX-style-* (hand-generated lisp) and
@@ -69,11 +69,11 @@ TeX-auto-* (automatically generated lisp).")
 (add-to-list 'load-path TeX-lisp-directory)
 
 (defvar TeX-data-directory
-  @lisppackagedatadir@
+  (file-name-directory load-file-name)
   "The directory where the AUCTeX non-Lisp data is located.")
 
 (defcustom TeX-auto-global
-    @lispautodir@
+    (if (file-writable-p "/usr/local/var/auctex") "/usr/local/var/auctex" "~/.emacs.d/auctex")
   "*Directory containing automatically generated information.
 Must end with a directory separator.
 
@@ -157,11 +157,11 @@ set it with `TeX-modes-set'."
 		       `(TeX-modes-set ',var ,var t))
 		     (setq list (cdr list)))))) )
 
-(defconst AUCTeX-version "@AUCTEXVERSION@"
+(defconst AUCTeX-version "12.1.0"
     "AUCTeX version.
 If not a regular release, the date of the last change.")
 
-(defconst AUCTeX-date "@AUCTEXDATE@"
+(defconst AUCTeX-date "2017-12-12"
   "AUCTeX release date using the ISO 8601 format, yyyy-mm-dd.")
 
 ;; Store bibitems when saving a BibTeX buffer
