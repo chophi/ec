@@ -46,7 +46,8 @@
 
 (global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
-      auto-revert-verbose nil)
+      auto-revert-verbose nil
+      max-mini-window-height 0.8)
 
 ;; But don't show trailing whitespace in SQLi, inf-ruby etc.
 (dolist (hook '(term-mode-hook comint-mode-hook compilation-mode-hook))
