@@ -66,15 +66,24 @@
   (cu-set-key-bindings org-mode-map "\C-c\C-l"
                        `(,cu-path-util-map ((?l . org-insert-link)))))
 
-;; spell-check
-(when (and (boundp my-ispell-is-enabled) my-ispell-is-enabled)
+;; yasnippet keymap and spell-check
+(defvar ctrl-c-ctrl-i-keymap
+  `((?i . yas-insert-snippet)
+    (?n . yas-new-snippet)
+    (?t . yas-tryout-snippet)
+    (?v . yas-visit-snippet-file)
+    (?r . yas-reload-all))
+  "keymap for ctrl-c-ctrl-i")
+
+(when (and (boundp 'my-ispell-is-enabled) my-ispell-is-enabled)
   (defconst my-ispell-keymap
     `((?w . ispell-word)
       (?b . ispell-buffer)
       (?f . flyspell-mode)
       (?c . flyspell-auto-correct-word))
     "The keymap for ispell")
-  (cu-set-key-bindings global-map "\C-c\C-s" my-ispell-keymap))
+  (setq ctrl-c-ctrl-i-keymap (append ctrl-c-ctrl-i-keymap my-ispell-keymap))
+  (cu-set-key-bindings global-map "\C-c\C-i" ctrl-c-ctrl-i-keymap))
 
 ;; uniform environment
 (cu-set-key-bindings global-map "\C-c\C-f"
