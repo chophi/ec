@@ -96,23 +96,6 @@
     (add-to-list 'ac-sources 'ac-source-semantic))
   (add-hook 'c-mode-common-hook 'ac-semantic-hook))
 
-(defconst semantic-key-bindings
-  '((?i . semantic-ia-fast-jump)
-    (?p . semantic-analyze-proto-impl-toggle)
-    (?b . semantic-mrub-switch-tags)
-    (?s . semantic-ia-show-summary)
-    ;;(?d . semantic-ia-show-doc)
-    ;; tag folding
-    (?f . semantic-tag-folding-fold-block)
-    (?o . semantic-tag-folding-show-block)
-    (?- . semantic-tag-folding-fold-all)
-    (?+ . semantic-tag-folding-show-all)
-    ;; complete
-    (?m . semantic-ia-complete-symbol-menu)
-    (?c . semantic-ia-complete-symbol)
-    (?t . semantic-ia-complete-tip))
-  "Key bindings for semantic")
-
 (require 'eassist)
 
 (add-to-list 'eassist-header-switches '("hh" "cpp" "cc"))
@@ -169,13 +152,4 @@ window side by side"
 
 (ad-activate 'eassist-switch-h-cpp-try-replace)
 
-(defconst eassist-key-bindings
-  '(("g" . eassist-switch-h-cpp-try-replace)
-    ("l" . eassist-list-methods))
-  ;;("r" . semantic-symref))
-  "Key bindings for eassist")
-
-(with-eval-after-load "cc-mode"
-  (cu-set-key-bindings c-mode-base-map
-   "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
 (provide 'init-cc-misc-support)

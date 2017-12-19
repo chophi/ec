@@ -300,24 +300,7 @@ Return a list that a supported"
                             "Change visited file from: \n[%s] -> [%s]\n(y or n?):"
                             curname truename)))
         (setq-local buffer-file-name truename)
-        (setq-local default-directory (file-name-directory truename)))))
-  
-  (defconst cu-path-util-map
-    '((?i . cu-insert-path-replace-home)
-      (?I . cu-insert-path-absolute-home)
-      (?s . cu-save-current-file-path)
-      (?o . cu-save-current-file-path-org-style)
-      (?j . cu-open-link)
-      (?f . cu-visit-file-follow-symlink))
-    "Util key map for path saving to ring / paste, etc")
-
-  (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
-  (with-eval-after-load "java-mode" (define-key java-mode-map "\C-c\C-l" nil))
-  (with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-l" nil))
-  (cu-set-key-bindings global-map "\C-c\C-l" `(,cu-path-util-map))
-  (with-eval-after-load "org"
-    (cu-set-key-bindings org-mode-map "\C-c\C-l"
-                           `(,cu-path-util-map ((?l . org-insert-link))))))
+        (setq-local default-directory (file-name-directory truename))))))
 
 (defun cu-eval-file (file)
   "Return the eval result of filename as expression"

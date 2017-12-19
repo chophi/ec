@@ -58,9 +58,4 @@
     g-repo-ws
     (completing-read (format "Goto [ws: %s]:\n  " g-repo-ws) g-repo-proj-list))))
 
-(with-eval-after-load "org" (define-key org-mode-map "\C-c\C-r" nil))
-(cu-set-key-bindings global-map "\C-c\C-r"
-                     '((?c . change-repo-ws)
-                       (?g . repo-goto-project)))
-
 (provide 'init-work-with-repo)

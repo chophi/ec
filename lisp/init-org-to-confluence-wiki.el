@@ -113,13 +113,4 @@
   (interactive)
   (lambda () (interactive) (org-update-related-wiki-page t)))
 
-(when (company-computer-p)
-  (defconst org/ruhoh-keys
-    '(("d" . org-update-to-draft-page)
-      ("w" . org-update-related-wiki-page)
-      ("r" . org-read-related-wiki-page)
-      ("v" . org-export-buffer-to-wiki-and-view)))
-  (cu-set-key-bindings global-map "\C-c\C-p" org/ruhoh-keys)
-  (cu-set-key-bindings org-mode-map "\C-c\C-p" org/ruhoh-keys))
-
 (provide 'init-org-to-confluence-wiki)
