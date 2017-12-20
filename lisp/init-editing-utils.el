@@ -221,6 +221,9 @@
         (when (sanityinc/fci-enabled-p)
           (turn-on-fci-mode))))))
 
+(with-eval-after-load "fci-mode"
+  (setq fci-rule-character ?\u2503))
+
 
 ;;----------------------------------------------------------------------------
 ;; Shift lines up and down with M-up and M-down. When paredit is enabled,
