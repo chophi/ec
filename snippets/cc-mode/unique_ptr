@@ -1,0 +1,4 @@
+# key: up
+# name: unique_ptr
+# --
+std::unique_ptr<${1:TYPE}> ${2:NAME}(${3:FROM});
