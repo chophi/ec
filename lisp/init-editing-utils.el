@@ -222,7 +222,7 @@
           (turn-on-fci-mode))))))
 
 (with-eval-after-load "fci-mode"
-  (setq fci-rule-character ?\u2503))
+  (setq fci-rule-character ?\u2502))
 
 
 ;;----------------------------------------------------------------------------
