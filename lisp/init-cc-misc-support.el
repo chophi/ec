@@ -1,19 +1,24 @@
 (require 'cedet)
 (require 'semantic)
-(require 'cedet-files)
-(require 'ede)
-(require 'eieio)
-(require 'speedbar)
+(require 'semantic/ia)
+(require 'semantic/bovine/gcc)
+;; (require 'cedet-files)
+;; (require 'ede)
+;; (require 'eieio)
+;; (require 'speedbar)
 
-;;; enable the features
-(global-semantic-idle-scheduler-mode 1)
-(global-semanticdb-minor-mode 1)
-(global-semantic-idle-summary-mode 1)
-(global-semantic-idle-completions-mode 1)
-(global-semantic-highlight-func-mode 1)
-(global-semantic-decoration-mode 1)
-(global-semantic-stickyfunc-mode 1)
-(global-semantic-mru-bookmark-mode 1)
+(setq semantic-default-submodes
+      '(global-semantic-idle-scheduler-mode
+        global-semanticdb-minor-mode
+        global-semantic-idle-summary-mode
+        global-semantic-mru-bookmark-mode
+        global-semantic-stickyfunc-mode
+        global-semantic-idle-completions-mode
+        global-semantic-highlight-func-mode
+        global-semantic-decoration-mode))
+
+(setq semanticdb-default-save-directory "~/.semanticdb/")
+(semantic-mode t)
 
 ;;; set the default-directory to the Kbuild file to avoid pop selection prompt.
 (setq project-linux-build-directory-default 'same)
@@ -35,10 +40,10 @@
 ;;   system include files, by removing system symbol from list of objects to search for c-mode:
 ;;   eg. (setq-mode-local c-mode semanticdb-find-default-throttle '(project unloaded system recursive))
 
-(setq-mode-local c-mode semanticdb-find-default-throttle
-                 '(project unloaded recursive))
-(setq-mode-local c++-mode semanticdb-find-default-throttle
-                 '(project unloaded recursive))
+;; (setq-mode-local c-mode semanticdb-find-default-throttle
+;;                  '(project unloaded recursive))
+;; (setq-mode-local c++-mode semanticdb-find-default-throttle
+;;                  '(project unloaded recursive))
 
 ;;; semantic-idle-scheduler-idle-time
 
