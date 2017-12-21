@@ -177,7 +177,7 @@ to '((program-name project-root compilation-configuration expression) ...)"
             ('compile (compile command))
             ('shell (shell-command command))
             ('term
-             (send-command-to-terminal
+             (_send-command-to-terminal
               (get-or-select-buffer-local-terminal enforce-reselect)
               (format "cd %s &&\\\n %s" project-root command)))
             ('elisp (eval command))
