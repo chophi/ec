@@ -222,7 +222,7 @@
           (turn-on-fci-mode))))))
 
 ;; ?│ (\u2502) or ?┃ (\u2503), thin or thick version.
-(with-eval-after-load "fci-mode"
+(with-eval-after-load "fill-column-indicator"
   (setq fci-rule-character ?│))
 
 (defun my-change-window-divider ()
