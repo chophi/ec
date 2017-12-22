@@ -342,7 +342,8 @@ Return a list that a supported"
         possible-name
       nil)))
 
-;; Buffer regexp search utils
+
+;; Buffer regexp search utils
 
 (defun cu-buffer-content-without-comment-lines (buf comment-prefix)
   "Return the content in BUF with comment lines removed"
@@ -372,7 +373,8 @@ matched PART, the comment lines will be skipped."
     (delete-dups (reverse result))))
 
 
-;; Multi-Level choice list
+
+;; Multi-Level choice list
 
 (defun* cu-reshape-multi-level-choice-list* (li ndim)
   "Reshape a multi-level choice list, the input list is like this:
