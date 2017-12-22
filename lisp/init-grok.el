@@ -1,29 +1,32 @@
 (require-package 'eopengrok)
 (require 'eopengrok)
 
-(defconst global-eopengrok-configuration
-  nil
-  "Global eopengrok configuration file")
-
-(defun use-opengrok-the-old-way ()
+(defun eopengrok-toggle-global-mode ()
   (interactive)
-  (let* (home (getenv "HOME"))
-    (setq global-eopengrok-configuration nil)
-    (setq eopengrok-ctags (cu-join-path home "/.emacs-pkg/ctags")
-          eopengrok-jar (cu-join-path home "/.emacs-pkg/bin/opengrok.jar"))
-    (add-to-list 'exec-path (cu-join-path home "/.emacs-pkg"))
-    (add-to-path (cu-join-path home "/.emacs-pkg") t)))
+  (setq eopengrok-global-configuration-mode
+        (not eopengrok-global-configuration-mode)))
 
-(defun use-opengrok-the-new-way ()
+(defun use-global-configuration-maybe (orig-fun &rest args)
+  (if eopengrok-global-configuration-mode
+      (expand-file-name eopengrok-global-configuration-file)
+    (apply orig-fun args)))
+(advice-add 'eopengrok--get-configuration :around #'use-global-configuration-maybe)
+
+(defun eopengrok-toggle-use-clj-or-jar (&optional use-clj)
   (interactive)
-  (let* (home (getenv "HOME"))
-    (setq global-eopengrok-configuration "~/opengrok/data/configuration.xml")
-    (setq eopengrok-ctags "/usr/local/bin/ctags"
-          eopengrok-jar (cu-join-path home "opengrok/packages/opengrok-1.1-rc18/lib/opengrok.jar"))
-    (add-to-list 'exec-path (cu-join-path home "/usr/local/bin"))
-    (add-to-path (cu-join-path home "/usr/local/bin") t)))
+  (setq eopengrok-use-clj-opengrok
+        (not eopengrok-use-clj-opengrok))
+  (let ((path (if eopengrok-use-clj-opengrok
+                  "~/.emacs-pkg/opengrok/clj-version"
+                "~/.emacs-pkg/opengrok/jar-version")))
+    (setq exec-path (remove path exec-path))
+    (add-to-list 'exec-path path))
+  (setq eopengrok-source-regexp
+        (if eopengrok-use-clj-opengrok
+            "^\\([[:lower:][:upper:]]?:?.*?\\):\\([0-9]+\\):\\(.*\\)"
+          "^\\([[:lower:][:upper:]]?:?.*?\\):\\([0-9]+\\) \\[\\(.*\\)\\]")))
 
-(use-opengrok-the-old-way)
+(eopengrok-toggle-use-clj-or-jar)
 
 (define-key eopengrok-mode-map "o" 'eopengrok-jump-to-source)
 ;; following is the link explains the differences between "RET" and [(return)]
@@ -47,12 +50,6 @@
 
 (setq eopengrok-ignore-file-or-directory
       (concat eopengrok-ignore-file-or-directory ":.scripts:.log"))
-
-(defun use-global-configuration-maybe (orig-fun &rest args)
-  (if (stringp global-eopengrok-configuration)
-      (expand-file-name global-eopengrok-configuration)
-      (apply orig-fun args)))
-(advice-add 'eopengrok--get-configuration :around #'use-global-configuration-maybe)
 
 ;; (eopengrok--get-configuration)
 (provide 'init-grok)

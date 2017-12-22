@@ -156,7 +156,14 @@ And return t if equals, compare the item with `equal'."
     (setq max-depth 10))
   (__cu-list-files-recursively dir re 0 max-depth))
 
-(defun _make-commands-map-with-help-msg (binding-lists)
+(defun cu-generate-mode-list-string (mode-list)
+  (seq-reduce
+   (lambda (init ml)
+     (concat init "[" (car ml) " : " (prin1-to-string (eval (cdr ml))) "]\n"))
+   mode-list
+   ""))
+
+(defun _make-commands-map-with-help-msg (binding-lists &optional mode-list)
   (let ((converted-list nil)
         (to-test (caar binding-lists))
         (list-copy nil))
@@ -174,10 +181,12 @@ And return t if equals, compare the item with `equal'."
                 (add-to-list 'list-copy `(,(char-to-string (car ele)) . ,(cdr ele)))
               (add-to-list 'list-copy ele))))
     `(lambda () (interactive)
-       (let ((msg "Key bindings are as below:\n\n"))
+       (let ((msg "Key bindings are as below:\n"))
+         (when ',mode-list
+             (setq msg (concat msg (cu-generate-mode-list-string ',mode-list))))
          (dolist (key (reverse ',list-copy))
            (setq msg (concat msg (format "{ [%s] => %-70s }\n" (car key) (cdr key)))))
-         (message (concat msg "\nPlease input: ")))
+         (message (concat msg "Please input: ")))
        ;; read key and get it run;
        (let* ((key (read-key))
 	          (func (cdr (assoc (format "%c" key) ',list-copy))))
@@ -185,7 +194,7 @@ And return t if equals, compare the item with `equal'."
 	         (call-interactively func)
            (error "key <%s> was not binded\n" key))))))
 
-(defun cu-set-key-bindings (keymap prefix binding-lists)
+(defun cu-set-key-bindings (keymap prefix binding-lists &optional mode-list)
   "Binding multiple binding lists to PREFIX and binding PREFIX + ? to print the
 help message.
 There must not be the same key exist in two different list in BINDING-LISTS.
@@ -196,7 +205,7 @@ Example:
 (defconst map-1 '((?a . a-func) (?b . b-func)))
 (defconst map-2 '((?c . c-func) (?c . c-func)))
 (cu-set-key-bindings global-map \"\C-c\C-s\" '(map-1 map-2))"
-  (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists)))
+  (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists mode-list)))
   
 (defun cu-is-dir-or-dirlink-p (path)
   (and (file-exists-p path)

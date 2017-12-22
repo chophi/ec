@@ -116,6 +116,12 @@
   (cu-set-key-bindings c-mode-base-map
                        "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
 
+(defun my-opengrok-create-index ()
+  (interactive)
+  (if eopengrok-global-configuration-mode
+      (eopengrok-create-index "none" nil)
+    (call-interactively 'eopengrok-create-index)))
+
 ;; grok keybindings from init-grok.el
 (defconst my-opengrok-map
   '((?d . eopengrok-find-definition)
@@ -124,8 +130,12 @@
     (?t . eopengrok-find-text)
     (?h . eopengrok-find-history)
     (?r . eopengrok-resume)
-    (?c . eopengrok-create-index)))
-(cu-set-key-bindings global-map "\C-c\C-g" `(,my-opengrok-map))
+    (?c . my-opengrok-create-index)
+    (?m . eopengrok-toggle-global-mode)))
+
+(cu-set-key-bindings
+ global-map "\C-c\C-g" `(,my-opengrok-map)
+ '(("global configuration mode" . eopengrok-global-configuration-mode)))
 
 ;; neo-tree
 (cu-set-key-bindings global-map "\C-c\C-n" '((?t . neotree-toggle)))

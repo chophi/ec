@@ -85,6 +85,26 @@
   :group 'eopngrok
   :type 'string)
 
+;; FIXME: Will be reverted by the later call
+(defvar eopengrok-use-clj-opengrok t
+  "Whether use the clj-opengrok or jar")
+
+(defconst eopengrok-global-configuration-mode
+  nil
+  "Whether to use the global configuration")
+
+(defconst eopengrok-global-configuration-file
+  (expand-file-name "~/opengrok/data/configuration.xml")
+  "The global configuration file")
+
+(defconst eopengrok-global-source-dir
+  (expand-file-name "~/opengrok/source")
+  "The global configuration file")
+
+(defconst eopengrok-global-data-dir
+  (expand-file-name "~/opengrok/data")
+  "The global configuration file")
+
 (defface eopengrok-file-face
   '((t :inherit font-lock-function-name-face))
   "Face for files."
@@ -388,7 +408,16 @@ If not nil every directory in DIR is considered a separate project."
                      "eopengrok-indexer"
                      eopengrok-indexing-buffer
                      "clj-opengrok"
-                     (append (list "index" "-s" (expand-file-name dir))
+                     (append (list "index")
+                             (if eopengrok-use-clj-opengrok
+                                 (list "-s" (expand-file-name dir))
+                               (if eopengrok-global-configuration-mode
+                                   (list "-s" eopengrok-global-source-dir
+                                         "-d" eopengrok-global-data-dir
+                                         "-W" eopengrok-global-configuration-file)
+                                 (list "-s" (expand-file-name dir)
+                                       "-d" (concat (expand-file-name dir) "/" ".opengrok")
+                                       "-W" (concat (expand-file-name dir) "/" eopengrok-configuration))))
                              (list "-i" eopengrok-ignore-file-or-directory)
                              (when enable-projects-p '("-e"))))))
     (set-process-filter proc 'eopengrok--process-filter)
