@@ -119,7 +119,7 @@
 (defun my-opengrok-create-index ()
   (interactive)
   (if eopengrok-global-configuration-mode
-      (eopengrok-create-index "none" nil)
+      (eopengrok-create-index eopengrok-global-source-dir nil)
     (call-interactively 'eopengrok-create-index)))
 
 ;; grok keybindings from init-grok.el

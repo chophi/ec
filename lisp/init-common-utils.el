@@ -475,5 +475,16 @@ NDIM is the dimentions of the choice items.
      "home")))
 
 
+(defun cu-read-ignore-list (dir ignore-file-name)
+  (let ((ignore-file (cu-join-path dir ignore-file-name)))
+    (if (file-exists-p ignore-file)
+        (let ((content (with-current-buffer (find-file-noselect ignore-file)
+                         (buffer-substring-no-properties (point-min) (point-max)))))
+          (seq-filter (lambda (x)
+                        (and (not (equal x ""))
+                             (not (cu-seq-starts-with x "#"))))
+                      (split-string content "\n"))))))
+
+
 (provide 'init-common-utils)
 

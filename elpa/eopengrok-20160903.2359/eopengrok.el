@@ -85,6 +85,31 @@
   :group 'eopngrok
   :type 'string)
 
+(defcustom eopengrok-ignore-list
+  '("d:.opengrok"
+    "d:out"
+    "d:.out"
+    "d:.scripts"
+    "d:.repo"
+    "d:.log"
+    "d:.git"
+    "f:*.so"
+    "f:*.a"
+    "f:*.o"
+    "f:*.gz"
+    "f:*.bz2"
+    "f:*.tgz"
+    "f:*.tar.gz"
+    "f:*.zip"
+    "f:*.jar"
+    "f:*.class"
+    "f:*.elc"
+    "f:*.bin"
+    "f:*.elf")
+  "Ignore file or directory list."
+  :group 'eopngrok
+  :type 'string)
+
 ;; FIXME: Will be reverted by the later call
 (defvar eopengrok-use-clj-opengrok t
   "Whether use the clj-opengrok or jar")
@@ -407,6 +432,7 @@
   "Create an Index file in DIR, ENABLE-PROJECTS-P is flag for enable projects.
 If not nil every directory in DIR is considered a separate project."
   (interactive "DRoot directory: ")
+  ;; (print eopengrok-ignore-list)
   (let ((proc (apply 'start-process
                      "eopengrok-indexer"
                      eopengrok-indexing-buffer
@@ -423,7 +449,16 @@ If not nil every directory in DIR is considered a separate project."
                                  (list "-s" (expand-file-name dir)
                                        "-d" (concat (expand-file-name dir) "/" ".opengrok")
                                        "-W" (concat (expand-file-name dir) "/" eopengrok-configuration))))
-                             (list "-i" eopengrok-ignore-file-or-directory)
+                             (if eopengrok-use-clj-opengrok
+                                 (list "-i" eopengrok-ignore-file-or-directory)
+                               (seq-reduce
+                                (lambda (init ele)
+                                  (if (and (stringp ele) (not (equal ele "")))
+                                      (append (list "-i" ele) init)
+                                    init))
+                                eopengrok-ignore-list
+                                nil))
+
                              (when enable-projects-p '("-e"))))))
     (set-process-filter proc 'eopengrok--process-filter)
     (set-process-sentinel proc 'eopengrok--process-sentinel)
