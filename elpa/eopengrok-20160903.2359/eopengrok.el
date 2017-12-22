@@ -400,6 +400,9 @@
 (eopengrok-define-find history "-h")
 (eopengrok-define-find custom "")
 
+(defvar eopengrok-create-index-quite-mode t
+  "crate index as quiet as possible")
+
 (defun eopengrok-create-index (dir &optional enable-projects-p)
   "Create an Index file in DIR, ENABLE-PROJECTS-P is flag for enable projects.
 If not nil every directory in DIR is considered a separate project."
@@ -409,6 +412,8 @@ If not nil every directory in DIR is considered a separate project."
                      eopengrok-indexing-buffer
                      "clj-opengrok"
                      (append (list "index")
+                             (when eopengrok-create-index-quite-mode
+                                 (list "-q"))
                              (if eopengrok-use-clj-opengrok
                                  (list "-s" (expand-file-name dir))
                                (if eopengrok-global-configuration-mode
