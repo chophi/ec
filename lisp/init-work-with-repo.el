@@ -14,7 +14,12 @@
     (file-name-directory repo)))
 
 (defun current-repo-ws ()
-  (or g-repo-ws (repo-ws)))
+  (or g-repo-ws
+      ;; re-evaluate so if the environment set or g-default-repo-ws set,
+      ;; it takes effect immediately.
+      (or (getenv "DEFAULT_REPO_WS")
+          (if (boundp 'g-default-repo-ws) g-default-repo-ws nil))
+      (repo-ws)))
 
 (defun gen-repo-list (&optional root)
   (interactive)
@@ -47,15 +52,16 @@
 
 (defun repo-goto-project ()
   (interactive)
-  (when (not g-repo-ws)
-    (error "Please set the repo workspace first!"))
-  (when (not (file-exists-p (cu-join-path g-repo-ws ".repo")))
-    (error "There's no repo in %s" g-repo-ws))
-  (when (not g-repo-proj-list)
-    (setq g-repo-proj-list (gen-repo-list g-repo-ws)))
-  (find-file
-   (cu-join-path
-    g-repo-ws
-    (completing-read (format "Goto [ws: %s]:\n  " g-repo-ws) g-repo-proj-list))))
+  (let ((repo-ws (current-repo-ws)))
+    (when (not repo-ws)
+      (error "Please set the repo workspace first!"))
+    (when (not (file-exists-p (cu-join-path repo-ws ".repo")))
+      (error "There's no repo in %s" repo-ws))
+    (when (not g-repo-proj-list)
+      (setq g-repo-proj-list (gen-repo-list repo-ws)))
+    (find-file
+     (cu-join-path
+      repo-ws
+      (completing-read (format "Goto [ws: %s]:\n  " repo-ws) g-repo-proj-list)))))
 
 (provide 'init-work-with-repo)
