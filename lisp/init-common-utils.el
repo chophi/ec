@@ -65,7 +65,7 @@ re-interpreted via using smart-compile-string.
                 (concat help-msg
                         (format "%s : %s\n" (char-to-string run-key) command-string)))
           (push run-key choices)))
-      
+
       (let* ((run-list (assoc (read-char-choice help-msg choices) run-lists))
              (required-files (cadr run-list))
              (run-command (caddr run-list))
@@ -189,9 +189,9 @@ And return t if equals, compare the item with `equal'."
          (message (concat msg "Please input: ")))
        ;; read key and get it run;
        (let* ((key (read-key))
-	          (func (cdr (assoc (format "%c" key) ',list-copy))))
+              (func (cdr (assoc (format "%c" key) ',list-copy))))
          (if func
-	         (call-interactively func)
+             (call-interactively func)
            (error "key <%s> was not binded\n" key))))))
 
 (defun cu-set-key-bindings (keymap prefix binding-lists &optional mode-list)
@@ -206,7 +206,7 @@ Example:
 (defconst map-2 '((?c . c-func) (?c . c-func)))
 (cu-set-key-bindings global-map \"\C-c\C-s\" '(map-1 map-2))"
   (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists mode-list)))
-  
+
 (defun cu-is-dir-or-dirlink-p (path)
   (and (file-exists-p path)
        (let ((first-attr (car (file-attributes path))))
@@ -300,8 +300,17 @@ Return a list that a supported"
       (message "The string sequence is %s" maybe-filename)
       maybe-filename))
 
-  (defvar cu-link-list
-    '(("File" file-exists-p find-file-other-window)
+  (defun* can-split-out-a-filename (name)
+    (when (not (stringp name))
+      (error "name is not string"))
+    (when (file-exists-p (expand-file-name name))
+      (return-from can-split-out-a-filename (expand-file-name name)))
+    (dolist (n (split-string name ":"))
+      (when (file-exists-p (expand-file-name n))
+        (return-from can-split-out-a-filename (expand-file-name n)))))
+
+  (defconst cu-link-list
+    '(("File" can-split-out-a-filename find-file-other-window)
       ("External link" cu-find-external-link cu-open-external-link)))
 
   (defun* cu-find-external-link (string)
@@ -363,8 +372,8 @@ Return a list that a supported"
 (defun cu-strip-string (str beforep afterp)
     "Strip STR of any leading (if BEFOREP) and/or trailing (if AFTERP) space."
     (string-match (concat "\\`" (if beforep "\\s-*")
-			            "\\(.*?\\)" (if afterp "\\s-*\n?")
-			            "\\'") str)
+                        "\\(.*?\\)" (if afterp "\\s-*\n?")
+                        "\\'") str)
     (match-string 1 str))
 
 (defun cu-search-brew-executable (program)
@@ -500,7 +509,7 @@ NDIM is the dimentions of the choice items.
       (setq level (1+ level)))
     (setq ret (cons (cadr choosed-list) ret))
     (reverse ret)))
- 
+
 ;; (cu-choose-from-reshaped-mlcl-test)
 (defun cu-choose-from-reshaped-mlcl-test ()
   (cu-choose-from-reshaped-mlcl
@@ -524,4 +533,3 @@ NDIM is the dimentions of the choice items.
 
 
 (provide 'init-common-utils)
-
