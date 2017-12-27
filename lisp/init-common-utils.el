@@ -275,16 +275,16 @@ Return a list that a supported"
                  (getenv "HOME") "~" (buffer-file-name))))
       (kill-new (format "[[%s][%s]]" name (file-name-nondirectory name)))))
 
-  (defun cu-open-link ()
+  (defun cu-string-sequences-at-point ()
     (interactive)
-
+    ;; Define the separator
     (defun is-separator (str i)
       "To check if the char at I of STR is a separator"
       (let ((ret nil)
             (ch (elt str i)))
-        (dolist (c (append "\n,\"; :" nil) ret)
+        (dolist (c (append "\n,\"; ()[]{}" nil) ret)
           (when (equal ch c) (setq ret t)))))
-    
+    ;;
     (let* ((start (max (- (point) 256) 1))
            (end (min (+ (point) 256) (buffer-size)))
            (cur (- (point) start))
@@ -297,8 +297,43 @@ Return a list that a supported"
                     ((or (>= i len) (is-separator str i)) i)
                   (incf i)))
            (maybe-filename (substring str start end)))
-      (when (file-exists-p maybe-filename)
-        (find-file-other-window maybe-filename))))
+      (message "The string sequence is %s" maybe-filename)
+      maybe-filename))
+
+  (defvar cu-link-list
+    '(("File" file-exists-p find-file-other-window)
+      ("External link" cu-find-external-link cu-open-external-link)))
+
+  (defun* cu-find-external-link (string)
+    (when (boundp 'cu-private-external-link-list)
+      (dolist (ll cu-private-external-link-list)
+        (let ((pattern (car ll))
+              (format-str (cadr ll)))
+          (when (string-match pattern string)
+            (return-from cu-find-external-link
+              (format format-str (match-string 0 string))))))))
+
+  (defun* cu-open-external-link (string)
+    (when (boundp 'pc-open-with-mac-browser-command)
+      (shell-command (format "%s %s" pc-open-with-mac-browser-command string))))
+
+  (defun* cu-open-link ()
+    (interactive)
+    (let ((maybe-filename (cu-string-sequences-at-point)))
+      (dolist (ele cu-link-list)
+        (let ((type (car ele))
+              (check-func (cadr ele))
+              (apply-func (caddr ele))
+              (matched nil))
+          (when (fboundp check-func)
+            (setq matched (funcall check-func maybe-filename))
+            (when matched
+              (message "Found matched type: %s" type)
+              (if (fboundp apply-func)
+                  (funcall apply-func (if (eq matched t) maybe-filename matched))
+                (error (format "%s not defined" (symbol-name apply-func))))
+              (return-from cu-open-link t)))))
+      (error "no matched link found")))
 
   (defun cu-visit-file-follow-symlink ()
     (interactive)
