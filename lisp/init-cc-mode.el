@@ -101,7 +101,5 @@
   (compile (format "python %s/.emacs.d/site-python/cpplint.py  %s"
                          (getenv "HOME")
                          (buffer-file-name))))
-(add-hook 'c++-mode-hook
-          (lambda() (local-set-key "\C-c\C-l" 'cpplint-analyze)))
 
 (provide 'init-cc-mode)
