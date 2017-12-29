@@ -60,8 +60,10 @@
     (when (not g-repo-proj-list)
       (setq g-repo-proj-list (gen-repo-list repo-ws)))
     (find-file
-     (cu-join-path
-      repo-ws
-      (completing-read (format "Goto [ws: %s]:\n  " repo-ws) g-repo-proj-list)))))
+     (ido-read-file-name
+      "Find file: "
+      (cu-join-path
+       repo-ws
+       (completing-read (format "Goto [ws: %s]:\n  " repo-ws) g-repo-proj-list))))))
 
 (provide 'init-work-with-repo)
