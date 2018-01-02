@@ -443,7 +443,8 @@ If not nil every directory in DIR is considered a separate project."
                              (if eopengrok-use-clj-opengrok
                                  (list "-s" (expand-file-name dir))
                                (if eopengrok-global-configuration-mode
-                                   (list "-s" eopengrok-global-source-dir
+                                   (list "-P"
+                                         "-s" eopengrok-global-source-dir
                                          "-d" eopengrok-global-data-dir
                                          "-W" eopengrok-global-configuration-file)
                                  (list "-s" (expand-file-name dir)
