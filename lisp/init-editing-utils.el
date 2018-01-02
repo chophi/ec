@@ -221,10 +221,7 @@
         (when (sanityinc/fci-enabled-p)
           (turn-on-fci-mode))))))
 
-;; ;; ?│ (\u2502) or ?┃ (\u2503), thin or thick version.
-;; (with-eval-after-load "fill-column-indicator"
-;;   (setq fci-rule-character ?│))
-
+;; ?│ (\u2502) or ?┃ (\u2503), thin or thick version.
 (defun my-change-window-divider ()
   (let ((display-table (or buffer-display-table standard-display-table)))
     (set-display-table-slot display-table 5 ?┃)
