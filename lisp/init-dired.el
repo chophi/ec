@@ -19,7 +19,9 @@
 ;;; be available
 (if (eq os 'macos)
     ;; installed by brew install coreutils
-    (setq insert-directory-program "/usr/local/opt/coreutils/libexec/gnubin/ls"))
+    (let ((possible-ls-program "/usr/local/opt/coreutils/libexec/gnubin/ls"))
+      (when (file-exists-p possible-ls-program)
+        (setq insert-directory-program possible-ls-program))))
 
 (defun dired-do-command (command)
   "Run COMMAND on marked files. Any files not already open will be opened.
