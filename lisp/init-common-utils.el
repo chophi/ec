@@ -188,7 +188,7 @@ And return t if equals, compare the item with `equal'."
          (dolist (key (reverse ',list-copy))
            (setq msg (concat msg (format "{ [%s] => %-70s }\n" (car key) (cdr key)))
                  choices (add-to-list 'choices (string-to-char (car key)) t)))
-         (setq msg (concat msg "New version Please input: "))
+         (setq msg (concat msg "Please input: "))
          ;; read key and get it run;
          (let* ((key (read-char-choice msg choices))
                 (func (cdr (assoc (format "%c" key) ',list-copy))))
