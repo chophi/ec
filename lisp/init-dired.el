@@ -78,7 +78,7 @@ open and unsaved."
     (dired-sort-other (concat dired-listing-switches switcher))))
 
 (setq dired-listing-switches
-      (concat "--group-directories-first " dired-listing-switches))
+      (concat "--group-directories-first -h " dired-listing-switches))
 
 (require 'dired)
 (define-key dired-mode-map (kbd "s") 'my-dired-sort-func)
