@@ -181,18 +181,22 @@ And return t if equals, compare the item with `equal'."
                 (add-to-list 'list-copy `(,(char-to-string (car ele)) . ,(cdr ele)))
               (add-to-list 'list-copy ele))))
     `(lambda () (interactive)
-       (let ((msg "Key bindings are as below:\n"))
+       (let ((msg "Key bindings are as below:\n")
+             (choices nil))
          (when ',mode-list
              (setq msg (concat msg (cu-generate-mode-list-string ',mode-list))))
          (dolist (key (reverse ',list-copy))
-           (setq msg (concat msg (format "{ [%s] => %-70s }\n" (car key) (cdr key)))))
-         (message (concat msg "Please input: ")))
-       ;; read key and get it run;
-       (let* ((key (read-key))
-              (func (cdr (assoc (format "%c" key) ',list-copy))))
-         (if func
-             (call-interactively func)
-           (error "key <%s> was not binded\n" key))))))
+           (setq msg (concat msg (format "{ [%s] => %-70s }\n" (car key) (cdr key)))
+                 choices (add-to-list 'choices (string-to-char (car key)) t)))
+         (setq msg (concat msg "New version Please input: "))
+         ;; read key and get it run;
+         (let* ((key (read-char-choice msg choices))
+                (func (cdr (assoc (format "%c" key) ',list-copy))))
+           (if func
+               (progn
+                 (message nil)
+                 (call-interactively func))
+             (error "key <%s> was not binded\n" key)))))))
 
 (defun cu-set-key-bindings (keymap prefix binding-lists &optional mode-list)
   "Binding multiple binding lists to PREFIX and binding PREFIX + ? to print the
