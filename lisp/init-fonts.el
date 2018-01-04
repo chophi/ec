@@ -81,9 +81,6 @@ CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
 ;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
 ;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
 ;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-(when (eq os 'windows)
-  (set-font-for-charset ) 
-  (set-font-for-charset ))
 
 (defvar preferred-font-config-list
   (cond
