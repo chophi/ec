@@ -227,7 +227,17 @@
     (set-display-table-slot display-table 5 ?┃)
     (set-window-display-table (selected-window) display-table)))
 
-(add-hook 'window-configuration-change-hook 'my-change-window-divider)
+(defvar use-fancy-devider t)
+(defun toggle-use-fancy-devider ()
+  (interactive)
+  (setq use-fancy-devider (not use-fancy-devider))
+  (message "%s fancy devider" (if use-fancy-devider "Enable" "Disable"))
+  (if use-fancy-devider
+      (progn (setq fci-rule-character ?│)
+             (add-hook 'window-configuration-change-hook 'my-change-window-divider))
+    (setq fci-rule-character ?|)
+    (remove-hook 'window-configuration-change-hook 'my-change-window-divider)))
+
 ;;----------------------------------------------------------------------------
 ;; Shift lines up and down with M-up and M-down. When paredit is enabled,
 ;; it will use those keybindings. For this reason, you might prefer to

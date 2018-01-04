@@ -2,8 +2,7 @@
 (require 'fill-column-indicator)
 
 ;; ?│ (\u2502) or ?┃ (\u2503), thin or thick version.
-(setq fci-rule-character ?│
-      fci-rule-color "#8b2252") ;; maroon4
+(setq fci-rule-color "#8b2252") ;; maroon4
 
 (defvar enable-fci-mode-on-hooks nil
   "Whether to enable fci mode on some specified hooks")
