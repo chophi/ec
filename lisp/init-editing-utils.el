@@ -223,20 +223,24 @@
 
 ;; ?│ (\u2502) or ?┃ (\u2503), thin or thick version.
 (defun my-change-window-divider ()
-  (let ((display-table (or buffer-display-table standard-display-table)))
-    (set-display-table-slot display-table 5 ?┃)
-    (set-window-display-table (selected-window) display-table)))
+  (dolist (win (window-list nil 'no-minibuffer))
+    (with-current-buffer (window-buffer win)
+      (with-selected-window win
+        (unless buffer-display-table
+          (setq buffer-display-table (make-display-table)))
+        (set-display-table-slot buffer-display-table 'vertical-border ?┃)))))
 
-(defvar use-fancy-devider t)
-(defun toggle-use-fancy-devider ()
+(defvar use-fancy-divider nil)
+(defun toggle-use-fancy-divider ()
   (interactive)
-  (setq use-fancy-devider (not use-fancy-devider))
-  (message "%s fancy devider" (if use-fancy-devider "Enable" "Disable"))
-  (if use-fancy-devider
+  (setq use-fancy-divider (not use-fancy-divider))
+  (message "%s fancy devider" (if use-fancy-divider "Enable" "Disable"))
+  (if use-fancy-divider
       (progn (setq fci-rule-character ?│)
              (add-hook 'window-configuration-change-hook 'my-change-window-divider))
     (setq fci-rule-character ?|)
     (remove-hook 'window-configuration-change-hook 'my-change-window-divider)))
+(toggle-use-fancy-divider)
 
 ;;----------------------------------------------------------------------------
 ;; Shift lines up and down with M-up and M-down. When paredit is enabled,
