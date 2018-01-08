@@ -140,6 +140,11 @@
 ;; neo-tree
 (cu-set-key-bindings global-map "\C-c\C-n" '((?t . neotree-toggle)))
 
+;; ido gnus
+(cu-set-key-bindings global-map "\C-c\C-m"
+                     '((?g . ido-gnus-select-group)
+                       (?s . ido-gnus-select-server)
+                       (?e . ido-gnus-select)))
 
 
 (add-hook 'emacs-lisp-mode-hook

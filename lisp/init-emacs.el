@@ -138,6 +138,7 @@
 (require 'init-polymode)
 (require 'init-adaptive-wrap)
 (require 'init-sepolicy)
+(require 'init-ido-gnus)
 (require 'init-keybind)
 
 (setq sanityinc/require-times
