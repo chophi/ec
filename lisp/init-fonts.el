@@ -57,34 +57,22 @@ by the :height face attribute."
 (defun set-font-for-charset (charset type size &optional weight)
   "Set font for the CHARSET
 CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
-  (if (eq charset 'ascii)
-      (set-face-attribute 'default (selected-frame)
-                          :font
-                          (apply #'font-spec
-                                 :family type
-                                 :size size
-                                 (when weight
-                                   `(:weight ,weight))))
-    (when (not (listp charset))
-      (setq charset
-            (case charset
-              ('cjk '(kana han symbol cjk-misc bopomofo))
-              (t '(nil)))))
-    (dolist (cset charset)
-      (set-fontset-font nil cset
-                        (apply #'font-spec
-                               :family type
-                               :size size
-                               (when weight
-                                 `(:weight ,weight)))))))
+  (set-face-attribute 'default (selected-frame)
+                      :font
+                      (apply #'font-spec
+                             :family type
+                             :size size
+                             :registry (if (eq type 'ascii) "iso8859-1" "gb2312") 
+                             (when weight
+                               `(:weight ,weight)))))
 
 ;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
 ;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
 ;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 ;; Test here for macos non-company:
-;; (dolist (fc '((cjk "STFangsong" 28)))
+;; (dolist (fc '((cjk "STFangsong" 28) (ascii "Monaco" 24)))
 ;;   (apply #'set-font-for-charset fc))
-;; (dolist (fc '((cjk "STFangsong" 22)))
+;; (dolist (fc '((cjk "STFangsong" 22) (ascii "Monaco" 19)))
 ;;   (apply #'set-font-for-charset fc))
 
 (defconst preferred-font-config-list
