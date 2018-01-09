@@ -84,9 +84,10 @@
     "The keymap for ispell")
   (setq ctrl-c-ctrl-i-keymap (append ctrl-c-ctrl-i-keymap my-ispell-keymap))
   (cu-set-key-bindings global-map "\C-c\C-i" ctrl-c-ctrl-i-keymap)
-  (cu-set-key-bindings makefile-mode-map "\C-c\C-i"
-                       `(,ctrl-c-ctrl-i-keymap
-                         ((?F . makefile-insert-gmake-function)))))
+  (with-eval-after-load "make-mode"
+    (cu-set-key-bindings makefile-mode-map "\C-c\C-i"
+                         `(,ctrl-c-ctrl-i-keymap
+                           ((?F . makefile-insert-gmake-function))))))
 
 ;; uniform environment
 (cu-set-key-bindings global-map "\C-c\C-f"
