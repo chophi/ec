@@ -39,3 +39,4 @@ lisp-snippets/az-common-env.el
 /init-amazon-linux.el
 /lisp/init-amazon-linux.el
 url/
+/gnus/init-gnus-private.el
