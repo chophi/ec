@@ -54,25 +54,20 @@ by the :height face attribute."
 (global-set-key (kbd "C-c z i") 'zoom-frame)
 (global-set-key (kbd "C-c z o") 'zoom-frame-out)
 
-(defun set-font-for-charset (charset type size &optional weight)
-  "Set font for the CHARSET
-CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
-  (set-face-attribute 'default (selected-frame)
-                      :font
-                      (apply #'font-spec
-                             :family type
-                             :size size
-                             :registry (if (eq type 'ascii) "iso8859-1" "gb2312") 
-                             (when weight
-                               `(:weight ,weight)))))
+(defun set-font-for-current-frame (font-list)
+  "Set font for current frame"
+  (dolist (fc font-list)
+    (set-fontset-font nil
+                      (car fc)
+                      (font-spec :family (cadr fc) :size (caddr fc))
+                      (selected-frame))))
 
 ;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
 ;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
 ;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+;; useful variables charset-script-alist charset-list
 ;; Test here for macos non-company:
-;; (dolist (fc '((cjk "STFangsong" 28) (ascii "Monaco" 24)))
-;;   (apply #'set-font-for-charset fc))
-;; (dolist (fc '((cjk "STFangsong" 22) (ascii "Monaco" 19)))
+;; (dolist (fc '((han "STFangsong" 28) (ascii "Monaco" 24)))
 ;;   (apply #'set-font-for-charset fc))
 
 (defconst preferred-font-config-list
@@ -80,22 +75,22 @@ CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
    ;; for non-company macos
    ((eq os 'macos)
     (if (company-computer-p)
-        '(((cjk "STFangsong" 28) (ascii "Monaco" 24)) ;; 23-inch display
-          ((cjk "STFangsong" 22) (ascii "Monaco" 19))) ;; 13.3-inch display
-        '(((cjk "STFangsong" 22) (ascii "Monaco" 19))
-          ((cjk "STFangsong" 18) (ascii "Monaco" 15)))))
+        '(((han "STFangsong" 28) (ascii "Monaco" 24)) ;; 23-inch display
+          ((han "STFangsong" 22) (ascii "Monaco" 19))) ;; 13.3-inch display
+        '(((han "STFangsong" 22) (ascii "Monaco" 19))
+          ((han "STFangsong" 18) (ascii "Monaco" 15)))))
    ;; for company computer
    ((and (company-computer-p) (eq os 'linux))
-    '(((cjk "SimSun" 16.3) (ascii "Monaco" 14.5))
-      ((cjk "SimSun" 16.3) (ascii "Ubuntu Mono" 16.5))
-      ((cjk "SimSun" 16.3) (ascii "Consolas" 15.0))))
+    '(((han "SimSun" 16.3) (ascii "Monaco" 14.5))
+      ((han "SimSun" 16.3) (ascii "Ubuntu Mono" 16.5))
+      ((han "SimSun" 16.3) (ascii "Consolas" 15.0))))
    ;; for windows
    ((eq os 'windows)
-    '(((cjk "SimSun" 15.0) (ascii "Consolas" 14.5))))
+    '(((han "SimSun" 15.0) (ascii "Consolas" 14.5))))
    ;; default
    (t
-    '(((cjk "STFangsong" 22) (ascii "Monaco" 19))
-      ((cjk "STFangsong" 18) (ascii "Monaco" 15)))))
+    '(((han "STFangsong" 22) (ascii "Monaco" 19))
+      ((han "STFangsong" 18) (ascii "Monaco" 15)))))
   "The preferred font config list which can be rotated use `next-font'")
 
 (defvar selected-font-index -1
@@ -111,12 +106,16 @@ CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
          (index (mod (1+ selected-font-index) len))
          (fconf-list (nth index preferred-font-config-list)))
     (setq selected-font-config fconf-list)
-    (dolist (fc fconf-list) (apply #'set-font-for-charset fc))
+    (set-font-for-current-frame selected-font-config)
     (setq-default line-spacing 0.05)
     (setq selected-font-index index)))
 
 ;; The first call to use the first font in preferred-font-config-list
 (next-font)
+
+(defun refresh-font-setting ()
+  (interactive)
+  (set-font-for-current-frame selected-font-config))
 
 (defun set-perferred-large-screen-fontsize ()
   (interactive)
