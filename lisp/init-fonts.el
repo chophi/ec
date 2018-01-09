@@ -58,36 +58,44 @@ by the :height face attribute."
   "Set font for the CHARSET
 CHARSET can be 'ascii, 'cjk or a list of selected charset in `charset-list'"
   (if (eq charset 'ascii)
-      (set-face-attribute 'default nil :font
+      (set-face-attribute 'default (selected-frame)
+                          :font
                           (apply #'font-spec
                                  :family type
                                  :size size
                                  (when weight
                                    `(:weight ,weight))))
-    (progn
-      (when (not (listp charset))
-        (setq charset
-              (case charset
-                ('cjk '(kana han symbol cjk-misc bopomofo))
-                (t '(nil)))))
-      (dolist (cset charset)
-        (set-fontset-font t cset
-                          (apply #'font-spec
-                                 :family type
-                                 :size size
-                                 (when weight
-                                   `(:weight ,weight))))))))
+    (when (not (listp charset))
+      (setq charset
+            (case charset
+              ('cjk '(kana han symbol cjk-misc bopomofo))
+              (t '(nil)))))
+    (dolist (cset charset)
+      (set-fontset-font nil cset
+                        (apply #'font-spec
+                               :family type
+                               :size size
+                               (when weight
+                                 `(:weight ,weight)))))))
 
 ;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
 ;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
 ;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+;; Test here for macos non-company:
+;; (dolist (fc '((cjk "STFangsong" 28)))
+;;   (apply #'set-font-for-charset fc))
+;; (dolist (fc '((cjk "STFangsong" 22)))
+;;   (apply #'set-font-for-charset fc))
 
-(defvar preferred-font-config-list
+(defconst preferred-font-config-list
   (cond
    ;; for non-company macos
    ((eq os 'macos)
-    '(((cjk "STFangsong" 22) (ascii "Monaco" 19))
-      ((cjk "STFangsong" 18) (ascii "Monaco" 15))))
+    (if (company-computer-p)
+        '(((cjk "STFangsong" 28) (ascii "Monaco" 24)) ;; 23-inch display
+          ((cjk "STFangsong" 22) (ascii "Monaco" 19))) ;; 13.3-inch display
+        '(((cjk "STFangsong" 22) (ascii "Monaco" 19))
+          ((cjk "STFangsong" 18) (ascii "Monaco" 15)))))
    ;; for company computer
    ((and (company-computer-p) (eq os 'linux))
     '(((cjk "SimSun" 16.3) (ascii "Monaco" 14.5))
