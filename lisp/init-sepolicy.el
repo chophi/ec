@@ -26,7 +26,7 @@
   (modify-syntax-entry ?\n ">"  sepolicy-mode-syntax-table)
   (modify-syntax-entry ?{ "(}"  sepolicy-mode-syntax-table)
   (modify-syntax-entry ?} "){"  sepolicy-mode-syntax-table)
-  (modify-syntax-entry ?( "()"  sepolicy-mode-syntax-table)
+  (modify-syntax-entry ?\( "()"  sepolicy-mode-syntax-table)
                        (modify-syntax-entry ?) ")("  sepolicy-mode-syntax-table)
   (modify-syntax-entry ?\; "."  sepolicy-mode-syntax-table)
   (modify-syntax-entry ?, "."   sepolicy-mode-syntax-table)
