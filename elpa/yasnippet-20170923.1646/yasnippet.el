@@ -165,8 +165,7 @@
   (expand-file-name "snippets" user-emacs-directory))
 
 (defcustom yas-snippet-dirs (remove nil
-                                    (list yas--default-user-snippets-dir
-                                          'yas-installed-snippets-dir))
+                                    (list yas--default-user-snippets-dir))
   "List of top-level snippet directories.
 
 Each element, a string or a symbol whose value is a string,

@@ -186,7 +186,8 @@ And return t if equals, compare the item with `equal'."
          (when ',mode-list
              (setq msg (concat msg (cu-generate-mode-list-string ',mode-list))))
          (dolist (key (reverse ',list-copy))
-           (setq msg (concat msg (format "{ [%s] => %-70s }\n" (car key) (cdr key)))
+           (setq msg (concat msg (format "%c [%s] => %-70s %c\n"
+                                         ?│ (car key) (cdr key) ?│))
                  choices (add-to-list 'choices (string-to-char (car key)) t)))
          (setq msg (concat msg "Please input: "))
          ;; read key and get it run;

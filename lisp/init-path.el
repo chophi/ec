@@ -3,6 +3,8 @@
 
 (when (memq window-system '(mac ns))
   (require-package 'exec-path-from-shell)
+  ;; exec-path-from-shell-check-startup-files to disable
+  (setq exec-path-from-shell-check-startup-files nil)
   (exec-path-from-shell-initialize))
 
 (defun add-to-path(path &optional as-head)

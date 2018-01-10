@@ -507,7 +507,7 @@ apples: Process is still running; kill it? ")
 (defun apples-compile (&optional filename output)
   "Compile FILENAME into OUTPUT."
   (interactive)
-  (labels ((read (file prompt default)
+  (cl-labels ((read (file prompt default)
                  (expand-file-name
                   (or file (read-file-name prompt default default)))))
     (lexical-let* ((filename (read filename "File: " buffer-file-name))
@@ -832,7 +832,7 @@ whitespaces are deleted."
                     (apples-ideal-prev-bol)))
         (cchar-re (concat (apples-continuation-char) "$"))
         prev-indent prev-lword prev-lstr pprev-bol prev-cchar-p pprev-cchar-p)
-    (flet ((cchar? (lstr) (string-match cchar-re lstr)))
+    (cl-flet ((cchar? (lstr) (string-match cchar-re lstr)))
       (when prev-bol
         (save-excursion
           (goto-char prev-bol)
@@ -867,7 +867,7 @@ whitespaces are deleted."
         (if bol-is-in-comment
             (setq indent (or prev-indent 0))
           ;; bol is neither in string nor in comment
-          (flet ((match? (regs str) (and regs str (apples-string-match regs str)))
+          (cl-flet ((match? (regs str) (and regs str (apples-string-match regs str)))
                  (member? (str lst) (and str lst (member str lst))))
             (let* ((cchar-indent?   (and prev-cchar-p (not pprev-cchar-p)))
                    (prev-indent?    (match? apples-indent-regexps prev-lstr))
@@ -1207,7 +1207,7 @@ specified, also highlight the matching statement."
 
 (defvar apples-font-lock-keywords
   (let ((i apples-identifier))
-    (flet ((kws (type) (apples-replace-re-space->spaces
+    (cl-flet ((kws (type) (apples-replace-re-space->spaces
                         (regexp-opt (apples-keywords type) 'words)))
            (cat (&rest s) (apples-replace-re-comma->spaces (apply #'concat s))))
       `(

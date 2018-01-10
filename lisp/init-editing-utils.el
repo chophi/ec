@@ -15,9 +15,6 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; exec-path-from-shell-check-startup-files to disable
-(setq exec-path-from-shell-check-startup-files nil)
-
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
