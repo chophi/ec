@@ -67,15 +67,15 @@ by the :height face attribute."
 ;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 ;; useful variables charset-script-alist charset-list
 ;; Test here for macos non-company:
-;; (dolist (fc '((han "STFangsong" 28) (ascii "Monaco" 24)))
-;;   (apply #'set-font-for-charset fc))
+;; (set-font-for-current-frame '((han "STFangsong" 30) (ascii "Monaco" 25)))
+
 
 (defconst preferred-font-config-list
   (cond
    ;; for non-company macos
    ((eq os 'macos)
     (if (company-computer-p)
-        '(((han "STFangsong" 28) (ascii "Monaco" 24)) ;; 23-inch display
+        '(((han "STFangsong" 30) (ascii "Monaco" 25)) ;; 23-inch display
           ((han "STFangsong" 22) (ascii "Monaco" 19))) ;; 13.3-inch display
         '(((han "STFangsong" 22) (ascii "Monaco" 19))
           ((han "STFangsong" 18) (ascii "Monaco" 15)))))
