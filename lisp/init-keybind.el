@@ -28,9 +28,13 @@
   (let ((magit-log-arguments
          (remove "--graph" (remove "--decorate" magit-log-arguments))))
     (magit-log-head)))
+(defun my-toggle-magit-blame-mode ()
+  (interactive)
+  (if (and (boundp 'magit-blame-mode) magit-blame-mode)
+      (call-interactively 'magit-blame-mode)
+    (call-interactively 'magit-blame)))
 (cu-set-key-bindings global-map "\C-c\C-v" '((?s . magit-status)
-                                             (?b . magit-blame)
-                                             (?B . magit-blame-mode)
+                                             (?b . my-toggle-magit-blame-mode)
                                              (?p . magit-pull)
                                              (?l . magit-log-head)
                                              (?L . my-magit-log-head-fast)))
@@ -61,8 +65,10 @@
     (?j . cu-open-link)
     (?f . cu-visit-file-follow-symlink))
   "Util key map for path saving to ring / paste, etc")
-(cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)
 (with-eval-after-load "org"
+  (setq cu-path-util-map (append cu-path-util-map
+                                 '((?O . org-store-link))))
+  (cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)
   (cu-set-key-bindings org-mode-map "\C-c\C-l"
                        `(,cu-path-util-map ((?l . org-insert-link)))))
 
