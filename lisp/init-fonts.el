@@ -56,41 +56,49 @@ by the :height face attribute."
 
 (defun set-font-for-current-frame (font-list)
   "Set font for current frame"
-  (dolist (fc font-list)
-    (set-fontset-font nil
-                      (car fc)
-                      (font-spec :family (cadr fc) :size (caddr fc))
-                      (selected-frame))))
+  (dolist (fc (cdr font-list))
+    (let* ((script (car fc))
+           (font (font-spec :family (cadr fc) :size (caddr fc))))
+      ;; FIXME: (workaround) From the doc, the set-fontset-font should work for
+      ;; per-frame font setting, but seems it's buggly, but I found a workaround
+      ;; for this, use set-face-attribute for the script `ascii`,
+      ;; but use set-fontset-font to set "fontset-default" for `han` instead.
+      (if (eq script 'ascii)
+          (set-face-attribute 'default (selected-frame) :font font))
+      (set-fontset-font "fontset-default"
+                        (car fc)
+                        (font-spec :family (cadr fc) :size (caddr fc))
+                        (selected-frame)))))
 
 ;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
 ;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
 ;; LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-;; useful variables charset-script-alist charset-list
+;; useful variables and functions:
+;; charset-script-alist charset-list =C-u + (what-cursor-position)=
 ;; Test here for macos non-company:
-;; (set-font-for-current-frame '((han "STFangsong" 30) (ascii "Monaco" 25)))
-
-
+;; (set-font-for-current-frame '("test" (han "STFangsong" 24) (ascii "Monaco" 20)))
+;; (set-face-attribute 'default (selected-frame) :font (font-spec :family "Monaco" :registry "gb2312" :size 10))
 (defconst preferred-font-config-list
   (cond
    ;; for non-company macos
    ((eq os 'macos)
     (if (company-computer-p)
-        '(((han "STFangsong" 30) (ascii "Monaco" 25)) ;; 23-inch display
-          ((han "STFangsong" 22) (ascii "Monaco" 19))) ;; 13.3-inch display
-        '(((han "STFangsong" 22) (ascii "Monaco" 19))
-          ((han "STFangsong" 18) (ascii "Monaco" 15)))))
+        '(("large" (han "STFangsong" 30) (ascii "Monaco" 25)) ;; 23-inch display
+          ("small" (han "STFangsong" 22) (ascii "Monaco" 19))) ;; 13.3-inch display
+        '(("large" (han "STFangsong" 22) (ascii "Monaco" 19))
+          ("small" (han "STFangsong" 18) (ascii "Monaco" 15)))))
    ;; for company computer
    ((and (company-computer-p) (eq os 'linux))
-    '(((han "SimSun" 16.3) (ascii "Monaco" 14.5))
-      ((han "SimSun" 16.3) (ascii "Ubuntu Mono" 16.5))
-      ((han "SimSun" 16.3) (ascii "Consolas" 15.0))))
+    '(("c1" (han "SimSun" 16.3) (ascii "Monaco" 14.5))
+      ("c2" (han "SimSun" 16.3) (ascii "Ubuntu Mono" 16.5))
+      ("c3" (han "SimSun" 16.3) (ascii "Consolas" 15.0))))
    ;; for windows
    ((eq os 'windows)
-    '(((han "SimSun" 15.0) (ascii "Consolas" 14.5))))
+    '(("c1" (han "SimSun" 15.0) (ascii "Consolas" 14.5))))
    ;; default
    (t
-    '(((han "STFangsong" 22) (ascii "Monaco" 19))
-      ((han "STFangsong" 18) (ascii "Monaco" 15)))))
+    '(("c1" (han "STFangsong" 22) (ascii "Monaco" 19))
+      ("c2" (han "STFangsong" 18) (ascii "Monaco" 15)))))
   "The preferred font config list which can be rotated use `next-font'")
 
 (defvar selected-font-index -1
@@ -117,8 +125,20 @@ by the :height face attribute."
   (interactive)
   (set-font-for-current-frame selected-font-config))
 
-(defun set-perferred-large-screen-fontsize ()
+(defun my-select-font ()
   (interactive)
-  (set-face-attribute 'default (selected-frame) :height 240))
+  (let* ((prompt
+         (seq-reduce
+          (lambda (a b) (format "%s%s\n" a b))
+          (mapcar
+           (lambda (fc)
+             (format "%s: [%s]" (car fc) (prin1-to-string (cdr fc))))
+           preferred-font-config-list)
+          ""))
+        (choices
+         (mapcar 'car preferred-font-config-list))
+        (choice
+         (ido-completing-read (format "Choose a fontset:\n%sPlease select: " prompt) choices)))
+    (set-font-for-current-frame (assoc choice preferred-font-config-list))))
 
 (provide 'init-fonts)
