@@ -28,6 +28,7 @@
   (let ((magit-log-arguments
          (remove "--graph" (remove "--decorate" magit-log-arguments))))
     (magit-log-head)))
+<<<<<<< HEAD
 (defvar my-magit-key-map
   '((?s . magit-status)
     (?b . magit-blame)
@@ -43,6 +44,18 @@
                        `(,my-magit-key-map
                          ((?c . python-check)))))
 
+=======
+(defun my-toggle-magit-blame-mode ()
+  (interactive)
+  (if (and (boundp 'magit-blame-mode) magit-blame-mode)
+      (call-interactively 'magit-blame-mode)
+    (call-interactively 'magit-blame)))
+(cu-set-key-bindings global-map "\C-c\C-v" '((?s . magit-status)
+                                             (?b . my-toggle-magit-blame-mode)
+                                             (?p . magit-pull)
+                                             (?l . magit-log-head)
+                                             (?L . my-magit-log-head-fast)))
+>>>>>>> 1cc614c3da0dc379f85187cd451c04fd87b62783
 ;; confluence wiki
 (when (company-computer-p)
   (defconst publish-org-to-confluence-wiki-keymap
@@ -71,10 +84,13 @@
     (?f . cu-visit-file-follow-symlink))
   "Util key map for path saving to ring / paste, etc")
 (cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)
-(with-eval-after-load "python"
-  (cu-set-key-bindings python-mode-map "\C-c\C-l"
-                       `(,cu-path-util-map ((?S . python-shell-send-file)))))
 (with-eval-after-load "org"
+  (setq cu-path-util-map (append cu-path-util-map
+                                 '((?O . org-store-link))))
+  (with-eval-after-load "python"
+    (cu-set-key-bindings python-mode-map "\C-c\C-l"
+                         `(,cu-path-util-map ((?S . python-shell-send-file)))))
+  (cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)
   (cu-set-key-bindings org-mode-map "\C-c\C-l"
                        `(,cu-path-util-map ((?l . org-insert-link)))))
 
