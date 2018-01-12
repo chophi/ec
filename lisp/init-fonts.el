@@ -141,4 +141,27 @@ by the :height face attribute."
          (ido-completing-read (format "Choose a fontset:\n%sPlease select: " prompt) choices)))
     (set-font-for-current-frame (assoc choice preferred-font-config-list))))
 
+(when window-system
+  (defun other-frame-post-advice ()
+    (interactive)
+    (let* ((cur-font (split-string (frame-parameter nil 'font) "-"))
+           (font-name (nth 2 cur-font))
+           (font-size (string-to-number (nth 7 cur-font)))
+           (cur-font-set
+            (catch 'return
+              (dolist (f preferred-font-config-list nil)
+                (let* ((ascii-font (assoc 'ascii f))
+                       (sfont-size (nth 2 ascii-font))
+                       (sfont-name (nth 1 ascii-font)))
+                  (when (and (equal font-name sfont-name) (equal sfont-size font-size))
+                    (throw 'return f)))))))
+      (when cur-font-set
+        (set-font-for-current-frame cur-font-set))))
+
+  (defadvice other-frame (around font-resize)
+    ad-do-it
+    (other-frame-post-advice))
+
+  (ad-activate 'other-frame))
+
 (provide 'init-fonts)
