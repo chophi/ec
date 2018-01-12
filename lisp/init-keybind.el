@@ -28,13 +28,11 @@
   (let ((magit-log-arguments
          (remove "--graph" (remove "--decorate" magit-log-arguments))))
     (magit-log-head)))
-
 (defun my-toggle-magit-blame-mode ()
   (interactive)
   (if (and (boundp 'magit-blame-mode) magit-blame-mode)
       (call-interactively 'magit-blame-mode)
     (call-interactively 'magit-blame)))
-
 (defvar my-magit-key-map
   '((?s . magit-status)
     (?b . my-toggle-magit-blame-mode)
@@ -48,9 +46,6 @@
   (cu-set-key-bindings python-mode-map "\C-c\C-v"
                        `(,my-magit-key-map
                          ((?c . python-check)))))
-
-(cu-set-key-bindings global-map "\C-c\C-v" my-magit-key-map)
-
 ;; confluence wiki
 (when (company-computer-p)
   (defconst publish-org-to-confluence-wiki-keymap
@@ -85,7 +80,6 @@
   (cu-set-key-bindings python-mode-map "\C-c\C-l"
                        `(,cu-path-util-map ((?S . python-shell-send-file)))))
 (with-eval-after-load "org"
-  (cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)
   (cu-set-key-bindings org-mode-map "\C-c\C-l"
                        `(,cu-path-util-map ((?l . org-insert-link)))))
 
