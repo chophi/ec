@@ -3,39 +3,15 @@
 
 (add-to-list 'load-path "~/.emacs.d/gnus")
 (require 'init-gnus-private)
+;; (require 'init-gnus-imap-directly)
+(when (not (company-computer-p))
+  (require 'init-gnus-with-dovecot))
 
 (when (not (boundp 'private-foxmail-username))
   (error "You should set private-foxmail-username first!!"))
 
 (setq user-full-name (capitalize private-foxmail-username)
       user-mail-address (concat private-foxmail-username "@foxmail.com"))
-
-(add-to-list 'gnus-secondary-select-methods
-             `(nnimap "MailBox"
-                      (nnimap-address "imap.qq.com")
-                      (nnimap-server-port 993)
-                      (nnimap-stream ssl)
-                      (nnmail-expiry-wait 90)
-                      (nnimap-inbox ("INBOX" "Junk"))
-                      (nnimap-split-methods nnimap-split-fancy)
-                      (nnmail-split-methods nnimap-split-fancy)
-                      (nnimap-split-fancy
-                       (| (: gnus-registry-split-fancy-with-parent)
-                          (: spam-split)
-                          (from ,(concat private-foxmail-username "@foxmail\\.com") "test.myself")
-                          (to "linux-fsdevel@vger\\.kernel.org" "dev.fsdevel")
-                          (to "linux-ext4@vger\\.kernel.org" "dev.ext4")
-                          (to "git@vger\\.kernel\\.org" "dev.git")
-                          "INBOX"))))
-
-;; To ignore the folder "^.*其他文件夹/QQ邮件订阅.*"
-(with-eval-after-load "gnus-start"
-  (setq gnus-ignored-newsgroups
-        (mapconcat
-         'identity
-         `(,gnus-ignored-newsgroups "^.*/QQ.*") "\\|")))
-
-(setq gnus-select-method '(nnml ""))
 
 (setq send-mail-function 'smtpmail-send-it
       message-send-mail-function 'smtpmail-send-it
