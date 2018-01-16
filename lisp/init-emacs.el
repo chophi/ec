@@ -139,6 +139,7 @@
 (require 'init-adaptive-wrap)
 (require 'init-sepolicy)
 (require 'init-ido-gnus)
+(require 'init-notmuch)
 (require 'init-keybind)
 
 (setq sanityinc/require-times
