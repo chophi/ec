@@ -34,7 +34,7 @@
                (nnimap-split-fancy
                 (| (: gnus-registry-split-fancy-with-parent)
                    (: spam-split)
-                   (from ,(concat private-foxmail-username "@foxmail\\.com") "test.myself")
+                   (from ,(concat private-mail-username "@foxmail\\.com") "test.myself")
                    (to "linux-fsdevel@vger\\.kernel.org" "dev.fsdevel")
                    (to "linux-ext4@vger\\.kernel.org" "dev.ext4")
                    (to "git@vger\\.kernel\\.org" "dev.git")
