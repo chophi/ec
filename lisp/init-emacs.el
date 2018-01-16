@@ -33,6 +33,12 @@
 
 ;; For editing the grep buffer and save the edited contents back.
 (require-package 'wgrep)
+(setq wgrep-change-readonly-file t)
+;; brew install the_silver_searcher
+(require-package 'ag)
+(require-package 'wgrep-ag)
+
+
 ;; Logging the key stroke and the mapped commands.
 (require-package 'mwe-log-commands)
 ;; regex testing: show the content, regex and matched text alive in three buffers.
