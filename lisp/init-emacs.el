@@ -146,6 +146,7 @@
 (require 'init-sepolicy)
 (require 'init-ido-gnus)
 (require 'init-notmuch)
+(require 'init-send-mail)
 (require 'init-keybind)
 
 (setq sanityinc/require-times
