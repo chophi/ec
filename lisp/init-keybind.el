@@ -184,4 +184,10 @@
 (when (fboundp 'control-x-f)
   (global-set-key (kbd "C-x f") 'control-x-f))
 
+(with-eval-after-load "cc-mode"
+  (define-key c-mode-map "\C-c\C-c" nil))
+(cu-set-key-bindings global-map "\C-c\C-cg"
+                     '((?a . ag)
+                       (?h . helm-do-grep-ag)
+                       (?g . helm-grep-do-git-grep)))
 (provide 'init-keybind)
