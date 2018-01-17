@@ -10,4 +10,5 @@
 ;; # (the below \n is literal, please check notmuch-lib.el)
 ;; other_email=<other_email1>\n<other_email2>
 (setq notmuch-always-prompt-for-sender t)
+(add-hook 'notmuch-message-mode-hook 'flyspell-mode)
 (provide 'init-notmuch)

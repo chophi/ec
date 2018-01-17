@@ -197,5 +197,6 @@
 ;; mail
 (cu-set-key-bindings global-map "\C-c\C-m"
                      '((?m . helm-notmuch)
-                       (?n . notmuch-mua-new-mail)))
+                       (?n . notmuch-mua-new-mail)
+                       (?j . notmuch-jump-search)))
 (provide 'init-keybind)
