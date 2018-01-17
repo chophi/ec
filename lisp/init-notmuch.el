@@ -1,5 +1,6 @@
 (require-package 'notmuch)
 (require-package 'helm-notmuch)
+(require 'notmuch-mua)
 
 ;; Don't set the notmuch-identities, use the config way.
 ;; Make sure config the mail username and primary_email in .notmuch-config
