@@ -199,9 +199,17 @@ CONTENTS and INFO are ignored."
 (defun org-confluence-underline (underline contents info)
   (format "+%s+" contents))
 
+(defconst org-confluence-language-alist
+  '(("makefile" . "text")))
+
 (defun org-confluence--block (language theme contents)
   (concat "\{code:theme=" theme
-          (when language (format "|language=%s" language))
+          (when language (format "|language=%s"
+                                 (let ((ret (assoc language org-confluence-language-alist)))
+                                   (if ret
+                                       (cdr ret)
+                                     language))))
+          "|collapse=true|linenumbers=true"
           "}\n"
           contents
           "\{code\}\n"))
