@@ -62,10 +62,10 @@
                      (underline . org-confluence-underline)
                      (verbatim . org-confluence-verbatim)))
 
-(defcustom org-confluence-lang-alist
-  '(("sh" . "bash"))
-  "Map from org-babel language name to confluence wiki language name"
-  :type '(alist :key-type string :value-type string))
+(defconst org-confluence-lang-alist
+  '(("sh" . "bash")
+    ("makefile" . "text"))
+  "Map from org-babel language name to confluence wiki language name")
 
 ;; All the functions we use
 (defun org-confluence-bold (bold contents info)
@@ -154,9 +154,11 @@ a communication channel."
 (defun org-confluence-src-block (src-block contents info)
   ;; FIXME: provide a user-controlled variable for theme
   (let* ((lang (org-element-property :language src-block))
+         (linenumbers (plist-get info :linenumber))
+         (collapse (plist-get info :collapse))
          (language (or (cdr (assoc lang org-confluence-lang-alist)) lang))
          (content (org-export-format-code-default src-block info)))
-    (org-confluence--block language "Confluence" content)))
+    (org-confluence--block language "Confluence" content collapse linenumbers)))
 
 (defun org-confluence-strike-through (strike-through contents info)
   (format "-%s-" contents))
@@ -199,17 +201,11 @@ CONTENTS and INFO are ignored."
 (defun org-confluence-underline (underline contents info)
   (format "+%s+" contents))
 
-(defconst org-confluence-language-alist
-  '(("makefile" . "text")))
-
-(defun org-confluence--block (language theme contents)
+(defun org-confluence--block (language theme contents &optional collapse linenumber)
   (concat "\{code:theme=" theme
-          (when language (format "|language=%s"
-                                 (let ((ret (assoc language org-confluence-language-alist)))
-                                   (if ret
-                                       (cdr ret)
-                                     language))))
-          "|collapse=true|linenumbers=true"
+          (when language (format "|language=%s" language))
+          (when collapse "|collapse=true")
+          (when linenumbers "|linenumbers=true")
           "}\n"
           contents
           "\{code\}\n"))
