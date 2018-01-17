@@ -35,6 +35,7 @@
 (require-package 'wgrep)
 (setq wgrep-change-readonly-file t)
 ;; brew install the_silver_searcher
+;; sudo apt-get install silversearcher-ag
 (require-package 'ag)
 (require-package 'wgrep-ag)
 
