@@ -9,6 +9,7 @@
        message-send-mail-function 'smtpmail-send-it
        smtpmail-smtp-server private-smtp-server
        smtpmail-smtp-service private-smtp-port
-       smtpmail-stream-type 'ssl))
+       smtpmail-stream-type 'ssl
+       message-kill-buffer-on-exit t))
 
 (provide 'init-send-mail)
