@@ -186,6 +186,8 @@
 
 (with-eval-after-load "cc-mode"
   (define-key c-mode-map "\C-c\C-c" nil))
+(with-eval-after-load "sh-script"
+  (define-key sh-mode-map "\C-c\C-c" nil))
 (cu-set-key-bindings global-map "\C-c\C-cg"
                      '((?a . ag)
                        (?h . helm-do-grep-ag)
