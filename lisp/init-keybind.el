@@ -161,11 +161,6 @@
 ;; neo-tree
 (cu-set-key-bindings global-map "\C-c\C-n" '((?t . neotree-toggle)))
 
-;; ido gnus
-(cu-set-key-bindings global-map "\C-c\C-m"
-                     '((?g . ido-gnus-select-group)
-                       (?s . ido-gnus-select-server)
-                       (?e . ido-gnus-select)))
 
 
 (add-hook 'emacs-lisp-mode-hook
@@ -184,12 +179,23 @@
 (when (fboundp 'control-x-f)
   (global-set-key (kbd "C-x f") 'control-x-f))
 
-(with-eval-after-load "cc-mode"
-  (define-key c-mode-map "\C-c\C-c" nil))
-(with-eval-after-load "sh-script"
-  (define-key sh-mode-map "\C-c\C-c" nil))
+;; undefine the \C-c\C-c
+(with-eval-after-load "cc-mode" (define-key c-mode-map "\C-c\C-c" nil))
+(with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-c" nil))
+(with-eval-after-load "make-mode" (define-key makefile-mode-map "\C-c\C-c" nil))
+;; grep
 (cu-set-key-bindings global-map "\C-c\C-cg"
                      '((?a . ag)
                        (?h . helm-do-grep-ag)
                        (?g . helm-grep-do-git-grep)))
+
+;; ;; ido gnus deprecated
+;; (cu-set-key-bindings global-map "\C-c\C-m"
+;;                      '((?g . ido-gnus-select-group)
+;;                        (?s . ido-gnus-select-server)
+;;                        (?e . ido-gnus-select)))
+;; mail
+(cu-set-key-bindings global-map "\C-c\C-m"
+                     '((?m . helm-notmuch)
+                       (?n . notmuch-mua-new-mail)))
 (provide 'init-keybind)
