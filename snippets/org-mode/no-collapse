@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: no-collapse
+# key: nc
+# --
+#+ATTR_CONFLUENCE: no-collapse: true
