@@ -19,6 +19,8 @@
         smtpmail-stream-type 'ssl))
 
 (setq message-kill-buffer-on-exit t
-      message-confirm-send t)
+      message-confirm-send t
+      ;; TODO: also make mail-self-blind work with notmuch.
+      mail-self-blind t)
 
 (provide 'init-send-mail)
