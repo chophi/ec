@@ -49,10 +49,16 @@
 ;; confluence wiki
 (when (company-computer-p)
   (defconst publish-org-to-confluence-wiki-keymap
-    '(("d" . org-update-to-draft-page)
+    `(("d" . org-update-to-draft-page)
       ("w" . org-update-related-wiki-page)
       ("r" . org-read-related-wiki-page)
-      ("v" . org-export-buffer-to-wiki-and-view)))
+      ("v" . org-export-buffer-to-wiki-and-view)
+      ,@(when (fboundp 'confluence-view-the-wiki)
+        (defun org-confluence-view-the-wiki ()
+          (interactive)
+          (confluence-view-the-wiki (or (org-get-wiki-page-id)
+                                        (error "wiki page id is empty"))))
+        '(("o" . org-confluence-view-the-wiki)))))
   (cu-set-key-bindings global-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap)
   (cu-set-key-bindings org-mode-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap))
 
