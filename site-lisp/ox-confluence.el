@@ -151,14 +151,30 @@ a communication channel."
 (defun org-confluence-section (section contents info)
   contents)
 
+(defun org-confluence-attr (src-block key-str)
+  (let* ((attrs (car (org-element-property :attr_confluence src-block)))
+         (attr-list (when (stringp attrs)
+                      (mapcar (lambda (attr)
+                                (mapcar 'string-trim (split-string attr ":")))
+                              (split-string attrs ",")))))
+    (cadr (assoc key-str attr-list))))
+
+(defun org-attribute-to-bool (src-block key-str)
+  (let ((result (org-confluence-attr src-block key-str)))
+    (and (stringp result)
+         (not (or (equal (downcase result) "nil")
+                  (equal (downcase result) "false")
+                  (equal (downcase result) "no"))))))
+
 (defun org-confluence-src-block (src-block contents info)
   ;; FIXME: provide a user-controlled variable for theme
   (let* ((lang (org-element-property :language src-block))
-         (linenumbers (plist-get info :linenumber))
-         (collapse (plist-get info :collapse))
+         (linenumbers (org-attribute-to-bool src-block "linenumbers"))
+         (no-collapse (org-attribute-to-bool src-block "no-collapse"))
          (language (or (cdr (assoc lang org-confluence-lang-alist)) lang))
          (content (org-export-format-code-default src-block info)))
-    (org-confluence--block language "Confluence" content collapse linenumbers)))
+    (org-confluence--block language "Confluence"
+                           content no-collapse linenumbers)))
 
 (defun org-confluence-strike-through (strike-through contents info)
   (format "-%s-" contents))
@@ -201,10 +217,10 @@ CONTENTS and INFO are ignored."
 (defun org-confluence-underline (underline contents info)
   (format "+%s+" contents))
 
-(defun org-confluence--block (language theme contents &optional collapse linenumber)
+(defun org-confluence--block (language theme contents &optional no-collapse linenumber)
   (concat "\{code:theme=" theme
           (when language (format "|language=%s" language))
-          (when collapse "|collapse=true")
+          (when (not no-collapse) "|collapse=true")
           (when linenumbers "|linenumbers=true")
           "}\n"
           contents
