@@ -8,10 +8,19 @@
        smtpmail-smtp-server private-smtp-server
        smtpmail-smtp-service private-smtp-port))
 
-(setq send-mail-function 'smtpmail-send-it
-      message-send-mail-function 'smtpmail-send-it
-      smtpmail-stream-type 'ssl
-      message-kill-buffer-on-exit t
-      message-confirm-send t)
+(if (company-computer-p)
+    (progn
+      (require 'sendmail)
+      (setq send-mail-function 'sendmail-send-it
+            message-send-mail-function 'sendmail-send-it
+            smtpmail-stream-type nil))
+  (setq send-mail-function 'smtpmail-send-it
+        message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type 'ssl))
+
+(setq message-kill-buffer-on-exit t
+      message-confirm-send t
+      ;; TODO: also make mail-self-blind work with notmuch.
+      mail-self-blind t)
 
 (provide 'init-send-mail)
