@@ -187,10 +187,11 @@
 
 ;; undefine the \C-c\C-c
 (with-eval-after-load "cc-mode" (define-key c-mode-map "\C-c\C-c" nil))
+(with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-c" nil))
 (with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-c" nil))
 (with-eval-after-load "make-mode" (define-key makefile-mode-map "\C-c\C-c" nil))
 ;; grep
-(cu-set-key-bindings global-map "\C-c\C-cg"
+(cu-set-key-bindings global-map "\C-cg"
                      '((?a . ag)
                        (?h . helm-do-grep-ag)
                        (?g . helm-grep-do-git-grep)))
@@ -205,4 +206,7 @@
                      '((?m . helm-notmuch)
                        (?n . notmuch-mua-new-mail)
                        (?j . notmuch-jump-search)))
+
+(global-set-key "\C-cc" 'cp-custom-compile)
+
 (provide 'init-keybind)
