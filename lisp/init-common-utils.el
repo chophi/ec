@@ -277,7 +277,9 @@ Return a list that a supported"
   (defun cu-save-current-file-path-org-style ()
     (interactive)
     (let ((name (replace-regexp-in-string
-                 (getenv "HOME") "~" (buffer-file-name))))
+                 (getenv "HOME") "~"
+                 (or (buffer-file-name)
+                     (substring default-directory 0 (1- (length default-directory)))))))
       (kill-new (format "[[%s][%s]]" name (file-name-nondirectory name)))))
 
   (defun cu-string-sequences-at-point ()
