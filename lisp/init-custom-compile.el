@@ -184,5 +184,4 @@ to '((program-name project-root compilation-configuration expression) ...)"
             ('t (message "Unknown command type, exiting")
                 (return-from cp-custom-compile nil))))))))
 
-(global-set-key "\C-ccc" 'cp-custom-compile)
 (provide 'init-custom-compile)
