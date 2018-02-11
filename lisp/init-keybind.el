@@ -42,8 +42,8 @@
   "my keymap for magit")
 
 (cu-set-key-bindings global-map "\C-c\C-v" my-magit-key-map)
-(with-eval-after-load "browse-url"
-  (define-key mhtml-mode-map "\C-c\C-v" nil))
+(with-eval-after-load "sgml-mode"
+  (define-key html-mode-map "\C-c\C-v" nil))
 (with-eval-after-load "python"
   (cu-set-key-bindings python-mode-map "\C-c\C-v"
                        `(,my-magit-key-map
