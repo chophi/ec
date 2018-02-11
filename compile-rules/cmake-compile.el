@@ -1,10 +1,10 @@
 ;; suez make file
 (progn
-  (defun cmake--precondition-check (project-root mode)
+  (defun cmake--precondition-check (project-root mode &optional force)
     (let ((build-dir (concat project-root "/" mode)))
       (when (not (file-exists-p build-dir))
         (make-directory build-dir))
-      (when (not (file-exists-p (concat build-dir "/Makefile")))
+      (when (or (not (file-exists-p (concat build-dir "/Makefile"))) force)
         (compile (format "cd %s && cmake %s .."
                          build-dir
                          (cond ((equal "release" mode)
@@ -27,7 +27,7 @@
                          "#"
                          "add_executable\\\s*(\\\s*\\\([0-9a-zA-Z_-]*\\\)" 1)))
       `((unit "generate"
-              (elisp (cmake--precondition-check ,project-root ,(symbol-name mode))))
+              (elisp (cmake--precondition-check ,project-root ,(symbol-name mode) t)))
         (unit "set-mode"
               (elisp (with-current-buffer (find-file-noselect ,cmake-file)
                      (when (not (boundp 'cmake--compile-mode))
