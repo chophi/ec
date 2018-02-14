@@ -148,6 +148,7 @@
 (require 'init-ido-gnus)
 (require 'init-send-mail)
 (require 'init-notmuch)
+(require 'init-nanoc)
 (require 'init-keybind)
 
 (setq sanityinc/require-times

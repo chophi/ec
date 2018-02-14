@@ -167,7 +167,11 @@
  '(("global configuration mode" . eopengrok-global-configuration-mode)))
 
 ;; neo-tree
-(cu-set-key-bindings global-map "\C-c\C-n" '((?t . neotree-toggle)))
+(cu-set-key-bindings global-map "\C-c\C-n"
+                     '((?t . neotree-toggle)
+                       (?u . nanoc-update)
+                       (?d . nanoc-daemon)
+                       (?o . open-nanoc-site)))
 
 
 
