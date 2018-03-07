@@ -166,11 +166,19 @@
  global-map "\C-c\C-g" `(,my-opengrok-map)
  '(("global configuration mode" . eopengrok-global-configuration-mode)))
 
+(defun android-doc-local-server()
+  (interactive)
+  (shell-command
+   "dev_appserver.py ~/EDocs/android-docs/online-sac &"
+   "*android local doc*" "*android local doc*"))
+
 ;; neo-tree
 (cu-set-key-bindings global-map "\C-c\C-n"
-                     '((?t . neotree-toggle)
+                     `((?t . neotree-toggle)
                        (?u . nanoc-update)
                        (?d . nanoc-daemon)
+                       ,@(if (file-exists-p "~/EDocs/android-docs")
+                             `((?a . android-doc-local-server)))
                        (?o . open-nanoc-site)))
 
 
