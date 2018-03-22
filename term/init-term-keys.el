@@ -134,8 +134,9 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (let ((term-buf nil))
     (catch 'found
       (dolist (buf-win (window-list))
-        (when (eq 'term-mode (with-current-buffer (window-buffer buf-win)
-                               major-mode))
+        (when (and (eq 'term-mode (with-current-buffer (window-buffer buf-win)
+                                    major-mode))
+                   (not (eq (window-buffer buf-win) (current-buffer))))
           (setq term-buf (window-buffer buf-win))
           (throw 'found term-buf))))
     (when (not term-buf)
