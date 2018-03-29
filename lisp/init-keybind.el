@@ -80,7 +80,8 @@
     (?o . cu-save-current-file-path-org-style)
     (?O . org-store-link)
     (?j . cu-open-link)    
-    (?f . cu-visit-file-follow-symlink))
+    (?f . cu-visit-file-follow-symlink)
+    (?n . find-name-dired))
   "Util key map for path saving to ring / paste, etc")
 
 (cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)
