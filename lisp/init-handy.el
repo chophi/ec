@@ -152,14 +152,14 @@ end of the line."
 (require-package 'whole-line-or-region)
 
 (with-parameters-bounded
- '(out-clipboard-hostname out-clipboard-host-user)
+ '(out-clipboard-host-user)
 
  (defun kill-save-to-out-clipboard (start end)
    (let ((command
           (format
            "echo %s | ssh %s@%s pbcopy"
            (shell-quote-argument (buffer-substring-no-properties start end))
-           out-clipboard-host-user out-clipboard-hostname)))
+           out-clipboard-host-user (out-clipboard-hostname))))
      ;; (message "command is %s" command)
      (shell-command-to-string command)
      (message "The content in selection is sent to out host's clipboard")))
