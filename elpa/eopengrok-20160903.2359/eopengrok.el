@@ -89,6 +89,7 @@
   '("d:.opengrok"
     "d:out"
     "d:.out"
+    "d:output"
     "d:.scripts"
     "d:.repo"
     "d:.log"
@@ -178,7 +179,7 @@
   "Opengrok search option list with CONF TEXT OPTION SYMBOL."
   (if (eq symbol 'custom)
       (-flatten (list "search" "-R" conf (split-string text " " t)))
-    (list "search" "-R" conf option (shell-quote-argument text))))
+    (list "search" "-R" conf option text)))
 
 (defmacro eopengrok--properties-region (props &rest body)
   "Add PROPS and Execute BODY to all the text it insert."
