@@ -238,11 +238,21 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
       (terminal-name-add-field term--uuid field name)
       )))
 
+(defun uf-send-current-line-command-to-term ()
+  (interactive)
+  (let ((command
+         (cu-strip-string
+          (buffer-substring-no-properties (line-beginning-position) (line-end-position))
+          t t)))
+    (when (y-or-n-p (format "Sending command to terminal:\n [%s]\n" command))
+      (uf-send-command-to-term (concat command "\n")))))
+
 (global-set-key "\C-zg" 'uf-send-cwd-to-term)
 (global-set-key "\C-zw" 'uf-watch-current-directory)
 (global-set-key "\C-zr" 'uf-term-rename-buffer)
 (global-set-key "\C-zs" 'uf-switch-to-term-buffer)
-(global-set-key "\C-zl" 'uf-clear-prompt-command)
+(global-set-key "\C-zp" 'uf-clear-prompt-command)
+(global-set-key "\C-zl" 'uf-send-current-line-command-to-term)
 (global-set-key "\C-zo" 'my-open-link)
 
 (provide 'init-term-keys)
