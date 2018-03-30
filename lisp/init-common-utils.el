@@ -330,8 +330,8 @@ Return a list that a supported"
               (format format-str (match-string 0 string))))))))
 
   (defun* cu-open-external-link (string)
-    (when (boundp 'pc-open-with-mac-browser-command)
-      (shell-command (format "%s %s" pc-open-with-mac-browser-command string))))
+    (when (fboundp 'pc-open-with-mac-browser-command)
+      (shell-command (format "%s %s" (pc-open-with-mac-browser-command) string))))
 
   (defun* cu-open-link ()
     (interactive)
