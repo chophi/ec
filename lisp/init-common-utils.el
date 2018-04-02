@@ -260,10 +260,27 @@ Return a list that a supported"
               '(png jpeg tiff gif xpm svg)))
 
 ;; TODO: make it a absolute and relative pair
+(defun* cu-possible-path-at-point()
+  "If there's a path at current point, return the path,
+otherwise, return nil"
+  (interactive)
+  (let* ((line
+         (cu-strip-string
+          (buffer-substring-no-properties
+           (line-beginning-position) (point))
+          t t))
+         (len (length line)))
+    (dotimes (beg len)
+      (let ((substr (substring line beg len)))
+        (when (file-exists-p substr)
+          (return-from cu-possible-path-at-point substr))))))
+
 (with-eval-after-load "ido"
 
   (defun _cu-insert-path(replace-home)
-    (let ((path (ido-read-file-name "Insert a Abstract: ")))
+    (let* ((possible-path (expand-file-name (cu-possible-path-at-point)))
+           (path (ido-read-file-name "Insert a abstract: " possible-path))
+           (path (substring path (length possible-path))))
       (if replace-home
           (insert (replace-regexp-in-string (getenv "HOME") "~" path))
         (insert path))))
@@ -312,7 +329,7 @@ Return a list that a supported"
       (error "name is not string"))
     (when (file-exists-p (expand-file-name name))
       (return-from can-split-out-a-filename (expand-file-name name)))
-    (dolist (n (split-string name ":"))
+    (dolist (n (split-string name "[ :=\f\t\n\r\v]+"))
       (when (file-exists-p (expand-file-name n))
         (return-from can-split-out-a-filename (expand-file-name n)))))
 

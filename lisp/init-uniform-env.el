@@ -7,8 +7,8 @@
   ;; (interactive)
   (let ((start 0)
         (str
-         (with-current-buffer (find-file-noselect ue-emacs-env-file)
-           (buffer-substring-no-properties (point-min) (point-max))))
+         (cu-buffer-content-without-comment-lines
+          (find-file-noselect ue-emacs-env-file) "#"))
         (env-alist '())
         (env nil)
         (value nil))
