@@ -278,9 +278,11 @@ otherwise, return nil"
 (with-eval-after-load "ido"
 
   (defun _cu-insert-path(replace-home)
-    (let* ((possible-path (expand-file-name (cu-possible-path-at-point)))
-           (path (ido-read-file-name "Insert a abstract: " possible-path))
-           (path (substring path (length possible-path))))
+    (let* ((possible-path (cu-possible-path-at-point))
+           (prompt-path (or possible-path default-directory))
+           (prompt-path (expand-file-name prompt-path))
+           (path (ido-read-file-name "Insert a abstract: " prompt-path)))
+      (when possible-path (setq path (substring path (length prompt-path))))
       (if replace-home
           (insert (replace-regexp-in-string (getenv "HOME") "~" path))
         (insert path))))
