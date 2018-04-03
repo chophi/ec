@@ -321,4 +321,6 @@
     (interactive)
     (find-file (concat "/sudo::"  (ido-read-file-name "Sudo Open File: ")))))
 
+(add-to-list 'auto-mode-alist '("\\.bbclass" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.bb" . shell-script-mode))
 (provide 'init-editing-utils)
