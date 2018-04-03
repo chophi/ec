@@ -179,7 +179,9 @@
   "Opengrok search option list with CONF TEXT OPTION SYMBOL."
   (if (eq symbol 'custom)
       (-flatten (list "search" "-R" conf (split-string text " " t)))
-    (list "search" "-R" conf option text)))
+    (if (equal "-f" option)
+        (list "search_full_text" "-R" conf option (format "\"%s\"" text))
+      (list "search" "-R" conf option text))))
 
 (defmacro eopengrok--properties-region (props &rest body)
   "Add PROPS and Execute BODY to all the text it insert."
