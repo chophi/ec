@@ -107,11 +107,11 @@ by the :height face attribute."
 (defvar selected-font-config nil
   "The selected font config in `preferred-font-config-list'")
 
-(defun next-font ()
+(defun next-font (&optional inc)
   (interactive)
   "Select the next font in `preferred-font-config-list'"
   (let* ((len (length preferred-font-config-list))
-         (index (mod (1+ selected-font-index) len))
+         (index (mod (+ (or inc 1) selected-font-index) len))
          (fconf-list (nth index preferred-font-config-list)))
     (setq selected-font-config fconf-list)
     (set-font-for-current-frame selected-font-config)
