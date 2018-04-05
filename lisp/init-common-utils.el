@@ -564,6 +564,7 @@ NDIM is the dimentions of the choice items.
   (if cursor-type
       (progn (setq cursor-type nil)
              (delete-other-windows)
+             (maximize-frame)
              (split-window-horizontally-instead)
              (color-theme-sanityinc-tomorrow-blue)
              (dolist (fc '(("lyric" (han "STFangsong" 35) (ascii "Monaco" 32))))
