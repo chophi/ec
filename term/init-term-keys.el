@@ -45,10 +45,10 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 
 ;; setting keys \C-z + i(which from 0 to max-terminal-count) to switch to the the ith term frame
 (defconst max-terminal-count 9)
-(defun uf-switch-to-term-i ()
+(defun uf-switch-to-term-i (&optional num)
   (interactive)
-  (let ((num (string-to-number
-              (char-to-string (read-char "The terminal order (1-9):")))))
+  (let ((num (or num (string-to-number
+                      (char-to-string (read-char "The terminal order (1-9):"))))))
     (update-terms-name)
     (let (tn)
       (when
@@ -56,6 +56,17 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
                                 (multi-term-list)
                               multi-term-buffer-list)))
         (switch-to-buffer tn)))))
+
+;; TODO: make it a loop to define the functions.
+(defun uf-switch-to-term-1 () (interactive) (uf-switch-to-term-i 1))
+(defun uf-switch-to-term-2 () (interactive) (uf-switch-to-term-i 2))
+(defun uf-switch-to-term-3 () (interactive) (uf-switch-to-term-i 3))
+(defun uf-switch-to-term-4 () (interactive) (uf-switch-to-term-i 4))
+(defun uf-switch-to-term-5 () (interactive) (uf-switch-to-term-i 5))
+(defun uf-switch-to-term-6 () (interactive) (uf-switch-to-term-i 6))
+(defun uf-switch-to-term-7 () (interactive) (uf-switch-to-term-i 7))
+(defun uf-switch-to-term-8 () (interactive) (uf-switch-to-term-i 8))
+(defun uf-switch-to-term-9 () (interactive) (uf-switch-to-term-i 9))
 
 (setq multi-term-buffer-name "TM")
 (defvar term-name-template "*TM<1>*")
@@ -282,6 +293,7 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
     (update-terms-name)))
 
 (global-unset-key "\C-z")
+;; TODO: make the uf-switch-to-term-x invisible
 (cu-set-key-bindings global-map "\C-z"
                      '((?c . multi-term)
                        (?n . multi-term-next)
@@ -293,9 +305,17 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
                        (?p . uf-clear-prompt-command)
                        (?l . uf-send-current-line-command-to-term)
                        (?a . uf-toggle-active-status)
-                       (?i . uf-switch-to-term-i)
                        (?j . cu-open-link)
-                       (?d . duplicate-term-and-switch)))
+                       (?d . duplicate-term-and-switch)
+                       (?1 . uf-switch-to-term-1)
+                       (?2 . uf-switch-to-term-2)
+                       (?3 . uf-switch-to-term-3)
+                       (?4 . uf-switch-to-term-4)
+                       (?5 . uf-switch-to-term-5)
+                       (?6 . uf-switch-to-term-6)
+                       (?7 . uf-switch-to-term-7)
+                       (?8 . uf-switch-to-term-8)
+                       (?9 . uf-switch-to-term-9)))
 
 (provide 'init-term-keys)
 
