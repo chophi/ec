@@ -29,9 +29,6 @@
     (setq command-list (cadr (assoc term-name multi-term-config-list)))
     (switch-to-buffer (create-term-without-switch term-name command-list))))
 
-(global-set-key "\C-zd" 'duplicate-term-and-switch)
-
-
 (dolist (term-config multi-term-config-list)
   (when (caddr term-config)
     (create-term-without-switch (car term-config) (cadr term-config))))

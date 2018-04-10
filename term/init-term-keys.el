@@ -236,6 +236,12 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
         (setq buf-name (concat buf-name append-name)))
       (rename-buffer buf-name))))
 
+(defun terminal-name-add-field (term-id key val)
+  (let ((hash-table (_terminal_fields term-id)))
+    (puthash key val hash-table)
+    (rename-buffer (_make_buffer_name
+                    'add term-id hash-table))))
+
 ;; TODO: check if clear is needed.
 (defun uf-term-rename-buffer (clear)
   (interactive "P")
@@ -262,6 +268,19 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
     (when (y-or-n-p (format "Sending command to terminal:\n [%s]\n" command))
       (uf-send-command-to-term (concat command "\n")))))
 
+(defun uf-toggle-active-status ()
+  (interactive)
+  (when (not (eq 'term-mode major-mode))
+    (error "only use this command with term-mode buffer"))
+  (if (or (not (boundp 'term--status)) (eq term--status 'active))
+      (progn (setq-local term--status 'deactive)
+             (setq multi-term-buffer-list
+              (delete (current-buffer) multi-term-buffer-list))
+             (update-terms-name))
+    (setq-local term--status 'active)
+    (add-to-list 'multi-term-buffer-list (current-buffer))
+    (update-terms-name)))
+
 (global-unset-key "\C-z")
 (cu-set-key-bindings global-map "\C-z"
                      '((?c . multi-term)
@@ -273,8 +292,10 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
                        (?s . uf-switch-to-term-buffer)
                        (?p . uf-clear-prompt-command)
                        (?l . uf-send-current-line-command-to-term)
+                       (?a . uf-toggle-active-status)
                        (?i . uf-switch-to-term-i)
-                       (?j . cu-open-link)))
+                       (?j . cu-open-link)
+                       (?d . duplicate-term-and-switch)))
 
 (provide 'init-term-keys)
 
