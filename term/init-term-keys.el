@@ -38,27 +38,24 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (dolist (pair my-extra-needed-key)
   (add-to-list 'term-bind-key-alist pair))
 
-(global-unset-key "\C-z")
-(global-set-key "\C-zc" 'multi-term)
-(global-set-key "\C-zn" 'multi-term-next)
-(global-set-key "\C-zp" 'multi-term-prev)
-
 ;; (global-set-key "\M-n" 'tabbar-forward)
 ;; (global-set-key "\M-p" 'tabbar-backward)
 
 (define-key term-mode-map "\C-c\C-k" 'term-toggle-between-modes)
 
-;; setting keys \C-z + i(which from 1 to max-terminal-count) to switch to the the ith term frame
+;; setting keys \C-z + i(which from 0 to max-terminal-count) to switch to the the ith term frame
 (defconst max-terminal-count 9)
-(dotimes (i max-terminal-count)
-  (global-set-key
-   (concat "\C-z" (number-to-string (+ i 1)))
-   `(lambda() (interactive)
-      (update-terms-name)
-      (let (tn) (when (setq tn (nth ,i (if (fboundp 'multi-term-list)
-                                           (multi-term-list)
-                                         multi-term-buffer-list)))
-                  (switch-to-buffer tn))))))
+(defun uf-switch-to-term-i ()
+  (interactive)
+  (let ((num (string-to-number
+              (char-to-string (read-char "The terminal order (1-9):")))))
+    (update-terms-name)
+    (let (tn)
+      (when
+          (setq tn (nth (1- num) (if (fboundp 'multi-term-list)
+                                (multi-term-list)
+                              multi-term-buffer-list)))
+        (switch-to-buffer tn)))))
 
 (setq multi-term-buffer-name "TM")
 (defvar term-name-template "*TM<1>*")
@@ -195,48 +192,66 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
           (setq buf term))))
     buf))
 
-(defun terminal-name-add-field (term-id field name)
-  (with-current-buffer (get-term-buffer term-id)
-    (let* ((buf-name (buffer-name))
-           (to-name (replace-regexp-in-string
-                     (format "\\\[%s:.*\\\]" field)
-                     (format "[%s:%s]" field name)
-                     buf-name)))
-      (if (string-match (format "\\\[%s:.*\\\]" field) buf-name)
-          (rename-buffer to-name)
-          (rename-buffer (format "%s[%s:%s]" buf-name field name))))))
-
-(defun terminal-name-rm-field (term-id)
-  (with-current-buffer (get-term-buffer term-id)
+(defun _terminal_fields (&optional term-id)
+  (interactive)
+  (with-current-buffer (if term-id (get-term-buffer term-id) (current-buffer))
     (let* ((index 0)
            (buf-name (buffer-name))
            (buf-len (length buf-name))
-           (choices '())
-           (field-str-map '()))
+           (field-str-table (make-hash-table :test 'equal)))
       (while (and (>= index 0) (< index buf-len)
                   (string-match "\\\[\\(.*?\\):\\(.*?\\)\\\]" buf-name index))
-        (let ((ele (match-string 1 buf-name))
+        (let ((key (match-string 1 buf-name))
+              (val (match-string 2 buf-name))
               (str (match-string 0 buf-name)))
-          (add-to-list 'choices ele)
-          (add-to-list 'field-str-map `(,ele . ,str))
-          (setq index (+ index (length str)))
-          ))
-      (let ((rm-field (ido-completing-read "Remove Field: " choices)))
-        (rename-buffer (replace-regexp-in-string
-                        (regexp-quote (cdr (assoc rm-field field-str-map)))
-                        "" (buffer-name)))
-        ))))
+          (puthash key val field-str-table)
+          (setq index (+ index (length str)))))
+      field-str-table)))
 
+(defun _make_buffer_name (opr &optional term-id field-str-table)
+  "OPR is either 'clear or 'add,
+if it's 'clear and FIELD-STR-TABLE is not specified, then all fields will be cleared.
+if it's add, then field-str-table must be specified, and it will be sorted and append to buffer name.
+"
+  (interactive)
+  (with-current-buffer (if term-id (get-term-buffer term-id) (current-buffer))
+    (let ((fst (or field-str-table (_terminal_fields term--uuid)))
+          (buf-name (buffer-name))
+          (lst nil)
+          (append-name ""))
+      (if (eq 'clear opr)
+          (maphash (lambda (k v)
+                     (setq buf-name
+                           (replace-regexp-in-string
+                            (regexp-quote (format "[%s:%s]" k v)) "" buf-name)))
+                   fst)
+        (or (eq 'add opr) (error "the opr should be add or clear"))
+        (maphash
+         (lambda (k v)
+           (push (list k v) lst))
+         fst)
+        (sort lst (lambda (a b) (string< (car a) (car b))))
+        (dolist (x lst)
+          (setq append-name (format "%s[%s:%s]" append-name (car x) (cadr x))))
+        (setq buf-name (concat buf-name append-name)))
+      (rename-buffer buf-name))))
+
+;; TODO: check if clear is needed.
 (defun uf-term-rename-buffer (clear)
   (interactive "P")
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (if clear
-      (terminal-name-rm-field term--uuid)
-    (let ((field (read-string "Field: "))
-          (name (read-string "Name: ")))
-      (terminal-name-add-field term--uuid field name)
-      )))
+  (let ((field-str-table (_terminal_fields term--uuid))
+        (field (read-string "Field: "))
+        (name (read-string "Name: "))
+        lst)
+    (if (equal name "")
+        ;; remove the field
+        (when (gethash field field-str-table)
+          (remhash field field-str-table))
+      (puthash field name field-str-table))
+    (_make_buffer_name 'clear term--uuid)
+    (_make_buffer_name 'add term--uuid field-str-table)))
 
 (defun uf-send-current-line-command-to-term ()
   (interactive)
@@ -247,13 +262,19 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
     (when (y-or-n-p (format "Sending command to terminal:\n [%s]\n" command))
       (uf-send-command-to-term (concat command "\n")))))
 
-(global-set-key "\C-zg" 'uf-send-cwd-to-term)
-(global-set-key "\C-zw" 'uf-watch-current-directory)
-(global-set-key "\C-zr" 'uf-term-rename-buffer)
-(global-set-key "\C-zs" 'uf-switch-to-term-buffer)
-(global-set-key "\C-zp" 'uf-clear-prompt-command)
-(global-set-key "\C-zl" 'uf-send-current-line-command-to-term)
-(global-set-key "\C-zo" 'my-open-link)
+(global-unset-key "\C-z")
+(cu-set-key-bindings global-map "\C-z"
+                     '((?c . multi-term)
+                       (?n . multi-term-next)
+                       (?p . multi-term-prev)
+                       (?g . uf-send-cwd-to-term)
+                       (?w . uf-watch-current-directory)
+                       (?r . uf-term-rename-buffer)
+                       (?s . uf-switch-to-term-buffer)
+                       (?p . uf-clear-prompt-command)
+                       (?l . uf-send-current-line-command-to-term)
+                       (?i . uf-switch-to-term-i)
+                       (?j . cu-open-link)))
 
 (provide 'init-term-keys)
 
