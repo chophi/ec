@@ -8,13 +8,6 @@
       )
     )
 
-;;; set C-c C-k to term-toggle-between-mode
-(defun term-toggle-between-modes()
-  (interactive)
-  (if (term-in-line-mode)
-      (term-char-mode)
-    (term-line-mode)))
-
 (setq multi-term-program "/bin/bash")
 
 (when (and (eq os 'macos) (not (company-computer-p)))

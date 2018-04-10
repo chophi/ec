@@ -38,11 +38,6 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (dolist (pair my-extra-needed-key)
   (add-to-list 'term-bind-key-alist pair))
 
-;; (global-set-key "\M-n" 'tabbar-forward)
-;; (global-set-key "\M-p" 'tabbar-backward)
-
-(define-key term-mode-map "\C-c\C-k" 'term-toggle-between-modes)
-
 ;; setting keys \C-z + i(which from 0 to max-terminal-count) to switch to the the ith term frame
 (defconst max-terminal-count 9)
 (defun uf-switch-to-term-i (&optional num)
@@ -292,6 +287,14 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
     (add-to-list 'multi-term-buffer-list (current-buffer))
     (update-terms-name)))
 
+(defun uf-term-toggle-char-mode()
+  (interactive)
+  (if (term-in-line-mode)
+      (term-char-mode)
+    (term-line-mode))
+  (message "Switched terminal to %s mode" (if (term-in-line-mode) "Line" "Char")))
+
+
 (global-unset-key "\C-z")
 ;; TODO: make the uf-switch-to-term-x invisible
 (cu-set-key-bindings global-map "\C-z"
@@ -307,6 +310,7 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
                        (?a . uf-toggle-active-status)
                        (?j . cu-open-link)
                        (?d . duplicate-term-and-switch)
+                       (?k . uf-term-toggle-char-mode)
                        (?1 . uf-switch-to-term-1)
                        (?2 . uf-switch-to-term-2)
                        (?3 . uf-switch-to-term-3)
