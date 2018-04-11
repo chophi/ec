@@ -549,6 +549,7 @@ NDIM is the dimentions of the choice items.
             li-copy (cadr choosed-list)
             ret (cons choice ret))
       (setq level (1+ level)))
+
     (setq ret (cons (cadr choosed-list) ret))
     (reverse ret)))
 
@@ -574,4 +575,19 @@ NDIM is the dimentions of the choice items.
                       (split-string content "\n"))))))
 
 
+(defun cu-toggle-make-lyric ()
+  (interactive)
+  (if cursor-type
+      (progn (setq cursor-type nil)
+             (delete-other-windows)
+             (maximize-frame)
+             (split-window-horizontally-instead)
+             (color-theme-sanityinc-tomorrow-blue)
+             (dolist (fc '(("lyric" (han "STFangsong" 35) (ascii "Monaco" 32))))
+               (set-font-for-current-frame fc))
+             (maximize-frame))
+    (setq cursor-type t)
+    (color-theme-sanityinc-tomorrow-eighties)
+    (next-font 0)
+    (maximize-frame)))
 (provide 'init-common-utils)
