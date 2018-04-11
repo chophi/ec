@@ -217,53 +217,65 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (defun _make_buffer_name (opr &optional term-id field-str-table)
   "OPR is either 'clear or 'add,
 if it's 'clear and FIELD-STR-TABLE is not specified, then all fields will be cleared.
-if it's add, then field-str-table must be specified, and it will be sorted and append to buffer name.
+if it's add, then field-str-table must be specified, these fields will be added, and then all fields will be sorted.
 "
   (interactive)
   (with-current-buffer (if term-id (get-term-buffer term-id) (current-buffer))
-    (let ((fst (or field-str-table (_terminal_fields term--uuid)))
-          (buf-name (buffer-name))
+    (let ((buf-name (buffer-name))
           (lst nil)
           (append-name ""))
       (if (eq 'clear opr)
-          (maphash (lambda (k v)
-                     (setq buf-name
-                           (replace-regexp-in-string
-                            (regexp-quote (format "[%s:%s]" k v)) "" buf-name)))
-                   fst)
+          (let ((fst (or field-str-table (_terminal_fields term-id))))
+            (maphash (lambda (k v)
+                       (setq buf-name
+                             (replace-regexp-in-string
+                              (regexp-quote (format "[%s:%s]" k v)) "" buf-name)))
+                     fst))
         (or (eq 'add opr) (error "the opr should be add or clear"))
+        (or (hash-table-p field-str-table) (error "the FIELD-STR-TABLE should be hash table"))
+        ;; the add fields should overwrite the original field if they has the same key.
+        (maphash
+         (lambda (k v)
+           (when (not (gethash k field-str-table))
+             (puthash k v field-str-table)))
+         (_terminal_fields term-id))
         (maphash
          (lambda (k v)
            (push (list k v) lst))
-         fst)
-        (sort lst (lambda (a b) (string< (car a) (car b))))
+         field-str-table)
+        (setq lst (sort lst (lambda (a b) (string< (car a) (car b)))))
         (dolist (x lst)
           (setq append-name (format "%s[%s:%s]" append-name (car x) (cadr x))))
-        (setq buf-name (concat buf-name append-name)))
-      (rename-buffer buf-name))))
+        (setq buf-name (concat (_make_buffer_name 'clear term-id nil) append-name)))
+      buf-name)))
 
 (defun terminal-name-add-field (term-id key val)
-  (let ((hash-table (_terminal_fields term-id)))
-    (puthash key val hash-table)
-    (rename-buffer (_make_buffer_name
-                    'add term-id hash-table))))
+  (let ((term-buf (get-term-buffer term-id)))
+    (when (not term-buf)
+      (error "terminal %s doesn't exist" term-id))
+    (with-current-buffer term-buf
+        (let ((hash-table (make-hash-table :test 'equal)))
+          (puthash key val hash-table)
+          (rename-buffer (_make_buffer_name
+                          'add term-id hash-table))))))
 
-;; TODO: check if clear is needed.
 (defun uf-term-rename-buffer (clear)
   (interactive "P")
   (when (not (eq 'term-mode major-mode))
     (error "only use this command with term-mode buffer"))
-  (let ((field-str-table (_terminal_fields term--uuid))
-        (field (read-string "Field: "))
-        (name (read-string "Name: "))
-        lst)
-    (if (equal name "")
-        ;; remove the field
-        (when (gethash field field-str-table)
-          (remhash field field-str-table))
-      (puthash field name field-str-table))
-    (_make_buffer_name 'clear term--uuid)
-    (_make_buffer_name 'add term--uuid field-str-table)))
+  (if clear
+      (rename-buffer (_make_buffer_name 'clear term--uuid))
+    (let ((field-str-table (_terminal_fields term--uuid))
+          (field (read-string "Field: "))
+          (name (read-string "Name: "))
+          lst)
+      (if (equal name "")
+          ;; remove the field
+          (when (gethash field field-str-table)
+            (remhash field field-str-table))
+        (puthash field name field-str-table))
+      (rename-buffer (_make_buffer_name 'clear term--uuid))
+      (rename-buffer (_make_buffer_name 'add term--uuid field-str-table)))))
 
 (defun uf-send-current-line-command-to-term ()
   (interactive)
