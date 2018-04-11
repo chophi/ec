@@ -319,7 +319,8 @@ if it's add, then field-str-table must be specified, and it will be sorted and a
                        (?6 . uf-switch-to-term-6)
                        (?7 . uf-switch-to-term-7)
                        (?8 . uf-switch-to-term-8)
-                       (?9 . uf-switch-to-term-9)))
+                       (?9 . uf-switch-to-term-9))
+                     nil -1)
 
 (provide 'init-term-keys)
 

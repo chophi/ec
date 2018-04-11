@@ -163,10 +163,17 @@ And return t if equals, compare the item with `equal'."
    mode-list
    ""))
 
-(defun _make-commands-map-with-help-msg (binding-lists &optional mode-list)
+(defvar global-show-keybindings-help-message t)
+(defun _make-commands-map-with-help-msg (binding-lists &optional mode-list show-message)
   (let ((converted-list nil)
         (to-test (caar binding-lists))
-        (list-copy nil))
+        (list-copy nil)
+        (show-detailed-message-symbol (intern (format "key-binding-show-detailed-message:%s"
+                                                      (sha1 (prin1-to-string binding-lists))))))
+    (if (not (boundp show-detailed-message-symbol))
+        (set show-detailed-message-symbol (if (not show-message)
+                                              global-show-keybindings-help-message
+                                            (and (numberp show-message) (> show-message 0)))))
     (if (or (stringp to-test) (characterp to-test))
         (setq converted-list binding-lists)
       (progn (setq to-test (caaar binding-lists))
@@ -181,25 +188,34 @@ And return t if equals, compare the item with `equal'."
                 (add-to-list 'list-copy `(,(char-to-string (car ele)) . ,(cdr ele)))
               (add-to-list 'list-copy ele))))
     `(lambda () (interactive)
-       (let ((msg "Key bindings are as below:\n")
+       (let ((help-msg "Key bindings are as below:\n")
+             (msg "")
              (choices nil))
          (when ',mode-list
-             (setq msg (concat msg (cu-generate-mode-list-string ',mode-list))))
+             (setq help-msg (concat help-msg (cu-generate-mode-list-string ',mode-list))))
          (dolist (key (reverse ',list-copy))
-           (setq msg (concat msg (format "%c [%s] => %-70s %c\n"
-                                         ?│ (car key) (cdr key) ?│))
-                 choices (add-to-list 'choices (string-to-char (car key)) t)))
+           (setq help-msg (concat help-msg (format "%c [%s] => %-70s %c\n"
+                                                   ?│ (car key) (cdr key) ?│)))
+           (setq choices (add-to-list 'choices (string-to-char (car key)) t)))
+         (when (eval ,show-detailed-message-symbol)
+           (setq msg help-msg))
          (setq msg (concat msg "Please input: "))
          ;; read key and get it run;
-         (let* ((key (read-char-choice msg choices))
-                (func (cdr (assoc (format "%c" key) ',list-copy))))
-           (if func
-               (progn
-                 (message nil)
-                 (call-interactively func))
-             (error "key <%s> was not binded\n" key)))))))
+         (setq choices (add-to-list 'choices ?? t))
+         (let* ((key (read-char-choice msg choices)))
+           (if (equal key ??)
+               (progn (setq ,show-detailed-message-symbol (not (eval ,show-detailed-message-symbol)))
+                      (if (eval ,show-detailed-message-symbol)
+                          (message "Help message is as below:\n %s" help-msg)
+                        (message nil)))
+             (setq func (cdr (assoc (format "%c" key) ',list-copy)))
+             (if func
+                 (progn
+                   (message nil)
+                   (call-interactively func))
+               (error "key <%s> was not binded\n" key))))))))
 
-(defun cu-set-key-bindings (keymap prefix binding-lists &optional mode-list)
+(defun cu-set-key-bindings (keymap prefix binding-lists &optional mode-list show-message)
   "Binding multiple binding lists to PREFIX and binding PREFIX + ? to print the
 help message.
 There must not be the same key exist in two different list in BINDING-LISTS.
@@ -210,7 +226,7 @@ Example:
 (defconst map-1 '((?a . a-func) (?b . b-func)))
 (defconst map-2 '((?c . c-func) (?c . c-func)))
 (cu-set-key-bindings global-map \"\C-c\C-s\" '(map-1 map-2))"
-  (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists mode-list)))
+  (define-key keymap prefix (_make-commands-map-with-help-msg binding-lists mode-list show-message)))
 
 (defun cu-is-dir-or-dirlink-p (path)
   (and (file-exists-p path)
