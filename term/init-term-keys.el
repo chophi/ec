@@ -277,14 +277,27 @@ if it's add, then field-str-table must be specified, these fields will be added,
       (rename-buffer (_make_buffer_name 'clear term--uuid))
       (rename-buffer (_make_buffer_name 'add term--uuid field-str-table)))))
 
-(defun uf-send-current-line-command-to-term ()
+(defun uf-send-current-line-command-to-term (&optional no-confirm)
   (interactive)
   (let ((command
          (cu-strip-string
           (buffer-substring-no-properties (line-beginning-position) (line-end-position))
           t t)))
-    (when (y-or-n-p (format "Sending command to terminal:\n [%s]\n" command))
+    (when (and (not no-confirm) (y-or-n-p (format "Sending command to terminal:\n [%s]\n" command)))
       (uf-send-command-to-term (concat command "\n")))))
+
+(defun uf-send-current-buffer-to-term ()
+  (interactive)
+  (with-current-buffer (current-buffer)
+    (when (y-or-n-p "Send the entire buffer to terminal, Really?")
+      (let* ((str (buffer-substring-no-properties (point-min) (point-max)))
+             (lines (split-string str "\n")))
+        (dolist (line lines)
+          (setq line (cu-strip-string line t t))
+          (when (not (equal "" line))
+            (uf-send-command-to-term (format "%s\n" line))
+            (sleep-for 0.1)
+            (message "send [%s]\n" line)))))))
 
 (defun uf-toggle-active-status ()
   (interactive)
