@@ -89,9 +89,9 @@ by the :height face attribute."
           ("small(13.3-inch)" (han "STFangsong" 24) (ascii "Monaco" 20)))))
    ;; for company computer
    ((and (company-computer-p) (eq os 'linux))
-    '(("c1" (han "SimSun" 16.3) (ascii "Monaco" 14.5))
-      ("c2" (han "SimSun" 16.3) (ascii "Ubuntu Mono" 16.5))
-      ("c3" (han "SimSun" 16.3) (ascii "Consolas" 15.0))))
+    '(("c1" (han "SimSun" 30) (ascii "Monaco" 25))
+      ("c2" (han "SimSun" 30) (ascii "Ubuntu Mono" 29))
+      ("c3" (han "SimSun" 30) (ascii "Consolas" 28))))
    ;; for windows
    ((eq os 'windows)
     '(("c1" (han "SimSun" 15.0) (ascii "Consolas" 14.5))))
