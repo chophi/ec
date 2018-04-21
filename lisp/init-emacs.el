@@ -149,6 +149,7 @@
 (require 'init-send-mail)
 (require 'init-notmuch)
 (require 'init-nanoc)
+(require 'init-cobalt-dev)
 (require 'init-keybind)
 
 (setq sanityinc/require-times
