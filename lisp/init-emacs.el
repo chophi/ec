@@ -150,6 +150,7 @@
 (require 'init-notmuch)
 (require 'init-nanoc)
 (require 'init-cobalt-dev)
+(require 'init-gn-mode)
 (require 'init-keybind)
 
 (setq sanityinc/require-times
