@@ -49,6 +49,9 @@
 (defconst eopengrok-source-regexp
   "^\\([[:lower:][:upper:]]?:?.*?\\):\\([0-9]+\\):\\(.*\\)")
 
+(defconst eopengrok-file-regexp
+  "^\\([[:lower:][:upper:]]?:?.*?\\):\\(.*\\)")
+
 (defconst eopengrok-page-separator-regexp
   "^clj-opengrok> \\([0-9]+\\)/\\([0-9]+\\)")
 
@@ -303,6 +306,26 @@
     (define-key map [mouse-1] #'eopengrok--handle-mouse)
     map))
 
+(defun eopengrok--file-line-properties (file rest)
+  "Decorate File link."
+  (let* ((file (propertize file 'face 'eopengrok-file-face))
+         (info (propertize " "
+                           'face 'eopengrok-info-face
+                           'mouse-face 'highlight
+                           'keymap eopengrok-mouse-map))
+         (proc (get-process "eopengrok")))
+    (eopengrok--properties-region
+     (list :page eopengrok-page)
+     (eopengrok--properties-region
+      (list :name (expand-file-name file)
+            :info (string-to-number info))
+      (insert info))
+     (progn
+       (insert file)
+       (eopengrok--abbreviate-file file)
+       (insert (format "%s\n" rest))
+       (setq eopengrok-last-filename file)))))
+
 (defun eopengrok--line-properties (line-list &optional history)
   "Decorate LINE-LIST with HISTORY."
   (-when-let* (((file info src) line-list)
@@ -339,6 +362,9 @@
    ((string-match eopengrok-source-regexp line)
     (eopengrok--line-properties
      (mapcar (lambda (n) (match-string n line)) '(1 2 3))))
+   ((and (string-match eopengrok-file-regexp line) (file-exists-p (match-string 1 line)))
+    (eopengrok--file-line-properties
+     (match-string 1 line) (match-string 2 line)))
    ((string-match eopengrok-page-separator-regexp line)
     (setq eopengrok-mode-line-status 'running
           eopengrok-page (format "%s/%s" (match-string 1 line)
