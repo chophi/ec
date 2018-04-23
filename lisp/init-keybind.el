@@ -48,6 +48,13 @@
   (cu-set-key-bindings python-mode-map "\C-c\C-v"
                        `(,my-magit-key-map
                          ((?c . python-check)))))
+
+;; Remapping org-babel-key-prefix to \C-cv for magit key bindings.
+(with-eval-after-load "org"
+  (setq org-babel-key-prefix "\C-cv")
+  (define-key org-mode-map org-babel-key-prefix org-babel-map)
+  (cu-set-key-bindings org-mode-map "\C-c\C-v" my-magit-key-map))
+
 ;; confluence wiki
 (when (company-computer-p)
   (defconst publish-org-to-confluence-wiki-keymap
