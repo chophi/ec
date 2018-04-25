@@ -188,7 +188,7 @@ a communication channel."
   contents))
 
 (defun org-confluence-table-row  (table-row contents info)
-  (when (eq (org-element-property :type table-row) 'standard)
+  (when (not (eq (org-element-property :type table-row) 'table.el))
     (concat
      (if (org-string-nw-p contents) (format "|%s" contents)
        "")
@@ -196,7 +196,7 @@ a communication channel."
        "|"))))
 
 (defun org-confluence-table-cell  (table-cell contents info)
-  (when (eq (org-element-property :type table-cell) 'standard)
+  (when (not (eq (org-element-property :type table-cell) 'table.el)) 
     (let ((table-row (org-export-get-parent table-cell)))
       (concat (and (org-export-table-row-starts-header-p table-row info) "|")
               (if (= (length contents) 0) " " contents)
