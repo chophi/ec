@@ -7,10 +7,13 @@
 
 (defun org-export-use-html-engine()
   (interactive)
-  (let ((use-html (save-excursion
-                    (goto-char (point-min))
-                    (re-search-forward "#\\+\\([uU][sS][eE]_[hH][tT][mM][lL]\\):\s*\\([a-z]+\\)\s*$" nil t)
-                    (match-string-no-properties 2))))
+  (let ((use-html
+         (save-excursion
+           (goto-char (point-min))
+           (re-search-forward
+            "#\\+\\([uU][sS][eE]_[hH][tT][mM][lL]\\):\s*\\([a-z]+\\)\s*$"
+            nil t)
+           (match-string-no-properties 2))))
     (if (equal use-html "true")
         t
       (if (equal use-html "false") nil org-confluence-export-use-html-engine))))
