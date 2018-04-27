@@ -1,6 +1,6 @@
 (require 'cl)
 (defun cu-program-exists-p (program)
-  (not (equal (shell-command-to-string (concat "which " program)) "")))
+  (eq (shell-command (concat "which " program)) 0))
 
 (defun cu-show-gerrit-at-point (&optional refresh)
   "Query the gerrit change at point with

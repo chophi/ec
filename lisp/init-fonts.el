@@ -65,10 +65,11 @@ by the :height face attribute."
       ;; but use set-fontset-font to set "fontset-default" for `han` instead.
       (if (eq script 'ascii)
           (set-face-attribute 'default (selected-frame) :font font))
-      (set-fontset-font "fontset-default"
-                        (car fc)
-                        (font-spec :family (cadr fc) :size (caddr fc))
-                        (selected-frame)))))
+      (when (fboundp 'set-fontset-font)
+        (set-fontset-font "fontset-default"
+                          (car fc)
+                          (font-spec :family (cadr fc) :size (caddr fc))
+                          (selected-frame))))))
 
 ;; 中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文
 ;; llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
