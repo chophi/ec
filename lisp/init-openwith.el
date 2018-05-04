@@ -10,6 +10,6 @@
       ("\\.mov\\|\\.RM$\\|\\.RMVB$\\|\\.avi$\\|\\.AVI$\\|\\.flv$\\|\\.mp4\\|\\.mkv$\\|\\.rmvb$" "mplayer" (file) )
       ("\\.CHM$\\|\\.chm$" "chmsee"  (file))))
    ('macos
-    '(("\\.pdf$\\|\\.png$\\|\\.jpeg$\\|\\.jpg$" "open" (file))))))
+    '(("\\.pdf$" "open" (file))))))
 
 (provide 'init-openwith)
