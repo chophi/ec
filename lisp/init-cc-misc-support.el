@@ -137,10 +137,10 @@ find the existed files with the replaced result."
               (dolist (assoc-suffix
                        (cdr (assoc suffix-name eassist-header-switches)))
                 (let ((target-name (format "%s.%s" (file-name-sans-extension replaced-name)
-                                           assoc-suffix))))
-                (when (file-exists-p target-name)
-                  (find-file target-name)
-                  (throw 'file-found nil))))))))))
+                                           assoc-suffix)))
+                  (when (file-exists-p target-name)
+                    (find-file target-name)
+                    (throw 'file-found nil)))))))))))
 
 (defadvice eassist-switch-h-cpp-try-replace (around eassist-switch-h-cpp-ad)
   "Rebind the find-file nad switch-to-buffer to open the found file in another
