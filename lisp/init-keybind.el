@@ -204,8 +204,35 @@
          (shell-command ,command)
        (ssh-shell-command ,command))))
 
-(when (fboundp 'control-x-f)
-  (global-set-key (kbd "C-x f") 'control-x-f))
+(defun my-set-frame-name ()
+  (interactive)
+  (set-frame-name (read-string "Frame name: ")))
+
+(defun my-select-frame ()
+  (interactive)
+  (let* ((current-window-id (frame-parameter nil 'window-id))
+         (choice-list
+          (mapcar (lambda (f) `(,(frame-parameter f 'name) . ,f))
+                  (seq-filter
+                   (lambda (f) (eq (frame-parameter f 'window-id) current-window-id))
+                   (frame-list))))
+         (name-list (mapcar (lambda (c) (car c)) choice-list))
+         (choice (ido-completing-read "Select frame: " name-list)))
+    (select-frame (cdr (assoc choice choice-list)))))
+
+(defun my-make-frame ()
+  (interactive)
+  (let ((name (read-string "New Frame name: ")))
+    (set-frame-parameter (make-frame-command) 'name name)))
+
+(cu-set-key-bindings global-map "\C-xf"
+                     `((?c . my-make-frame)
+                       (?o . other-frame)
+                       (?d . delete-frame)
+                       (?w . delete-other-frames)
+                       ,@(when (fboundp 'control-x-f)
+                           `((?f . control-x-f)))
+                       (?s . my-select-frame)))
 
 ;; undefine the \C-c\C-c
 (with-eval-after-load "cc-mode" (define-key c-mode-map "\C-c\C-c" nil))
