@@ -208,6 +208,7 @@
   (interactive)
   (set-frame-name (read-string "Frame name: ")))
 
+(require 'array)
 (defun my-select-frame ()
   (interactive)
   (let* ((current-window-id (frame-parameter nil 'window-id))
@@ -227,6 +228,9 @@
   (interactive)
   (let ((name (read-string "New Frame name: ")))
     (set-frame-parameter (make-frame-command) 'name name)))
+
+(when (fboundp 'control-x-f)
+  (global-set-key "\C-cw" 'control-x-f))
 
 (global-set-key "\C-cf" 'my-select-frame)
 (cu-set-key-bindings global-map "\C-xf"
