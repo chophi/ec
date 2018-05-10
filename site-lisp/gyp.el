@@ -10,7 +10,7 @@
 (require 'python)
 (require 'cl)
 
-(defvar python-continuation-offset)
+(defvar python-continuation-offset 2)
 (when (string-match "python-mode.el" (symbol-file 'python-mode 'defun))
   (error (concat "python-mode must be loaded from python.el (bundled with "
                  "recent emacsen), not from the older and less maintained "
