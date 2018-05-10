@@ -225,6 +225,7 @@
   (let ((name (read-string "New Frame name: ")))
     (set-frame-parameter (make-frame-command) 'name name)))
 
+(global-set-key "\C-cf" 'other-frame)
 (cu-set-key-bindings global-map "\C-xf"
                      `((?c . my-make-frame)
                        (?o . other-frame)
