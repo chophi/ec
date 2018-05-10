@@ -214,16 +214,14 @@
          (choice-list
           (mapcar (lambda (f) `(,(frame-parameter f 'name) . ,f))
                   (seq-filter
-                   (lambda (f) (eq (frame-parameter f 'window-id) current-window-id))
-                   (frame-list))))
-         (name-list (mapcar (lambda (c) (car c)) choice-list))
-         (choice nil))
-    (when (<= (length name-list) 1)
+                   (lambda (f)
+                     (not (xor current-window-id (frame-parameter f 'window-id))))
+                   (frame-list)))))
+    (when (<= (length choice-list) 1)
       (error "only one frame, do nothing"))
-    (if (= (length name-list) 2)
+    (if (= (length choice-list) 2)
         (other-frame 1)
-      (setq choice (ido-completing-read "Select frame: " name-list))
-      (select-frame (cdr (assoc choice choice-list))))))
+      (call-interactively 'select-frame-by-name))))
 
 (defun my-make-frame ()
   (interactive)
