@@ -230,6 +230,7 @@
                        (?o . other-frame)
                        (?d . delete-frame)
                        (?w . delete-other-frames)
+                       (?n . my-set-frame-name)
                        ,@(when (fboundp 'control-x-f)
                            `((?f . control-x-f)))
                        (?s . my-select-frame)))
