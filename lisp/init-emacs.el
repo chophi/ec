@@ -154,6 +154,12 @@
 (require 'init-gn-mode)
 (require 'init-keybind)
 
+(require-package 'graphviz-dot-mode)
+(eval-after-load 'org-mode
+  (if (assoc "dot" org-src-lang-modes)
+      (setf (cdr (assoc "dot" org-src-lang-modes)) 'graphviz-dot)
+    (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot))))
+
 (setq sanityinc/require-times
       (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
 
