@@ -10,20 +10,22 @@
 (require 'python)
 (require 'cl)
 
+(defvar python-continuation-offset 2)
 (when (string-match "python-mode.el" (symbol-file 'python-mode 'defun))
   (error (concat "python-mode must be loaded from python.el (bundled with "
                  "recent emacsen), not from the older and less maintained "
                  "python-mode.el")))
 
-(defadvice python-indent-calculate-levels (after gyp-outdent-closing-parens
-                                                 activate)
-  "De-indent closing parens, braces, and brackets in gyp-mode."
-  (when (and (eq major-mode 'gyp-mode)
-             (string-match "^ *[])}][],)}]* *$"
-                           (buffer-substring-no-properties
-                            (line-beginning-position) (line-end-position))))
-    (setf (first python-indent-levels)
-          (- (first python-indent-levels) python-continuation-offset))))
+;; TODO: figure out what's this trying to fix?
+;; (defadvice python-indent-calculate-levels (after gyp-outdent-closing-parens
+;;                                                  activate)
+;;   "De-indent closing parens, braces, and brackets in gyp-mode."
+;;   (when (and (eq major-mode 'gyp-mode)
+;;              (string-match "^ *[])}][],)}]* *$"
+;;                            (buffer-substring-no-properties
+;;                             (line-beginning-position) (line-end-position))))
+;;     (setf (first python-indent-levels)
+;;           (- (first python-indent-levels) python-continuation-offset))))
 
 (defadvice python-indent-guess-indent-offset (around
                                               gyp-indent-guess-indent-offset
