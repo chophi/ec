@@ -74,7 +74,9 @@
 ;; google translate
 (cu-set-key-bindings global-map "\C-c\C-t"
                      `((?t . google-translate-at-point)
-                       (?r . google-translate-at-point-reverse)))
+                       (?r . google-translate-at-point-reverse)
+                       (?q . google-translate-query-translate)
+                       (?q . google-translate-query-translate-reverse)))
 
 ;; path utils
 (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
