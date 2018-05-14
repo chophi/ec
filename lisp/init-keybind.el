@@ -214,20 +214,22 @@
 (defun my-select-frame ()
   (interactive)
   (let* ((current-window-id (frame-parameter nil 'window-id))
-         (flist (frame-list)))
-    (cl-labels ((frame-list nil (seq-filter
-                                 (lambda (f)
-                                   (and (not (equal (frame-parameter f 'name) "terminal"))
-                                        (not (xor current-window-id (frame-parameter f 'window-id)))))
-                                 flist)))
-      (print (frame-list))
-      (let ((choice-list
-             (mapcar (lambda (f) `(,(frame-parameter f 'name) . ,f))
-                     (frame-list))))
+         (frame-names-alist (make-frame-names-alist)))
+    (cl-labels ((make-frame-names-alist
+                 nil
+                 (seq-filter
+                  (lambda (f)
+                    (and (not (equal (car f) "terminal"))
+                         (not (xor current-window-id (frame-parameter (cdr f) 'window-id)))))
+                  frame-names-alist)))
+      (let ((choice-list (mapcar (lambda (f) (car f)) (make-frame-names-alist))))
     (when (<= (length choice-list) 1)
       (error "only one frame, do nothing"))
     (if (= (length choice-list) 2)
-        (other-frame 1)
+        (select-frame-by-name
+         (if (equal (car choice-list) (frame-parameter nil 'name))
+             (cadr choice-list)
+           (car choice-list)))
       (call-interactively 'select-frame-by-name))))))
 
 (defun my-make-frame ()
