@@ -214,17 +214,21 @@
 (defun my-select-frame ()
   (interactive)
   (let* ((current-window-id (frame-parameter nil 'window-id))
-         (choice-list
-          (mapcar (lambda (f) `(,(frame-parameter f 'name) . ,f))
-                  (seq-filter
-                   (lambda (f)
-                     (not (xor current-window-id (frame-parameter f 'window-id))))
-                   (frame-list)))))
+         (flist (frame-list)))
+    (cl-labels ((frame-list nil (seq-filter
+                                 (lambda (f)
+                                   (and (not (equal (frame-parameter f 'name) "terminal"))
+                                        (not (xor current-window-id (frame-parameter f 'window-id)))))
+                                 flist)))
+      (print (frame-list))
+      (let ((choice-list
+             (mapcar (lambda (f) `(,(frame-parameter f 'name) . ,f))
+                     (frame-list))))
     (when (<= (length choice-list) 1)
       (error "only one frame, do nothing"))
     (if (= (length choice-list) 2)
         (other-frame 1)
-      (call-interactively 'select-frame-by-name))))
+      (call-interactively 'select-frame-by-name))))))
 
 (defun my-make-frame ()
   (interactive)
@@ -246,6 +250,16 @@
   (interactive)
   (and (y-or-n-p "Delete all other frames?") (delete-other-frames)))
 
+(defun my-set-term-frame ()
+  (interactive)
+  (and (y-or-n-p "Select current frame as terminal frame?")
+       (set-frame-name "terminal")))
+
+(defun my-switch-to-terminal-frame ()
+  (interactive)
+  (select-frame-by-name "terminal"))
+
+(global-set-key "\C-ct" 'my-switch-to-terminal-frame)
 (global-set-key "\C-cf" 'my-select-frame)
 (cu-set-key-bindings global-map "\C-xf"
                      `((?c . my-make-frame)
@@ -256,7 +270,8 @@
                            `((?f . control-x-f)))
                        (?s . my-select-frame)
                        (?n . my-next-frame)
-                       (?p . my-previous-frame)))
+                       (?p . my-previous-frame)
+                       (?t . my-set-term-frame)))
 
 ;; undefine the \C-c\C-c
 (with-eval-after-load "cc-mode" (define-key c-mode-map "\C-c\C-c" nil))
