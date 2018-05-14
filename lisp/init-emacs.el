@@ -152,6 +152,7 @@
 (require 'init-nanoc)
 (require 'init-cobalt-dev)
 (require 'init-gn-mode)
+(require 'init-frame-utils)
 (require 'init-keybind)
 
 (require-package 'graphviz-dot-mode)

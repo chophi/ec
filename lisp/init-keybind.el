@@ -63,11 +63,11 @@
       ("r" . org-read-related-wiki-page)
       ("v" . org-export-buffer-to-wiki-and-view)
       ,@(when (fboundp 'confluence-view-the-wiki)
-        (defun org-confluence-view-the-wiki ()
-          (interactive)
-          (confluence-view-the-wiki (or (org-get-wiki-page-id)
-                                        (error "wiki page id is empty"))))
-        '(("o" . org-confluence-view-the-wiki)))))
+          (defun org-confluence-view-the-wiki ()
+            (interactive)
+            (confluence-view-the-wiki (or (org-get-wiki-page-id)
+                                          (error "wiki page id is empty"))))
+          '(("o" . org-confluence-view-the-wiki)))))
   (cu-set-key-bindings global-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap)
   (cu-set-key-bindings org-mode-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap))
 
@@ -200,66 +200,8 @@
 (add-hook 'paredit-mode-hook
           (lambda () (define-key paredit-mode-map "\C-\M-p" nil)))
 
-(defun make-shell-command-key-lambda (command)
-  `(lambda () (interactive)
-     (if (eq os 'macos)
-         (shell-command ,command)
-       (ssh-shell-command ,command))))
-
-(defun my-set-frame-name ()
-  (interactive)
-  (set-frame-name (read-string "Frame name: ")))
-
-(require 'array)
-(defun my-select-frame ()
-  (interactive)
-  (let* ((current-window-id (frame-parameter nil 'window-id))
-         (frame-names-alist (make-frame-names-alist)))
-    (cl-labels ((make-frame-names-alist
-                 nil
-                 (seq-filter
-                  (lambda (f)
-                    (and (not (equal (car f) "terminal"))
-                         (not (xor current-window-id (frame-parameter (cdr f) 'window-id)))))
-                  frame-names-alist)))
-      (let ((choice-list (mapcar (lambda (f) (car f)) (make-frame-names-alist))))
-    (when (<= (length choice-list) 1)
-      (error "only one frame, do nothing"))
-    (if (= (length choice-list) 2)
-        (select-frame-by-name
-         (if (equal (car choice-list) (frame-parameter nil 'name))
-             (cadr choice-list)
-           (car choice-list)))
-      (call-interactively 'select-frame-by-name))))))
-
-(defun my-make-frame ()
-  (interactive)
-  (let ((name (read-string "New Frame name: ")))
-    (set-frame-parameter (make-frame-command) 'name name)))
-
 (when (fboundp 'control-x-f)
   (global-set-key "\C-cw" 'control-x-f))
-
-(defun my-next-frame ()
-  (interactive)
-  (select-frame (next-frame)))
-
-(defun my-previous-frame ()
-  (interactive)
-  (select-frame (previous-frame)))
-
-(defun my-delete-other-frames ()
-  (interactive)
-  (and (y-or-n-p "Delete all other frames?") (delete-other-frames)))
-
-(defun my-set-term-frame ()
-  (interactive)
-  (and (y-or-n-p "Select current frame as terminal frame?")
-       (set-frame-name "terminal")))
-
-(defun my-switch-to-terminal-frame ()
-  (interactive)
-  (select-frame-by-name "terminal"))
 
 (global-set-key "\C-ct" 'my-switch-to-terminal-frame)
 (global-set-key "\C-cf" 'my-select-frame)
