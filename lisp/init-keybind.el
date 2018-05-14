@@ -234,15 +234,29 @@
 (when (fboundp 'control-x-f)
   (global-set-key "\C-cw" 'control-x-f))
 
+(defun my-next-frame ()
+  (interactive)
+  (select-frame (next-frame)))
+
+(defun my-previous-frame ()
+  (interactive)
+  (select-frame (previous-frame)))
+
+(defun my-delete-other-frames ()
+  (interactive)
+  (and (y-or-n-p "Delete all other frames?") (delete-other-frames)))
+
 (global-set-key "\C-cf" 'my-select-frame)
 (cu-set-key-bindings global-map "\C-xf"
                      `((?c . my-make-frame)
                        (?d . delete-frame)
-                       (?w . delete-other-frames)
-                       (?n . my-set-frame-name)
+                       (?w . my-delete-other-frames)
+                       (?r . my-set-frame-name)
                        ,@(when (fboundp 'control-x-f)
                            `((?f . control-x-f)))
-                       (?s . my-select-frame)))
+                       (?s . my-select-frame)
+                       (?n . my-next-frame)
+                       (?p . my-previous-frame)))
 
 ;; undefine the \C-c\C-c
 (with-eval-after-load "cc-mode" (define-key c-mode-map "\C-c\C-c" nil))
