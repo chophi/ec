@@ -6,6 +6,11 @@
   (setq eopengrok-global-configuration-mode
         (not eopengrok-global-configuration-mode)))
 
+(defun eopengrok-toggle-database-mode ()
+  (interactive)
+  (setq eopengrok-database-mode
+        (not eopengrok-database-mode)))
+
 (defun use-global-configuration-maybe (orig-fun &rest args)
   (if eopengrok-global-configuration-mode
       (expand-file-name eopengrok-global-configuration-file)
@@ -43,5 +48,8 @@
     ;; (print eopengrok-ignore-list)
     ad-do-it))
 (ad-activate 'eopengrok-create-index)
+
+(when (not (file-exists-p eopengrok-database-root-dir))
+  (make-directory eopengrok-database-root-dir))
 
 (provide 'init-grok)

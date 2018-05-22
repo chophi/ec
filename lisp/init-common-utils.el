@@ -590,4 +590,31 @@ NDIM is the dimentions of the choice items.
     (color-theme-sanityinc-tomorrow-eighties)
     (next-font 0)
     (maximize-frame)))
+
+(defun cu-dir-to-sha1 (dir)
+  (let ((d (expand-file-name dir)))
+    (when (cu-seq-ends-with d "/")
+      (setq d (substring d 0 -1)))
+    (sha1 d)))
+
+(defun* __cu-find-nearest-ancestor-link-in (root dir)
+  (message "%s" dir)
+  (when (or (not dir) (equal dir "/"))
+    (return-from __cu-find-nearest-ancestor-link-in nil))
+  (let ((link (cu-join-path root (cu-dir-to-sha1 dir))))
+    (when (file-exists-p link)
+      (return-from __cu-find-nearest-ancestor-link-in link)))
+  (__cu-find-nearest-ancestor-link-in
+   root (file-name-directory (directory-file-name dir))))
+
+(defun cu-find-nearest-ancestor-link-in (root path)
+  "Find the nearest ancestor directory which symbolinked to root and named as `cu-dir-to-sha1`"
+  ;; append "/" for directory.
+  (when (and (cu-is-dir-or-dirlink-p path)
+             (not (equal (substring path (1- (length path))) "/")))
+    (setq path (concat path "/")))
+  ;; extract the dir part.
+  (setq path (file-name-directory (expand-file-name path)))
+  (__cu-find-nearest-ancestor-link-in root path))
+
 (provide 'init-common-utils)

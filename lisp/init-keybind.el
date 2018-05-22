@@ -76,7 +76,7 @@
                      `((?t . google-translate-at-point)
                        (?r . google-translate-at-point-reverse)
                        (?q . google-translate-query-translate)
-                       (?q . google-translate-query-translate-reverse)))
+                       (?b . google-translate-query-translate-reverse)))
 
 ;; path utils
 (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
@@ -170,11 +170,14 @@
     (?h . eopengrok-find-history)
     (?r . eopengrok-resume)
     (?c . my-opengrok-create-index)
-    (?m . eopengrok-toggle-global-mode)))
+    (?m . eopengrok-toggle-global-mode)
+    (?v . eopengrok-visit-nearest-ancestor-link)
+    (?g . eopengrok-toggle-database-mode)))
 
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)
- '(("global configuration mode" . eopengrok-global-configuration-mode)))
+ '(("global configuration mode" . eopengrok-global-configuration-mode)
+   ("database mode" . eopengrok-database-mode)))
 
 (defun android-doc-local-server()
   (interactive)
