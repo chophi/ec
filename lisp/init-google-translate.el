@@ -10,4 +10,6 @@
       google-translate--tkk-url
       "http://translate.google.cn/")
 
+(setq google-translate-show-phonetic t)
+
 (provide 'init-google-translate)
