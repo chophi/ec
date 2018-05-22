@@ -6,11 +6,6 @@
   (setq eopengrok-global-configuration-mode
         (not eopengrok-global-configuration-mode)))
 
-(defun eopengrok-toggle-database-mode ()
-  (interactive)
-  (setq eopengrok-database-mode
-        (not eopengrok-database-mode)))
-
 (defun use-global-configuration-maybe (orig-fun &rest args)
   (if eopengrok-global-configuration-mode
       (expand-file-name eopengrok-global-configuration-file)

@@ -172,12 +172,12 @@
     (?c . my-opengrok-create-index)
     (?m . eopengrok-toggle-global-mode)
     (?v . eopengrok-visit-nearest-ancestor-link)
-    (?g . eopengrok-toggle-database-mode)))
+    (?p . eopengrok-choose-projects-from-database)))
 
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)
  '(("global configuration mode" . eopengrok-global-configuration-mode)
-   ("database mode" . eopengrok-database-mode)))
+   ("default project" . (car eopengrok-default-project-alist-from-database))))
 
 (defun android-doc-local-server()
   (interactive)

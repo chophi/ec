@@ -186,13 +186,14 @@
                    (cu-join-path eopengrok-database-root-dir dir "source"))
                   (cu-join-path eopengrok-database-root-dir dir)))
           (cddr (directory-files eopengrok-database-root-dir)))))
-    (assoc (ido-completing-read
-            "Choose a project: "
-            (mapcar 'car source-config-alist))
-           source-config-alist)))
+    (setq eopengrok-default-project-alist-from-database
+          (assoc (ido-completing-read
+                  "Choose a project: "
+                  (mapcar 'car source-config-alist))
+                 source-config-alist))))
 
-(defvar eopengrok-database-mode nil
-  "select from database")
+(defvar eopengrok-default-project-alist-from-database nil
+  "default project alist from database")
 
 (defun eopengrok--get-configuration ()
   "Search for Project configuration.xml."
@@ -200,8 +201,8 @@
          (index-dir (locate-dominating-file start-dir eopengrok-configuration)))
     (if index-dir
         (concat (expand-file-name index-dir) eopengrok-configuration)
-      (if eopengrok-database-mode
-          (cu-join-path (cdr (eopengrok-choose-projects-from-database))
+      (if eopengrok-default-project-alist-from-database
+          (cu-join-path (cdr eopengrok-default-project-alist-from-database)
                         eopengrok-configuration)
           (let ((x (cu-find-nearest-ancestor-link-in
                     eopengrok-database-root-dir default-directory)))
