@@ -502,7 +502,7 @@
          (source-dir (cu-join-path absolute-path-sha1-dir "source")))
     (when (not (file-exists-p absolute-path-sha1-dir))
       (make-directory absolute-path-sha1-dir))
-    (make-symbolic-link dir source-dir)
+    (make-symbolic-link dir source-dir t)
     (list (file-chase-links source-dir) absolute-path-sha1-dir)))
 
 (defun eopengrok-create-index (dir &optional enable-projects-p)
