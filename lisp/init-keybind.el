@@ -172,7 +172,8 @@
     (?c . my-opengrok-create-index)
     (?m . eopengrok-toggle-global-mode)
     (?v . eopengrok-visit-nearest-ancestor-link)
-    (?p . eopengrok-choose-projects-from-database)))
+    (?p . eopengrok-choose-projects-from-database)
+    (?l . eopengrok-list-projects)))
 
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)

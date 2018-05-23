@@ -324,7 +324,7 @@ otherwise, return nil"
       "To check if the char at I of STR is a separator"
       (let ((ret nil)
             (ch (elt str i)))
-        (dolist (c (append "\n,\"; ()[]{}" nil) ret)
+        (dolist (c (append "\t\n,\"; ()[]{}" nil) ret)
           (when (equal ch c) (setq ret t)))))
     ;;
     (let* ((start (max (- (point) 256) 1))
@@ -339,7 +339,7 @@ otherwise, return nil"
                     ((or (>= i len) (is-separator str i)) i)
                   (incf i)))
            (maybe-filename (substring str start end)))
-      (message "The string sequence is %s" maybe-filename)
+      (message "The string sequence is [%s]" maybe-filename)
       maybe-filename))
 
   (defun* can-split-out-a-filename (name)

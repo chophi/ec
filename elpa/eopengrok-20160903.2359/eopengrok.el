@@ -176,21 +176,49 @@
             eopengrok-database-root-dir default-directory)))
     (if x
         (find-file x))))
+(defun eopengrok-get-source-config-alist ()
+  (interactive)
+  (mapcar
+   (lambda (dir)
+     (cons (file-chase-links
+            (cu-join-path eopengrok-database-root-dir dir "source"))
+           (cu-join-path eopengrok-database-root-dir dir)))
+   (cddr (directory-files eopengrok-database-root-dir))))
 
 (defun eopengrok-choose-projects-from-database ()
   (interactive)
   (let ((source-config-alist
-         (mapcar
-          (lambda (dir)
-            (cons (file-chase-links
-                   (cu-join-path eopengrok-database-root-dir dir "source"))
-                  (cu-join-path eopengrok-database-root-dir dir)))
-          (cddr (directory-files eopengrok-database-root-dir)))))
+         (eopengrok-get-source-config-alist)))
     (setq eopengrok-default-project-alist-from-database
           (assoc (ido-completing-read
                   "Choose a project: "
                   (mapcar 'car source-config-alist))
                  source-config-alist))))
+
+(defconst eopengrok-file-link-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [mouse-1] #'cu-open-link)
+    (define-key map [return] #'cu-open-link)
+    (define-key map "\C-j" #'cu-open-link)
+    map))
+
+(defun eopengrok-list-projects ()
+  (interactive)
+  (let ((buf (get-buffer-create "*eopengrok-project-list*")))
+    (with-current-buffer buf
+      (read-only-mode -1)
+      (erase-buffer)
+      (dolist (lst (eopengrok-get-source-config-alist))
+        (insert (propertize (car lst)
+                            'face 'eopengrok-source-face
+                            'keymap eopengrok-file-link-map)
+                " :\n\t"
+                (propertize (cdr lst)
+                            'face 'eopengrok-source-face
+                            'keymap eopengrok-file-link-map)
+                "\n")))
+    (switch-to-buffer buf)
+    (read-only-mode)))
 
 (defvar eopengrok-default-project-alist-from-database nil
   "default project alist from database")
