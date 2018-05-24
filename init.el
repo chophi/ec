@@ -2,6 +2,10 @@
 ;; it's commented out.
 ;; (package-initialize)
 
+(defun reload-config ()
+  (interactive)
+  (load-file user-init-file))
+
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
 
