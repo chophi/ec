@@ -379,8 +379,9 @@
             :info (string-to-number info))
       (insert info))
      (progn
-       (insert file)
-       (eopengrok--abbreviate-file file)
+       (unless (string= file eopengrok-last-filename)
+         (insert file)
+         (eopengrok--abbreviate-file file))
        (insert (format "%s\n" rest))
        (setq eopengrok-last-filename file)))))
 
