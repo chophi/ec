@@ -198,7 +198,7 @@
 (defconst eopengrok-file-link-map
   (let ((map (make-sparse-keymap)))
     (define-key map [mouse-1] #'cu-open-link)
-    (define-key map [return] #'cu-open-link)
+    (define-key map (kbd "RET") #'cu-open-link)
     (define-key map "\C-j" #'cu-open-link)
     map))
 
@@ -209,14 +209,12 @@
       (read-only-mode -1)
       (erase-buffer)
       (dolist (lst (eopengrok-get-source-config-alist))
-        (insert (propertize (car lst)
+        (insert (propertize (concat (car lst) ":\n")
                             'face 'eopengrok-source-face
                             'keymap eopengrok-file-link-map)
-                " :\n\t"
-                (propertize (cdr lst)
+                (propertize (concat  "\t" (cdr lst) "\n")
                             'face 'eopengrok-source-face
-                            'keymap eopengrok-file-link-map)
-                "\n")))
+                            'keymap eopengrok-file-link-map))))
     (switch-to-buffer buf)
     (read-only-mode)))
 
