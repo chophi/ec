@@ -245,4 +245,34 @@
 
 (global-set-key "\C-cc" 'cp-custom-compile)
 
+(defun my-compilation-shell-minor-mode ()
+  (interactive)
+  (let ((keymap '((?n . compilation-next-error)
+                  (?p . compilation-previous-error)
+                  (?g . compile-goto-error)
+                  (?f . compilation-next-file)
+                  (?F . compilation-previous-file))))
+    (if compilation-shell-minor-mode
+        (progn
+          (message "Disable compilation-shell-minor-mode")
+          (compilation-shell-minor-mode -1)
+          (dolist (key keymap)
+            (define-key term-raw-map (char-to-string (car key)) 'term-send-raw)))
+      (message "Enable compilation-shell-minor-mode")
+      (compilation-shell-minor-mode 1)
+      (dolist (key keymap)
+        (define-key term-raw-map (char-to-string (car key)) (cdr key))))))
+
+(add-to-list
+ 'term-bind-key-alist
+ `("C-c e" .
+   ,(_make-commands-map-with-help-msg
+     '((?c . my-compilation-shell-minor-mode)
+       (?n . compilation-next-error)
+       (?p . compilation-previous-error)
+       (?g . compile-goto-error)
+       (?f . compilation-next-file)
+       (?F . compilation-previous-file))))
+ t)
+
 (provide 'init-keybind)
