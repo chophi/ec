@@ -105,6 +105,8 @@
 
 (add-to-list 'eassist-header-switches '("hh" "cpp" "cc"))
 (add-to-list 'eassist-header-switches '("cc" "h" "hh"))
+(add-to-list 'eassist-header-switches '("h" "cpp" "cc" "m"))
+(add-to-list 'eassist-header-switches '("m" "h" "hh"))
 
 (defconst eassist-switch-h-cpp-post-pairs
   '(("/libs/" "/include/")
