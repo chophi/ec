@@ -102,10 +102,6 @@ def main(args):
             page_draft['content'] = copy.copy(page['content'])
             client.confluence2.storePage(auth_token, page_draft)
             page_draft = client.confluence2.getPage(auth_token, draft_page_id)
-            with open(os.path.expanduser('~/draft'), 'w') as f:
-                f.write(page_draft['content'])
-            with open(os.path.expanduser('~/original'), 'w') as f:
-                f.write(original_content)
             if remove_auto_generated(page_draft['content']) == remove_auto_generated(original_content):
                 print("The Page content is not changed!")
             else:
