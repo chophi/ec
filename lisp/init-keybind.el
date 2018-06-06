@@ -72,11 +72,12 @@
   (cu-set-key-bindings org-mode-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap))
 
 ;; google translate
-(cu-set-key-bindings global-map "\C-c\C-t"
-                     `((?t . google-translate-at-point)
-                       (?r . google-translate-at-point-reverse)
-                       (?q . google-translate-query-translate)
-                       (?b . google-translate-query-translate-reverse)))
+(dolist (map (list org-mode-map global-map))
+  (cu-set-key-bindings map "\C-c\C-t"
+                       `((?t . google-translate-at-point)
+                         (?r . google-translate-at-point-reverse)
+                         (?q . google-translate-query-translate)
+                         (?b . google-translate-query-translate-reverse))))
 
 ;; path utils
 (with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
