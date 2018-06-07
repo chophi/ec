@@ -75,7 +75,7 @@
            "none"
            *custom-confluence-root-url*)))
 
-(defun get-wiki-content (wiki-page-id)
+(defun get-wiki-content (wiki-page-id output-buffer)
   (shell-command
    (format "python %s -u %s -p %s -P %s -c %s -C %s -a print-wiki-content"
            *custom-write-wiki-script-path*
@@ -84,7 +84,7 @@
            wiki-page-id
            "none"
            *custom-confluence-root-url*)
-   "*Org Write Wiki[OUTPUT]*" "*Org Write Wiki[ERROR]*"))
+   output-buffer "*Org Write Wiki[ERROR]*"))
 
 (defun* org-update-related-wiki-page (&optional draft-wiki)
   (interactive "P")
@@ -107,8 +107,7 @@
       (return-from 'org-update-related-wiki-page "wiki page id error"))
     (let ((wiki-buffer (get-buffer-create
                         (format "*confluence-wiki[%s]*" wiki-page-id))))
-      (with-current-buffer wiki-buffer
-        (insert (get-wiki-content wiki-page-id)))
+      (get-wiki-content wiki-page-id wiki-buffer)
       (switch-to-buffer-other-window wiki-buffer)
       )))
 
