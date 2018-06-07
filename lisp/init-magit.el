@@ -46,4 +46,49 @@
               lst)
        (setq lst (add-to-list 'lst to-add t))))))
 
+(defun gerrit-get-remote ()
+  (interactive)
+  (let* ((get-remote-command "git remote -v | grep push")
+         (remote (shell-command-to-string get-remote-command)))
+    (when remote
+      (cu-strip-string (car (split-string remote)) t t))))
+
+(defun gerrit-current-branch ()
+  (interactive)
+  (let* ((get-possible-branch-command
+          "git branch -a | grep \\* | cut -d \" \" -f 2")
+         (get-possible-branch-command-v2
+          "git branch -a | grep \"\\->\" | cut -d \">\" -f 2")
+         (possible-branch (shell-command-to-string get-possible-branch-command))
+         (remote (gerrit-get-remote)))
+    (when (or (string-empty-p possible-branch)
+              (not (string-match-p "/" possible-branch)))
+      (setq possible-branch
+            (shell-command-to-string get-possible-branch-command-v2))
+      (when remote
+        (setq possible-branch
+              (replace-regexp-in-string (concat remote "/") "" possible-branch))))
+    (cu-strip-string possible-branch t t)))
+
+(defun _gerrit_push (&optional draft)
+  (let* ((remote (gerrit-get-remote))
+         (branch (gerrit-current-branch))
+         (command (format "git push %s HEAD:refs/%s/%s"
+                          remote (if draft "drafts" "for") branch)))
+    (when (y-or-n-p (format "Command: [%s]" command)))
+    (shell-command command)))
+
+(defun gerrit-draft () (interactive) (_gerrit_push t))
+(defun gerrit-push () (interactive) (_gerrit_push nil))
+
+(with-eval-after-load "magit-log"
+  (plist-put
+   magit-push-popup :actions
+   (let ((lst (plist-get magit-push-popup :actions)))
+     (dolist (to-add
+              '((?d "Draft Gerrit Patch" gerrit-draft)
+                (?g "Push Gerrit Patch" gerrit-push))
+              lst)
+       (setq lst (add-to-list 'lst to-add t))))))
+
 (provide 'init-magit)
