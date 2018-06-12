@@ -81,7 +81,7 @@
 (defun gerrit-draft () (interactive) (_gerrit_push t))
 (defun gerrit-push () (interactive) (_gerrit_push nil))
 
-(with-eval-after-load "magit-log"
+(with-eval-after-load "magit-remote"
   (plist-put
    magit-push-popup :actions
    (let ((lst (plist-get magit-push-popup :actions)))
