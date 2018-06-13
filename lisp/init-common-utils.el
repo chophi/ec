@@ -625,4 +625,9 @@ NDIM is the dimentions of the choice items.
   (setq path (file-name-directory (expand-file-name path)))
   (__cu-find-nearest-ancestor-link-in root path))
 
+(defun cu-is-alphabet (c)
+  (and (characterp c)
+       (or (and (>= c ?a) (<= c ?z))
+           (and (>= c ?A) (<= c ?Z)))))
+
 (provide 'init-common-utils)
