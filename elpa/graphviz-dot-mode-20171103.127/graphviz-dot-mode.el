@@ -486,8 +486,18 @@ The list of constant is available at http://www.research.att.com/~erg/graphviz\
   "Keyword highlighting specification for `graphviz-dot-mode'.")
 
 (defun graphviz-output-file-name (f-name)
-  (concat (file-name-sans-extension f-name)
-          "." graphviz-dot-preview-extension))
+  (let* ((defdir (substring default-directory 0 -1))
+         (dir (file-name-nondirectory defdir))
+         (predir (file-name-directory defdir)))
+    (if (and (equal dir "src")
+             (file-exists-p (cu-join-path predir "images")))
+        (cu-join-path
+         predir
+         "images"
+         (concat (file-name-sans-extension (file-name-nondirectory f-name))
+                 "." graphviz-dot-preview-extension))
+      (concat (file-name-sans-extension f-name)
+              "." graphviz-dot-preview-extension))))
 
 (defun graphviz-compile-command (f-name)
   (when f-name
