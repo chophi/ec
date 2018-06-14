@@ -112,7 +112,8 @@
   '(("/libs/" "/include/")
     ("/lib" "/include/")
     ("/media/libstagefright/" "/include/media/stagefright/")
-    ("/base/native/android/" "/native/include/android/"))
+    ("/base/native/android/" "/native/include/android/")
+    ("/system/core/include/" "/system/core/lib"))
   "The replace pairs for post processing eassist-switch-h-cpp")
 
 (defun eassist-switch-h-cpp-try-replace (arg)
