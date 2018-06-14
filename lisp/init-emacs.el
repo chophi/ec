@@ -153,6 +153,7 @@
 (require 'init-cobalt-dev)
 (require 'init-gn-mode)
 (require 'init-frame-utils)
+(require 'init-projectile)
 (require 'init-keybind)
 
 (require 'init-graphviz)
