@@ -154,9 +154,10 @@
 (require 'init-gn-mode)
 (require 'init-frame-utils)
 (require 'init-projectile)
-(require 'init-keybind)
-
 (require 'init-graphviz)
+(require 'init-plantuml)
+
+(require 'init-keybind)
 (setq sanityinc/require-times
       (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
 

@@ -282,6 +282,12 @@
                        '((?p . graphviz-dot-preview)
                          (?v . graphviz-dot-view))))
 
+(with-eval-after-load "plantuml-mode"
+  (cu-set-key-bindings plantuml-mode-map
+                       "\C-c\C-d"
+                       '((?p . plantuml-execute)
+                         (?v . plantuml-preview))))
+
 (with-eval-after-load "python"
   (cu-set-key-bindings python-mode-map
                        "\C-c\C-s"

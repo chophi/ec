@@ -48,8 +48,7 @@
    (haskell . t)
    (dot . t)
    (latex . t)
-   (js . t)
-   (ditaa . t)))
+   (js . t)))
 
 ;; load ditaa 
 ;; (setq org-ditaa-jar-path "/usr/bin/ditaa")
