@@ -276,4 +276,9 @@
        (?F . compilation-previous-file))))
  t)
 
+(with-eval-after-load "graphviz-dot-mode"
+  (cu-set-key-bindings graphviz-dot-mode-map
+                       "\C-c\C-d"
+                       '((?p . graphviz-dot-preview)
+                         (?v . graphviz-dot-view))))
 (provide 'init-keybind)
