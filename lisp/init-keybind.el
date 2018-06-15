@@ -281,4 +281,13 @@
                        "\C-c\C-d"
                        '((?p . graphviz-dot-preview)
                          (?v . graphviz-dot-view))))
+
+(with-eval-after-load "python"
+  (cu-set-key-bindings python-mode-map
+                       "\C-c\C-s"
+                       '((?s . python-shell-send-string)
+                         (?d . jedi:goto-definition)
+                         (?i . jedi:show-doc)
+                         (?c . jedi:complete)
+                         (?n . jedi:goto-definition-next))))
 (provide 'init-keybind)

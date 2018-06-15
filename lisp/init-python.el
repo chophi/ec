@@ -1,7 +1,8 @@
 (setq-default python-indent-offset 4)
 
 (require-package 'jedi)
-(setq jedi:complete-on-dot nil)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 
 (require-package 'helm-pydoc)
 (require 'smart-shift)
