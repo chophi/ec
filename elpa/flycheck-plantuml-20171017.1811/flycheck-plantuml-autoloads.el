@@ -19,6 +19,10 @@ Add `plantuml' to `flycheck-checkers'.
 
 ;;;***
 
+;;;### (autoloads nil nil ("flycheck-plantuml-pkg.el") (0 0 0 0))
+
+;;;***
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
