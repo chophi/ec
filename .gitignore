@@ -40,3 +40,4 @@ lisp-snippets/az-common-env.el
 /lisp/init-amazon-linux.el
 url/
 /gnus/init-gnus-private.el
+/projectile-bookmarks.eld
