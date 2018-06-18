@@ -13,5 +13,4 @@
       (graphviz-dot-complete-word)
     (indent-for-tab-command arg)))
 
-(define-key graphviz-dot-mode-map (kbd "<tab>") 'graphviz-indent-or-complet-word)
 (provide 'init-graphviz)

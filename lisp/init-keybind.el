@@ -277,6 +277,7 @@
  t)
 
 (with-eval-after-load "graphviz-dot-mode"
+  (define-key graphviz-dot-mode-map (kbd "<tab>") 'graphviz-indent-or-complet-word)
   (cu-set-key-bindings graphviz-dot-mode-map
                        "\C-c\C-d"
                        '((?p . graphviz-dot-preview)
