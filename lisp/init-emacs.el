@@ -156,6 +156,7 @@
 (require 'init-projectile)
 (require 'init-graphviz)
 (require 'init-plantuml)
+(require 'init-leetcode-cli)
 
 (require 'init-keybind)
 (setq sanityinc/require-times
