@@ -91,7 +91,10 @@
     (?O . org-store-link)
     (?j . cu-open-link)    
     (?f . cu-visit-file-follow-symlink)
-    (?n . find-name-dired))
+    (?n . find-name-dired)
+    (?L . lc-open-next-problem)
+    (?T . lc-test-current-buffer)
+    (?J . lc-judge-current-buffer))
   "Util key map for path saving to ring / paste, etc")
 
 (cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)

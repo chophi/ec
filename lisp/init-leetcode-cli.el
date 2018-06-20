@@ -6,6 +6,7 @@
    t t))
 
 (defvar lc-home-dir (format "%s/work/lc" (getenv "HOME")))
+(defvar lc-default-output "*[leetcode output]*")
 
 (defun lc-get-source-for-next-problem ()
   (interactive)
@@ -21,5 +22,15 @@
 (defun lc-open-next-problem ()
   (interactive)
   (find-file-other-window (lc-get-source-for-next-problem)))
+
+(defun lc-test-current-buffer ()
+  (interactive)
+  (shell-command (format "leetcode test %s" buffer-file-name)
+                 lc-default-output lc-default-output))
+
+(defun lc-judge-current-buffer ()
+  (interactive)
+  (shell-command (format "leetcode submit %s" buffer-file-name)
+                 lc-default-output lc-default-output))
 
 (provide 'init-leetcode-cli)
