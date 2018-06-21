@@ -62,8 +62,8 @@ def main(args):
         print("{0}".format(page_draft['content']))
     if args.action == "print-wiki-title":
         print((
-            "Draft title: {t1}\nurl: {u1}\n"
-            "Title: {t2}\nurl: {u2}"
+            "Title: {t1}\nurl: {u1}\n"
+            "Draft title: {t2}\nurl: {u2}"
         ).format(
             t1=page['title'],
             u1=page['url'],
