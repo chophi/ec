@@ -17,7 +17,8 @@
       (cu-strip-string
        (shell-command-to-string
         (format "leetcode show %s -gx -l cpp -o %s | grep \"Source Code\" | cut -d \":\" -f 2"
-                next-p lc-home-dir))))))
+                next-p lc-home-dir))
+       t t))))
 
 (defun lc-open-next-problem ()
   (interactive)
