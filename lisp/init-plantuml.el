@@ -37,6 +37,8 @@
           default-style-name
         ""))))
 
+(setq graphviz-dot-preview-extension "svg")
+
 (defun plantuml-execute ()
   (interactive)
   (when (buffer-modified-p)
