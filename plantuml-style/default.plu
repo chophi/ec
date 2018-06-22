@@ -1,4 +1,3 @@
-skinparam sequenceArrowThickness 2
 skinparam roundcorner 20
 skinparam dpi 300
 skinparam maxmessagesize 256
@@ -8,13 +7,19 @@ skinparam handwritten false
 /' Skin for sequence '/
 skinparam sequence {
 ArrowColor black
-ActorBorderColor orange
+ArrowThickness 1
+ArrowFontSize 12
+ArrowFontName Consolas
+
 LifeLineBorderColor black
 LifeLineBackgroundColor #2E8B57
-ParticipantBorderColor DarkSeaGreen
-ParticipantBackgroundColor default
-ParticipantFontName Consolas
-ParticipantFontColor #458B74
+
+ParticipantBorderColor #458B74
+ParticipantBackgroundColor DarkSeaGreen
+ParticipantFontName Arial
+ParticipantFontColor black
+
+ActorBorderColor orange
 ActorFontColor black
 ActorFontName Aapex
 }
