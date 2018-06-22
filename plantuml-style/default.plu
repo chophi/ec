@@ -1,5 +1,6 @@
 skinparam sequenceArrowThickness 2
 skinparam roundcorner 20
+skinparam dpi 300
 skinparam maxmessagesize 60
 skinparam backgroundColor lightgray
 skinparam handwritten false
