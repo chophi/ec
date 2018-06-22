@@ -15,6 +15,28 @@
    (add-to-list 'org-babel-load-languages '(plantuml . t))))
 (add-hook 'org-mode-hook 'org-mode-init)
 
+(defvar plantuml-style-folder (expand-file-name "~/.emacs.d/plantuml-style"))
+
+(defun get-style-name ()
+  (interactive)
+  (let* ((str (buffer-substring-no-properties (point-min) (point-max)))
+         (style "default"))
+    (when (string-match "^\\s-*/'\\s-*STYLE:\\s-*\\(\\S-+\\)\\s-*'/\\s-*$" str)
+      (setq style (match-string 1 str)))
+    style))
+
+(defun include-style-string ()
+  (interactive)
+  (let* ((style-name (get-style-name))
+         (default-style-name (cu-join-path plantuml-style-folder "default.plu"))
+         (possible-style-name
+          (cu-join-path plantuml-style-folder (concat style-name ".plu"))))
+    (if (file-exists-p possible-style-name)
+        (format "-I%s" possible-style-name)
+      (if (file-exists-p default-style-name)
+          default-style-name
+        ""))))
+
 (defun plantuml-execute ()
   (interactive)
   (when (buffer-modified-p)
@@ -30,7 +52,9 @@
                "java -jar " plantuml-java-options " "
                (shell-quote-argument plantuml-jar-path) " "
                (or (and out-file (concat "-t" (file-name-extension out-file)))
-                   "-tpng") " -p "
+                   "-tpng")
+               " -p "
+               " " (include-style-string) " "
                plantuml-options " < "
                (buffer-file-name)
                " > " out-file))
