@@ -26,14 +26,10 @@ skinparam class {
 BackgroundColor #fffdfe              /' github background '/
 ArrowColor      #6f42c1              /' github aqua '/
 BorderColor     #d0d0d0              /' github selection'/
-BackgroundColor<<Abstract>> #eeebdc  /' sanityinc-tomorrow day background '/
-ArrowColor<<Abstract>>      #3e999f  /' sanityinc-tomorrow day aqua '/
-BorderColor<<Abstract>>     #d6d6d6  /' sanityinc-tomorrow day selection '/
 }
 skinparam ClassFontColor                           #000000 /' github foreground'/
 skinparam stereotypeCBackgroundColor               #00cdcd /' github current-line '/
-skinparam ClassFontColor<<Abstract>>               #4d4d4c /' sanityinc-tomorrow day foreground'/
-skinparam stereotypeCBackgroundColor<<Abstract>>   #efefef /' sanityinc-tomorrow day current-line '/
+skinparam stereotypeABackgroundColor               #00bcbc /' sanityinc-tomorrow day current-line '/
 skinparam defaultFontName                          Monaco
 skinparam ClassFontName                            Consolas
 skinparam ClassFontStyle                           Bold
