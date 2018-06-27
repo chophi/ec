@@ -67,4 +67,7 @@
 
 (setq plantuml-java-options "")
 (setq plantuml-options "-charset UTF-8")
+
+(with-eval-after-load "auto-complete" 
+  (add-to-list 'ac-modes 'plantuml-mode))
 (provide 'init-plantuml)

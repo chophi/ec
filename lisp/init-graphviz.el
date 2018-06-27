@@ -13,4 +13,6 @@
       (graphviz-dot-complete-word)
     (indent-for-tab-command arg)))
 
+(with-eval-after-load "auto-complete" 
+  (add-to-list 'ac-modes 'graphviz-dot-mode))
 (provide 'init-graphviz)
