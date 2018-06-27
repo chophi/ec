@@ -302,4 +302,12 @@
                          (?i . jedi:show-doc)
                          (?c . jedi:complete)
                          (?n . jedi:goto-definition-next))))
+
+(with-eval-after-load "ace-jump-mode"
+  (setq ace-jump-word-mode-use-query-char nil)
+  (cu-set-key-bindings global-map
+                       "\C-xj"
+                       '((?c . ace-jump-char-mode)
+                         (?w . ace-jump-word-mode)
+                         (?l . ace-jump-line-mode))))
 (provide 'init-keybind)
