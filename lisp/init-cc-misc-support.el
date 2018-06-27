@@ -96,10 +96,10 @@
 ;;          :localclasspath '("/relative/path.jar")
 ;;          :classpath '("/absolute/path.jar"))
 
-(with-eval-after-load "auto-complete"
-  (defun ac-semantic-hook ()
-    (add-to-list 'ac-sources 'ac-source-semantic))
-  (add-hook 'c-mode-common-hook 'ac-semantic-hook))
+;; (with-eval-after-load "auto-complete"
+;;   (defun ac-semantic-hook ()
+;;     (add-to-list 'ac-sources 'ac-source-semantic))
+;;   (add-hook 'c-mode-common-hook 'ac-semantic-hook))
 
 (require 'eassist)
 
