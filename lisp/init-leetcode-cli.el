@@ -34,4 +34,8 @@
   (shell-command (format "leetcode submit %s" buffer-file-name)
                  lc-default-output lc-default-output))
 
+(defun lc-clear-cache ()
+  (interactive)
+  (let ((display-buffer-alist '(("*Async Shell Command*"  display-buffer-no-window))))
+    (async-shell-command "lc-clear-cache.sh")))
 (provide 'init-leetcode-cli)
