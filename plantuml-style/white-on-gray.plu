@@ -1,0 +1,6 @@
+!include "%HOME%/.emacs.d/plantuml-style/common.plu"
+skinparam backgroundColor #lightgray
+skinparam class {
+BackgroundColor #fffdfe              /' github background '/
+BorderColor     #d0d0d0              /' github selection'/
+}
