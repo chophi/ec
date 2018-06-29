@@ -124,16 +124,31 @@
     (format "h%s. %s%s\n%s" level todo-text text
             (if (org-string-nw-p contents) contents ""))))
 
+(defvar private-local-server-image-map-alist nil)
+
+(defun* is-graphviz-link (raw-link)
+  (when private-local-server-image-map-alist
+    (dolist (m private-local-server-image-map-alist)
+      (when (string-match (car m) raw-link)
+        (return-from is-graphviz-link (replace-regexp-in-string (car m) (cdr m) raw-link))))))
+
 (defun org-confluence-link (link desc info)
-  (let ((raw-link (org-element-property :raw-link link)))
-    (concat "["
-            (when (org-string-nw-p desc) (format "%s|" desc))
+  (let* ((raw-link (org-element-property :raw-link link))
+         (graphviz-link (is-graphviz-link raw-link))
+         (open-brace (if graphviz-link "!" "["))
+         (close-brace (if graphviz-link "!" "]")))
+    (when graphviz-link (setq raw-link graphviz-link))
+    (concat open-brace
+            (when (and (not graphviz-link) (org-string-nw-p desc))
+              (format "%s|" desc))
             (cond
              ((string-match "^confluence:" raw-link)
               (replace-regexp-in-string "^confluence:" "" raw-link))
              (t
               raw-link))
-            "]")))
+            (when (and graphviz-link (org-string-nw-p desc))
+              (format "|title=%s" desc))
+            close-brace)))
 
 (defun org-confluence-paragraph (paragraph contents info)
   "Transcode PARAGRAPH element for Confluence.
