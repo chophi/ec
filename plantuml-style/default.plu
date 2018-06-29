@@ -1,7 +1,7 @@
 skinparam roundcorner 20
 skinparam dpi 300
 skinparam maxmessagesize 256
-skinparam backgroundColor lightgray
+skinparam backgroundColor #e0eee0
 skinparam handwritten false
 
 /' Skin for sequence '/
@@ -26,9 +26,9 @@ ActorFontName Aapex
 
 /' Skin for class '/
 skinparam class {
-BackgroundColor #fffdfe              /' github background '/
+BackgroundColor #c6e2ff              /' github background '/
 ArrowColor      #6f42c1              /' github aqua '/
-BorderColor     #d0d0d0              /' github selection'/
+BorderColor     #68838b              /' github selection'/
 }
 skinparam ClassFontColor                           #000000 /' github foreground'/
 skinparam stereotypeCBackgroundColor               #00cdcd /' github current-line '/
