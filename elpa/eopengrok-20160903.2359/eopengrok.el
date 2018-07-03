@@ -221,6 +221,15 @@
 (defvar eopengrok-default-project-alist-from-database nil
   "default project alist from database")
 
+(defun eopengrok-has-database-source-of-dir (dir)
+  (let ((ret))
+    (dolist (lst (eopengrok-get-source-config-alist))
+      ;; (message "try to match [%s] and [%s]\n" (file-truename (car lst))
+      ;;          (file-truename (expand-file-name dir)))
+      (when (string-match-p (file-truename (car lst)) (expand-file-name dir))
+        (setq ret (cdr lst))))
+    ret))
+
 (defun eopengrok--get-configuration ()
   "Search for Project configuration.xml."
   (let* ((start-dir (expand-file-name default-directory))
@@ -230,11 +239,15 @@
       (if eopengrok-default-project-alist-from-database
           (cu-join-path (cdr eopengrok-default-project-alist-from-database)
                         eopengrok-configuration)
-          (let ((x (cu-find-nearest-ancestor-link-in
-                    eopengrok-database-root-dir default-directory)))
+        ;; TODO: might be able to remove the cu-find-nearest-ancestor-link-in part.
+        (let ((x (cu-find-nearest-ancestor-link-in
+                  eopengrok-database-root-dir default-directory)))
+          (if (and x (file-exists-p (cu-join-path x eopengrok-configuration)))
+              (cu-join-path x eopengrok-configuration)
+            (setq x (eopengrok-has-database-source-of-dir default-directory))
             (if (and x (file-exists-p (cu-join-path x eopengrok-configuration)))
                 (cu-join-path x eopengrok-configuration)
-              (user-error "Can't find configuration.xml")))))))
+              (user-error "Can't find configuration.xml"))))))))
 
 (defun eopengrok--search-option (conf text option symbol)
   "Opengrok search option list with CONF TEXT OPTION SYMBOL."
