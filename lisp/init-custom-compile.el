@@ -132,7 +132,9 @@ to '((program-name project-root compilation-configuration expression) ...)"
                reshaped-mlcl 3
                '("Command" "Project Root" "Config File"))
             (progn (message "No custom compile rule file applies!")
-                   (return-from cp-custom-compile nil))))
+                   (if (fboundp 'cp-custom-compile-no-rule)
+                       (call-interactively 'cp-custom-compile-no-rule)
+                     (return-from cp-custom-compile nil)))))
          ;; command to execute
          (command-name (car item-selected))
          ;; project root

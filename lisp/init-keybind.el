@@ -228,11 +228,6 @@
                        (?p . my-previous-frame)
                        (?t . my-set-term-frame)))
 
-;; undefine the \C-c\C-c
-(with-eval-after-load "cc-mode" (define-key c-mode-map "\C-c\C-c" nil))
-(with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-c" nil))
-(with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-c" nil))
-(with-eval-after-load "make-mode" (define-key makefile-mode-map "\C-c\C-c" nil))
 ;; grep
 (cu-set-key-bindings global-map "\C-cg"
                      '((?a . ag)
@@ -311,4 +306,13 @@
                        '((?c . ace-jump-char-mode)
                          (?w . ace-jump-word-mode)
                          (?l . ace-jump-line-mode))))
+
+(defun cp-custom-compile-no-rule ()
+  (interactive)
+  (call-interactively
+   (_make-commands-map-with-help-msg
+    '((?c . smart-compile-compile)
+      (?e . smart-compile-run)
+      (?r . recompile-quietly)))))
+
 (provide 'init-keybind)

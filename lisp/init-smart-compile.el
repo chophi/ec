@@ -1,6 +1,9 @@
 (require-package 'smart-compile)
 
-(setq smart-compile-alist
+(defvar smart-compile-state nil
+  "Is it compiling, run, or doing something else?")
+
+(defvar smart-compile-compile-alist
       '((emacs-lisp-mode emacs-lisp-byte-compile)
         (html-mode browse-url-of-buffer)
         (nxhtml-mode browse-url-of-buffer)
@@ -21,22 +24,52 @@
         ("\\.pl\\'" . "perl -cw %f")
         ("\\.rb\\'" . "ruby -cw %f")))
 
-(defun notify-compilation-result(buffer msg)
+(defvar smart-compile-run-alist
+  '(("\\.c\\'" . "./%n")
+    ("\\.[Cc]+[Pp]*\\'" . "./%n")
+    ("\\.m\\'" . "./%n")
+    ("\\.java\\'" . "java %n")))
+
+(defun smart-compile-compile ()
+  (interactive)
+  (setq smart-compile-state 'compile)
+  (let ((smart-compile-alist smart-compile-compile-alist))
+    (smart-compile 4)))
+
+(defun smart-compile-run ()
+  (interactive)
+  (setq smart-compile-state 'run)
+  (let ((smart-compile-alist smart-compile-run-alist))
+    (smart-compile 4)))
+
+(defun smart-compilation-complete-callback (buffer msg)
   "Notify that the compilation is finished,
 close the *compilation* buffer if the compilation is successful,
 and set the focus back to Emacs frame"
+  (case smart-compile-state
+    (compile (smart-compile-compile-callback buffer msg))
+    (run (smart-compile-run-callback buffer msg))
+    (t (smart-compile-common-callback buffer msg)))
+  (setq smart-compile-state nil))
+
+(defun smart-compile-compile-callback (buffer msg)
   (if (string-match "^finished" msg)
       (progn
-        ;; (with-current-buffer buffer
-        ;;   (or (string-match "warning:" (buffer-string))
-        ;;       (delete-windows-on buffer)))
+        (with-current-buffer buffer
+          (or (string-match "warning:" (buffer-string))
+              (delete-windows-on buffer)))
         (tooltip-show "\n Process exit Successful :-) \n "))
     (tooltip-show "\n Process exit Failed :-( \n ")))
 
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (add-to-list 'compilation-finish-functions
-                         'notify-compilation-result)))
+(defun smart-compile-run-callback (buffer msg)
+  "do nothing")
+
+(defun smart-compile-common-callback (buffer msg)
+  "do nothing")
+
+(add-to-list 'compilation-finish-functions
+             'smart-compilation-complete-callback)
+
 
 (defun recompile-quietly ()
   "Re-compile without changing the window configuration."
@@ -45,7 +78,5 @@ and set the focus back to Emacs frame"
     (recompile)))
 
 (require 'cc-mode)
-;; (define-key c-mode-base-map "\C-c\C-c" 'smart-compile)
-(define-key c-mode-base-map "\C-c\S-c" 'recompile-quietly)
 
 (provide 'init-smart-compile)
