@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: choose-style
+# key: choose-style
+# --
+/' STYLE: ${1:$$(yas/choose-value (plantuml-style-list))}'/

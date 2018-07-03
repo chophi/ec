@@ -34,7 +34,7 @@
     (if (file-exists-p possible-style-name)
         (format "-I%s" possible-style-name)
       (if (file-exists-p default-style-name)
-          default-style-name
+          (format "-I%s" default-style-name)
         ""))))
 
 (setq graphviz-dot-preview-extension "svg")
@@ -70,4 +70,11 @@
 
 (with-eval-after-load "auto-complete" 
   (add-to-list 'ac-modes 'plantuml-mode))
+
+(defun plantuml-style-list ()
+  (delete "common"
+          (mapcar 'file-name-sans-extension
+                  (mapcar 'file-name-nondirectory
+                          (cu-list-files-recursively plantuml-style-folder ".plu" 1)))))
+
 (provide 'init-plantuml)

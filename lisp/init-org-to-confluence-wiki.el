@@ -113,6 +113,6 @@
 
 (defun org-update-to-draft-page ()
   (interactive)
-  (lambda () (interactive) (org-update-related-wiki-page t)))
+  (org-update-related-wiki-page t))
 
 (provide 'init-org-to-confluence-wiki)

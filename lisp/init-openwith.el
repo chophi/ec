@@ -12,6 +12,6 @@
       ("\\.\\(?:jp?g\\|png\\|svg\\)\\'" "remote-show-image"
        (file))))
    ('macos
-    '(("\\.pdf$" "open" (file))))))
+    '(("\\.pdf\\|svg$" "open" (file))))))
 
 (provide 'init-openwith)
