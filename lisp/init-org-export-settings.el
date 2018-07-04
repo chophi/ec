@@ -98,21 +98,19 @@
      pdflatex, or xelatex as appropriate, using latexmk."
   ;; (print exporter)
   (when (eq exporter 'latex)
-    (let ((texcmd))
-      ;; default command: oldstyle latex via dvi
-      (setq texcmd "latexmk -dvi -pdfps -shell-escape %f")
+    (let ((texcmd "latexmk -dvi -pdfps -shell-escape %f"))
       ;; pdflatex -> .pdf
-      (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
-          (setq texcmd "latexmk -pdf %f"))
-      (setq org-latex-pdf-process (list texcmd))
-      
-      ;; xelatex -> .pdf
-      (if (or (string-match "LATEX_CMD: xelatex" (buffer-string))
-              (string-match "LATEX_CLASS: cn-article" (buffer-string)))
-          ;; "latexmk -pdflatex=xelatex -interaction=nonstopmode -shell-escape %f"
-          (setq texcmd "xelatex -interaction=nonstopmode -shell-escape %f"
-                org-latex-pdf-process (list texcmd texcmd texcmd))
-        (setq texcmd "latexmk -pdf %f")))))
+      (cond ((string-match "LATEX_CMD: pdflatex" (buffer-string))
+             (setq texcmd "latexmk -pdf %f"))
+            ((or (string-match "LATEX_CMD: xelatex" (buffer-string))
+                 (string-match "LATEX_CLASS: cn-article" (buffer-string)))
+             (setq texcmd "xelatex -interaction=nonstopmode -shell-escape %f"
+                   org-latex-pdf-process (list texcmd texcmd texcmd)))
+            (t (setq texcmd "latexmk -pdf -shell-escape %f")))
+      (setq org-latex-pdf-process (list texcmd)))))
+
+(with-eval-after-load "ox-latex"
+  (setq org-latex-pdf-process '("latexmtk -pdf -shell-escape -output-directory=%o %f")))
 
 (add-hook 'org-export-before-processing-hook 'my-auto-tex-cmd)
 
