@@ -5,11 +5,11 @@
  openwith-associations
  (case os
    ('linux
-    '(("\\.pdf$" "evince" (file))
+    '(;;("\\.pdf$" "evince" (file))
       ("\\.mp3$" "mplayer" (file) )
       ("\\.mov\\|\\.RM$\\|\\.RMVB$\\|\\.avi$\\|\\.AVI$\\|\\.flv$\\|\\.mp4\\|\\.mkv$\\|\\.rmvb$" "mplayer" (file) )
       ("\\.CHM$\\|\\.chm$" "chmsee"  (file))
-      ("\\.\\(?:jp?g\\|png\\|svg\\)\\'" "remote-show-image"
+      ("\\.\\(?:jp?g\\|png\\|svg\\|pdf\\)\\'" "remote-show-image"
        (file))))
    ('macos
     '(("\\.pdf\\|svg$" "open" (file))))))

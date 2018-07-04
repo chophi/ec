@@ -290,6 +290,11 @@
                        '((?p . plantuml-execute)
                          (?v . plantuml-preview))))
 
+(with-eval-after-load "tex-buf"
+  (cu-set-key-bindings LaTeX-mode-map
+                       "\C-c\C-d"
+                       '((?p . compile-tikz-to-svg))))
+
 (with-eval-after-load "python"
   (cu-set-key-bindings python-mode-map
                        "\C-c\C-s"
