@@ -25,12 +25,14 @@
       (setq style (match-string 1 str)))
     style))
 
-(defun include-style-string ()
+(defun* include-style-string ()
   (interactive)
   (let* ((style-name (get-style-name))
          (default-style-name (cu-join-path plantuml-style-folder "default.plu"))
          (possible-style-name
           (cu-join-path plantuml-style-folder (concat style-name ".plu"))))
+    (when (or (equal style-name "none") (equal style-name "nil"))
+      (return-from include-style-string ""))
     (if (file-exists-p possible-style-name)
         (format "-I%s" possible-style-name)
       (if (file-exists-p default-style-name)
