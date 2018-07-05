@@ -1,5 +1,5 @@
 (require-package 'auctex)
-(remove-hook 'LaTeX-mode-hook
+(add-hook 'LaTeX-mode-hook
  (lambda()
    (push '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t) TeX-command-list)
    (push '("XeLaTeX(minted)" "%`xelatex%(mode) -shell-escape %' %t" TeX-run-TeX nil t)
