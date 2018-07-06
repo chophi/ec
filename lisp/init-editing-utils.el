@@ -315,7 +315,16 @@
 (global-set-key [remap replace-regexp] 'vr/replace)
 
 (when (executable-find "ag")
-  (require-package 'ag))
+  (require-package 'ag)
+  (require-package 'helm-ag)
+  (when (equal
+         (substring
+          (shell-command-to-string
+           "ag --version | head -1 | cut -d ' ' -f 3 | cut -d '.' -f 1")
+          0 -1)
+         "2")
+    ;; limit the output to two lines.
+    (add-to-list 'ag-arguments "-W 160")))
 
 (when (eq os 'linux)
   (defun sudo-find-file ()
