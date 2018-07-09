@@ -1,5 +1,5 @@
 (defvar tikz-latexmk-options nil)
-(defconst tikz-dvisvgm-options "--clipjoin --page=1-")
+(defconst tikz-dvisvgm-options "--clipjoin --page=1- --no-fonts")
 (defconst tikz-output-buffer "*Generate tikz[Output]*")
 (defconst tikz-error-buffer "*Generate tikz[Error]*")
 
