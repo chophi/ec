@@ -277,18 +277,32 @@
        (?F . compilation-previous-file))))
  t)
 
+(defun graphviz-set-extension()
+  (interactive)
+  (setq graphviz-dot-preview-extension
+        (ido-completing-read "Extension: " '("svg" "png" "jpeg"))))
+
 (with-eval-after-load "graphviz-dot-mode"
-  (define-key graphviz-dot-mode-map (kbd "<tab>") 'graphviz-indent-or-complet-word)
-  (cu-set-key-bindings graphviz-dot-mode-map
-                       "\C-c\C-d"
-                       '((?p . graphviz-dot-preview)
-                         (?v . graphviz-dot-view))))
+  (define-key graphviz-dot-mode-map
+    (kbd "<tab>")
+    'graphviz-indent-or-complet-word)
+  
+  (cu-set-key-bindings
+   graphviz-dot-mode-map
+   "\C-c\C-d"
+   '((?p . graphviz-dot-preview)
+     (?v . graphviz-dot-view)
+     (?e . graphviz-set-extension))
+   '(("Output Image Extension" . graphviz-dot-preview-extension))))
 
 (with-eval-after-load "plantuml-mode"
-  (cu-set-key-bindings plantuml-mode-map
-                       "\C-c\C-d"
-                       '((?p . plantuml-execute)
-                         (?v . plantuml-preview))))
+  (cu-set-key-bindings
+   plantuml-mode-map
+   "\C-c\C-d"
+   '((?p . plantuml-execute)
+     (?v . plantuml-preview)
+     (?e . graphviz-set-extension))
+   '(("Output Image Extension" . graphviz-dot-preview-extension))))
 
 (with-eval-after-load "tex-buf"
   (cu-set-key-bindings LaTeX-mode-map
