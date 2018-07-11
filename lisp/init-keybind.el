@@ -196,11 +196,12 @@
 ;; neo-tree
 (cu-set-key-bindings global-map "\C-c\C-n"
                      `((?t . neotree-toggle)
-                       (?u . nanoc-update)
-                       (?d . nanoc-daemon)
+                       (?O . open-nanoc-private-site)
+                       (?D . nanoc-daemon-private)
+                       (?o . open-nanoc-public-site)
+                       (?d . nanoc-daemon-public)
                        ,@(if (file-exists-p "~/EDocs/android-docs")
-                             `((?a . android-doc-local-server)))
-                       (?o . open-nanoc-site)))
+                             `((?a . android-doc-local-server)))))
 
 
 
