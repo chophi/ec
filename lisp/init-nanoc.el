@@ -2,11 +2,13 @@
 
 (defun nanoc-daemon-public ()
   (interactive)
-  (async-shell-command "nanoc-viewer.sh public" "*nanoc-public*" "*nanoc-public*"))
+  (start-process "nanoc-public-daemon" "*nanoc-public*" "nanoc-viewer.sh" "public")
+  (switch-to-buffer-other-window "*nanoc-public*"))
 
 (defun nanoc-daemon-private ()
   (interactive)
-  (async-shell-command "nanoc-viewer.sh private" "*nanoc-private*" "*nanoc-private*"))
+  (start-process "nanoc-private-daemon" "*nanoc-private*" "nanoc-viewer.sh" "private")
+  (switch-to-buffer-other-window "*nanoc-private*"))
 
 (defun open-nanoc-public-site ()
   (interactive)
