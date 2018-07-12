@@ -68,6 +68,11 @@
           (cdr outer-position)
           (+ (cdr outer-position) (cdr outer-size)))))
 
+(defun _center-point-angle (&optional frame)
+  (let ((lrtd (_get_frame_rect_lrtd frame)))
+    (atan (- (/ (+ (nth 2 lrtd) (nth 3 lrtd)) 2.0))
+          (/ (+ (nth 0 lrtd) (nth 1 lrtd)) 2.0))))
+
 (defun my-switch-to-the-screen (pred)
   (let ((tmp-frame-list
          (copy-list (frame-list))))
@@ -100,5 +105,33 @@
    (lambda (a b)
      (> (nth 1 (_get_frame_rect_lrtd a))
         (nth 1 (_get_frame_rect_lrtd b))))))
+
+(defun _my-switch-screen-clockwise (next)
+  (let* ((tmp-frame-list
+          (copy-list (frame-list)))
+         (nframes (length tmp-frame-list))
+         (indexOfCurrent 0)
+         (index 0))
+    (setq tmp-frame-list
+          (sort tmp-frame-list
+                (lambda (a b)
+                  (> (_center-point-angle a)
+                     (_center-point-angle b)))))
+    (dolist (f tmp-frame-list)
+      (when (equal f (selected-frame))
+        (setq indexOfCurrent index))
+      (setq index (1+ index)))
+    (_select-frame
+     (nth
+      (% (+ next indexOfCurrent nframes) nframes)
+      tmp-frame-list))))
+
+(defun my-switch-to-next-screen-clockwise ()
+  (interactive)
+  (_my-switch-screen-clockwise 1))
+
+(defun my-switch-to-next-screen-anticlockwise ()
+  (interactive)
+  (_my-switch-screen-clockwise -1))
 
 (provide 'init-frame-utils)
