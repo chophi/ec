@@ -105,7 +105,10 @@ def main(args):
             if remove_auto_generated(page_draft['content']) == remove_auto_generated(original_content):
                 print("The Page content is not changed!")
             else:
-                print("PAGE content is {0}".format(page['content']))
+                try:
+                    print("PAGE content is {0}".format(page['content']))
+                except UnicodeEncodeError:
+                    print("PAGE content can't be decoded")
                 result = client.confluence2.storePage(auth_token, page)
                 if result:
                     print("The content of {0} was updated just now!".format(
