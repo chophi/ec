@@ -33,13 +33,16 @@
   (let ((name (read-string "New Frame name: ")))
     (set-frame-parameter (make-frame-command) 'name name)))
 
+(defun _select-frame (frame)
+  (select-frame-by-name (frame-parameter frame 'name)))
+
 (defun my-next-frame ()
   (interactive)
-  (select-frame (next-frame)))
+  (_select-frame (next-frame)))
 
 (defun my-previous-frame ()
   (interactive)
-  (select-frame (previous-frame)))
+  (_select-frame (previous-frame)))
 
 (defun my-delete-other-frames ()
   (interactive)
@@ -56,5 +59,46 @@
 (defun my-switch-to-terminal-frame ()
   (interactive)
   (select-frame-by-name default-terminal-frame-name))
+
+(defun _get_frame_rect_lrtd (&optional frame)
+  (let ((outer-position (cdar (frame-geometry frame)))
+        (outer-size (cdadr (frame-geometry frame))))
+    (list (car outer-position)
+          (+ (car outer-position) (car outer-size))
+          (cdr outer-position)
+          (+ (cdr outer-position) (cdr outer-size)))))
+
+(defun my-switch-to-the-screen (pred)
+  (let ((tmp-frame-list
+         (copy-list (frame-list))))
+    (_select-frame (car (sort tmp-frame-list pred)))))
+
+(defun my-switch-to-topmost-screen ()
+  (interactive)
+  (my-switch-to-the-screen
+   (lambda (a b)
+     (< (nth 2 (_get_frame_rect_lrtd a))
+        (nth 2 (_get_frame_rect_lrtd b))))))
+
+(defun my-switch-to-downmost-screen ()
+  (interactive)
+  (my-switch-to-the-screen
+   (lambda (a b)
+     (> (nth 3 (_get_frame_rect_lrtd a))
+        (nth 3 (_get_frame_rect_lrtd b))))))
+
+(defun my-switch-to-leftmost-screen ()
+  (interactive)
+  (my-switch-to-the-screen
+   (lambda (a b)
+     (< (nth 0 (_get_frame_rect_lrtd a))
+        (nth 0 (_get_frame_rect_lrtd b))))))
+
+(defun my-switch-to-rightmost-screen ()
+  (interactive)
+  (my-switch-to-the-screen
+   (lambda (a b)
+     (> (nth 1 (_get_frame_rect_lrtd a))
+        (nth 1 (_get_frame_rect_lrtd b))))))
 
 (provide 'init-frame-utils)
