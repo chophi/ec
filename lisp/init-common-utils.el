@@ -639,6 +639,9 @@ NDIM is the dimentions of the choice items.
 (defun cu-start-process (name buffer program &rest program-args)
   (apply 'start-process name buffer program program-args)
   (with-current-buffer buffer
-    (add-to-list 'kill-buffer-hook 'kill-processes-in-the-same-group)))
+    (let ((kill-buffer-hook-copy
+           (buffer-local-value 'kill-buffer-hook (get-buffer buffer))))
+      (add-to-list 'kill-buffer-hook-copy 'kill-processes-in-the-same-group)
+      (setq-local kill-buffer-hook kill-buffer-hook-copy))))
 
 (provide 'init-common-utils)
