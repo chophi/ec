@@ -10,7 +10,8 @@
 (setq semantic-default-submodes
       '(global-semantic-idle-scheduler-mode
         global-semanticdb-minor-mode
-        global-semantic-idle-summary-mode
+        ;; Avoid the anoyning summary messing up with echo area.
+        ;; global-semantic-idle-summary-mode
         global-semantic-mru-bookmark-mode
         global-semantic-stickyfunc-mode
         global-semantic-idle-completions-mode
