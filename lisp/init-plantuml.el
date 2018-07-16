@@ -1,5 +1,8 @@
 (require-package 'plantuml-mode)
 
+;; graphviz-output-file-name require this.
+(require 'graphviz-dot-mode)
+
 (require-package 'flycheck-plantuml)
 (with-eval-after-load 'flycheck
   (require 'flycheck-plantuml)
