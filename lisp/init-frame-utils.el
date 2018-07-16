@@ -34,7 +34,7 @@
     (set-frame-parameter (make-frame-command) 'name name)))
 
 (defun _select-frame (frame)
-  (select-frame-by-name (frame-parameter frame 'name)))
+  (select-frame-set-input-focus frame))
 
 (defun my-next-frame ()
   (interactive)
