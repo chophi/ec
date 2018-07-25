@@ -633,8 +633,9 @@ NDIM is the dimentions of the choice items.
 (defun kill-processes-in-the-same-group ()
   (interactive)
   (let ((proc (get-buffer-process (current-buffer))))
-    (when proc
-      (kill-process proc t))))
+    (ignore-errors
+      (when proc
+        (kill-process proc t)))))
 
 (defun cu-start-process (name buffer program &rest program-args)
   (apply 'start-process name buffer program program-args)
