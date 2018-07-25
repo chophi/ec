@@ -357,4 +357,10 @@
       (?e . smart-compile-run)
       (?r . recompile-quietly)))))
 
+(when (boundp 'pri-jira-home)
+  (cu-set-key-bindings global-map
+                       "\C-xj"
+                       '((?i . pri-jira-open-index-file)
+                         (?h . pri-jira-goto-issue-home)
+                         (?o . pri-jira-open-issue-org-file))))
 (provide 'init-keybind)
