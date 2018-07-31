@@ -117,6 +117,50 @@
     ("/system/core/include/" "/system/core/lib"))
   "The replace pairs for post processing eassist-switch-h-cpp")
 
+(defun* eassist-post-replacing (filename)
+  (dolist (pair (append eassist-switch-h-cpp-post-pairs
+                        (mapcar 'reverse eassist-switch-h-cpp-post-pairs)))
+    (let* ((get-a-replaced-name
+            (lambda (file switch-pair)
+              (let ((replaced-name
+                     (replace-regexp-in-string
+                      (car switch-pair) (cadr switch-pair) file)))
+                (when (not (equal replaced-name file)) replaced-name))))
+           (replaced-name (funcall get-a-replaced-name filename pair)))
+      (when replaced-name
+        (let ((suffix-name (file-name-extension replaced-name)))
+          (dolist (assoc-suffix
+                   (cdr (assoc suffix-name eassist-header-switches)))
+            (let ((target-name (format "%s.%s" (file-name-sans-extension replaced-name)
+                                       assoc-suffix)))
+              (when (file-exists-p target-name)
+                (return-from eassist-post-replacing target-name))))))))
+  nil)
+
+(defconst header-source-pair-replace-list
+  '(("^\\\(.*\\\)/system/core/lib\\\(.*\\\)/.*/\\\(.*\\\).cpp$" .
+     "\\1/system/core/include/\\2/\\3.h")
+    ("^\\\(.*\\\)/system/core/include/\\\(.*\\\)/\\\(.*\\\).h$" .
+     ("\\1/system/core/lib\\2/\\3.cpp" "\\1/system/core/lib\\2/src/\\3.cpp"))))
+
+(defun* eassist-found-maybe-match (filename)
+  (interactive)
+  (let* ((file (expand-file-name filename)))
+    (dolist (hsp header-source-pair-replace-list)
+      (when (string-match (car hsp) file)
+        (let ((to-replace (cdr hsp))
+              (result nil))
+          (if (consp to-replace)
+              (dolist (c to-replace)
+                (setq result (replace-regexp-in-string (car hsp) c file))
+                (when (file-exists-p result)
+                  (return-from eassist-found-maybe-match result)))
+            (setq result (replace-regexp-in-string (car hsp) to-replace file))
+            (when (file-exists-p result)
+              (return-from eassist-found-maybe-match result))))))
+    nil))
+
+(defvar eassist-replace-post-calls '(eassist-post-replacing eassist-found-maybe-match))
 (defun eassist-switch-h-cpp-try-replace (arg)
   "A wrapper for `eassist-switch-h-cpp'.
 It try to do a string replace with `eassist-switch-h-cpp-post-pairs' and will
@@ -125,26 +169,14 @@ find the existed files with the replaced result."
   ;; Can't find the pair
   (when (equal (eassist-switch-h-cpp)
                "There is no corresponding pair (header or body) file.")
-    (catch 'file-found
-      (dolist (pair (append eassist-switch-h-cpp-post-pairs
-                            (mapcar 'reverse eassist-switch-h-cpp-post-pairs)))
-        (let* ((get-a-replaced-name
-                (lambda (filename switch-pair)
-                  (let ((replaced-name
-                         (replace-regexp-in-string
-                          (car switch-pair) (cadr switch-pair) filename)))
-                    (when (not (equal replaced-name filename)) replaced-name))))
-               (filename (buffer-file-name))
-               (replaced-name (funcall get-a-replaced-name filename pair)))
-          (when replaced-name
-            (let ((suffix-name (file-name-extension replaced-name)))
-              (dolist (assoc-suffix
-                       (cdr (assoc suffix-name eassist-header-switches)))
-                (let ((target-name (format "%s.%s" (file-name-sans-extension replaced-name)
-                                           assoc-suffix)))
-                  (when (file-exists-p target-name)
-                    (find-file target-name)
-                    (throw 'file-found nil)))))))))))
+    (catch 'found-file
+      (let ((file (buffer-file-name))
+            (pair-file nil))
+        (dolist (c eassist-replace-post-calls)
+          (setq pair-file (funcall c file))
+          (when pair-file
+            (find-file pair-file)
+            (throw 'found-file t)))))))
 
 (defadvice eassist-switch-h-cpp-try-replace (around eassist-switch-h-cpp-ad)
   "Rebind the find-file nad switch-to-buffer to open the found file in another
