@@ -359,8 +359,10 @@
 
 (when (boundp 'pri-jira-home)
   (cu-set-key-bindings global-map
-                       "\C-xj"
+                       "\C-ch"
                        '((?i . pri-jira-open-index-file)
                          (?h . pri-jira-goto-issue-home)
-                         (?o . pri-jira-open-issue-org-file))))
+                         (?o . pri-jira-open-issue-org-file)
+                         (?u . pri-jira-update-issues)
+                         (?U . pri-jira-force-update-issues))))
 (provide 'init-keybind)
