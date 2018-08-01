@@ -465,7 +465,8 @@
       (cond ((string= "killed\n" event)
              (kill-buffer buf))
             ((string= "finished\n" event)
-             (setq eopengrok-mode-line-status 'finished))
+             (setq eopengrok-mode-line-status 'finished)
+             (kill-buffer buf))
             (t nil)))))
 
 (defun eopengrok--current-info (process dir &optional search text ep)
@@ -545,7 +546,7 @@
     (make-symbolic-link dir source-dir t)
     (list (file-chase-links source-dir) absolute-path-sha1-dir)))
 
-(defun eopengrok-create-index (dir &optional enable-projects-p)
+(defun eopengrok-create-index (dir &optional enable-projects-p sentinel)
   "Create an Index file in DIR, ENABLE-PROJECTS-P is flag for enable projects.
 If not nil every directory in DIR is considered a separate project."
   (interactive "DRoot directory: ")
@@ -580,7 +581,9 @@ If not nil every directory in DIR is considered a separate project."
 
                              (when enable-projects-p '("-e"))))))
     (set-process-filter proc 'eopengrok--process-filter)
-    (set-process-sentinel proc 'eopengrok--process-sentinel)
+    (set-process-sentinel proc (if sentinel
+                                   sentinel
+                                 'eopengrok--process-sentinel))
     (with-current-buffer eopengrok-indexing-buffer
       (eopengrok-mode t)
       (eopengrok--init)
