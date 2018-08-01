@@ -587,6 +587,8 @@ If not nil every directory in DIR is considered a separate project."
     (with-current-buffer eopengrok-indexing-buffer
       (eopengrok-mode t)
       (eopengrok--init)
+      (when (boundp 'grok-current-dir)
+        (setq-local grok-current-dir (expand-file-name dir)))
       (eopengrok--current-info proc (expand-file-name dir)
                                nil nil enable-projects-p)
       (setq eopengrok-mode-line-status 'running))))
