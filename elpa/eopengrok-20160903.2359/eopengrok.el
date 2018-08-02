@@ -466,7 +466,8 @@
              (kill-buffer buf))
             ((string= "finished\n" event)
              (setq eopengrok-mode-line-status 'finished)
-             (kill-buffer buf))
+             (unless (equal (buffer-name buf) eopengrok-buffer)
+               (kill-buffer buf)))
             (t nil)))))
 
 (defun eopengrok--current-info (process dir &optional search text ep inhabit-pop-buffer)
