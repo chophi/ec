@@ -1,6 +1,10 @@
-(defvar grok-indexing-list '("~/git-repo/config"))
+(defvar grok-indexing-list nil)
 (defvar global-grok-index-mutex (make-mutex "global-grok-index-mutex"))
 (defvar global-grok-log-mutex (make-mutex "global-grok-log-mutex"))
+(defvar global-grok-cond-mutex (make-mutex "global-grok-cond-mutex"))
+(defvar global-grok-condition-var
+  (make-condition-variable global-grok-cond-mutex "global-grok-cond-var"))
+
 (defvar some-thread-is-creating-grok-index nil)
 
 (setq-default thread-list nil)
@@ -38,7 +42,9 @@
     (with-current-buffer buf
       (cond ((or (string= "killed\n" event) (string= "finished\n" event))
              (kill-buffer buf)
-             (_close-indexing)
+             (mutex-lock (condition-mutex global-grok-condition-var))
+             (condition-notify global-grok-condition-var t)
+             (mutex-unlock (condition-mutex global-grok-condition-var))
              (grok-log (format "Save timestamp for [%s]\n" project-dir))
              (write-grok-complete-timestamp project-dir))
             (t nil)))))
@@ -47,14 +53,17 @@
   (let* ((cur-thread-name (thread-name (current-thread)))
          (eopengrok-indexing-buffer
           (format "*eopengrok-indexing[%s]*" cur-thread-name)))
-    (eopengrok-create-index dir nil '_eopengrok--process-sentinel)))
+    (eopengrok-create-index dir nil '_eopengrok--process-sentinel t)))
 
 (defun project-timestamp-file (dir)
   (cu-join-path (expand-file-name dir) ".log" "last-index-timestamp"))
 
+(defun get-index-timestamp-file-for (dir)
+  (cu-join-path eopengrok-database-root-dir (cu-dir-to-sha1 dir) "timestamp"))
+
 (defun write-grok-complete-timestamp (dir)
   (let* ((timestamp-file
-          (cu-join-path eopengrok-database-root-dir (cu-dir-to-sha1 dir) "timestamp"))
+          (get-index-timestamp-file-for dir))
          (project-timestamp (project-timestamp-file dir))
          (time-stamp (format-time-string "%Y.%m.%d-%H.%M.%S")))
     (unless (file-exists-p (file-name-directory project-timestamp))
@@ -66,12 +75,32 @@
         (save-buffer)
         (kill-buffer)))))
 
+(defun is-repo-project (dir)
+  (file-exists-p (cu-join-path (expand-file-name dir) ".repo")))
+(defun read-timestamp-from (file)
+  (cu-strip-string
+   (shell-command-to-string (format "cat %s" file))
+   t t))
+(defun synced-after-indexing (dir)
+  (let* ((last-sync-timestamp nil)
+         (last-sync-timestamp-file (cu-join-path (expand-file-name dir) ".log" "sync-completed-timestamp"))
+         (last-index-timestamp 0)
+         (last-index-timestamp-file (get-index-timestamp-file-for dir)))
+    (setq last-index-timestamp (read-timestamp-from last-index-timestamp-file))
+    (when (file-exists-p last-sync-timestamp-file)
+      (setq last-sync-timestamp (read-timestamp-from last-sync-timestamp-file)))
+    (message "TimeStamp: index: %s, sync: %s" last-index-timestamp last-sync-timestamp)
+    (and last-sync-timestamp (string> last-sync-timestamp last-index-timestamp))))
+
 (defun* grok-need-to-renew-index (dir)
   (let ((timestamp-file
          (cu-join-path eopengrok-database-root-dir (cu-dir-to-sha1 dir) "timestamp")))
     (unless (file-exists-p timestamp-file)
       (return-from grok-need-to-renew-index t))
-    t))
+    (cond ((and (is-repo-project dir)
+                (synced-after-indexing dir))
+           t)
+          (t nil))))
 
 (defun grok-construct-name-for (dir)
   (replace-regexp-in-string (expand-file-name "~/") "" (expand-file-name dir)))
@@ -121,15 +150,20 @@
     (dolist (dir grok-indexing-list)
       (setq dir (expand-file-name dir))
       (grok-log (format "Check condition for dir: %s\n" dir))
-      (when (and (grok-need-to-renew-index dir) (_open-indexing-maybe))
+      (when (and (grok-need-to-renew-index dir))
         (grok-log (format "Start to create grok index for %s\n" dir))
         (add-to-thread-list
          (make-thread `(lambda () (thread-opengrok-create-index ,dir))
-                      (concat "index-" (grok-construct-name-for dir))))))
-    (sleep-for 3)))
+                      (concat "index-" (grok-construct-name-for dir))))
+        (mutex-lock (condition-mutex global-grok-condition-var))
+        (condition-wait global-grok-condition-var)
+        (mutex-unlock (condition-mutex global-grok-condition-var))
+        (sleep-for 3)))))
 
 (defun thread-grok-index-main ()
   (interactive)
+  (unless grok-indexing-list
+    (error "you should set grok-indexing-list to a non-nil project list first"))
   (let ((main-grok-thread-name "grok-main-index-thread"))
     (if (member main-grok-thread-name (mapcar 'thread-name (all-threads)))
         (message "thread already started")
@@ -143,5 +177,11 @@
     (dolist (th (all-threads))
       (when (equal "grok-main-index-thread" (thread-name th))
         (thread-signal th 'error "Quit")))))
+
+(defun kill-grok-indexing-buffer ()
+  (interactive)
+  (let ((buf (get-buffer "*grok-indexing-buffer*")))
+    (when buf
+      (kill-buffer buf))))
 
 (provide 'init-grok-daemon)

@@ -158,6 +158,7 @@
 (require 'init-plantuml)
 (require 'init-tikz)
 (require 'init-leetcode-cli)
+(require 'init-grok-daemon)
 
 (require 'init-keybind)
 (setq sanityinc/require-times

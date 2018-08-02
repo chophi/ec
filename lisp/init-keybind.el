@@ -180,7 +180,9 @@
     (?m . eopengrok-toggle-global-mode)
     (?v . eopengrok-visit-nearest-ancestor-link)
     (?p . eopengrok-choose-projects-from-database)
-    (?l . eopengrok-list-projects)))
+    (?l . eopengrok-list-projects)
+    (?D . thread-grok-index-main)
+    (?K . kill-grok-indexing-buffer)))
 
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)

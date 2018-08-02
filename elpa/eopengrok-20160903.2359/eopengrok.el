@@ -469,7 +469,7 @@
              (kill-buffer buf))
             (t nil)))))
 
-(defun eopengrok--current-info (process dir &optional search text ep)
+(defun eopengrok--current-info (process dir &optional search text ep inhabit-pop-buffer)
   "Display current information (PROCESS DIR SEARCH TEXT EP)."
   (let ((buf (process-buffer process)))
     (with-current-buffer buf
@@ -482,7 +482,8 @@
         (forward-line -2))
       (setq truncate-lines t)
       (setq buffer-read-only t)
-      (pop-to-buffer buf))))
+      (unless inhabit-pop-buffer
+        (pop-to-buffer buf)))))
 
 (defun eopengrok--init ()
   "Initialize variable."
@@ -546,7 +547,7 @@
     (make-symbolic-link dir source-dir t)
     (list (file-chase-links source-dir) absolute-path-sha1-dir)))
 
-(defun eopengrok-create-index (dir &optional enable-projects-p sentinel)
+(defun eopengrok-create-index (dir &optional enable-projects-p sentinel inhabit-pop-buffer)
   "Create an Index file in DIR, ENABLE-PROJECTS-P is flag for enable projects.
 If not nil every directory in DIR is considered a separate project."
   (interactive "DRoot directory: ")
@@ -590,7 +591,7 @@ If not nil every directory in DIR is considered a separate project."
       (when (boundp 'grok-current-dir)
         (setq-local grok-current-dir (expand-file-name dir)))
       (eopengrok--current-info proc (expand-file-name dir)
-                               nil nil enable-projects-p)
+                               nil nil enable-projects-p inhabit-pop-buffer)
       (setq eopengrok-mode-line-status 'running))))
 
 (defun eopengrok-create-index-with-enable-projects (dir)
