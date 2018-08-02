@@ -1,5 +1,4 @@
 skinparam roundcorner 20
-skinparam dpi 300
 skinparam maxmessagesize 256
 skinparam backgroundColor #e0eee0
 skinparam handwritten false
@@ -8,20 +7,19 @@ skinparam handwritten false
 skinparam sequence {
 ArrowColor black
 ArrowThickness 1
-ArrowFontSize 12
-ArrowFontName Consolas
+ArrowFontName Consolas,Ubuntu,Arial
 
 LifeLineBorderColor black
 LifeLineBackgroundColor #2E8B57
 
 ParticipantBorderColor #458B74
 ParticipantBackgroundColor DarkSeaGreen
-ParticipantFontName Arial
+ParticipantFontName Consolas,Ubuntu,Arial
 ParticipantFontColor black
 
 ActorBorderColor orange
 ActorFontColor black
-ActorFontName Aapex
+ActorFontName Consolas,Ubuntu,Arial
 }
 
 /' Skin for class '/
@@ -33,7 +31,7 @@ BorderColor     #68838b              /' github selection'/
 skinparam ClassFontColor                           #000000 /' github foreground'/
 skinparam stereotypeCBackgroundColor               #00cdcd /' github current-line '/
 skinparam stereotypeABackgroundColor               #00bcbc /' sanityinc-tomorrow day current-line '/
-skinparam defaultFontName                          Monaco
-skinparam ClassFontName                            Consolas
+skinparam defaultFontName                          Monaco,Ubuntu,Arial
+skinparam ClassFontName                            Consolas,Ubuntu,Arial
 skinparam ClassFontStyle                           Bold
 
