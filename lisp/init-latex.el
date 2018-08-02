@@ -1,4 +1,5 @@
 (require-package 'auctex)
+(add-to-list 'auto-mode-alist '("\\.latex\\'" . latex-mode))
 (add-hook 'LaTeX-mode-hook
  (lambda()
    (push '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t) TeX-command-list)
