@@ -43,6 +43,7 @@
         ""))))
 
 (setq graphviz-dot-preview-extension "svg")
+(setq plantuml-convert-to-latex t)
 
 (defun plantuml-execute ()
   (interactive)
@@ -54,7 +55,15 @@
         cmd)
     (if (string-match "^\\s-*@startuml\\s-+\\(\\S-+\\)\\s*$" code)
         (setq out-file (match-string 1 code))
-      (setq out-file (graphviz-output-file-name (buffer-file-name))))
+      (setq out-file
+            (let ((graphviz-dot-preview-extension
+                   (if plantuml-convert-to-latex
+                       "latex"
+                     graphviz-dot-preview-extension)))
+              (graphviz-output-file-name (buffer-file-name) plantuml-convert-to-latex))))
+    (when plantuml-convert-to-latex
+      (setq out-file (cu-join-path "/tmp" (file-name-nondirectory out-file)))
+      (when (file-exists-p out-file) (delete-file out-file)))
     (setq cmd (concat
                "java -jar " plantuml-java-options " "
                (shell-quote-argument plantuml-jar-path) " "
@@ -68,7 +77,9 @@
     (message cmd)
     (shell-command cmd)
     (message "done")
-    (find-file-other-window out-file)))
+    (if plantuml-convert-to-latex
+        (funcall #'compile-tikz-to-svg out-file)
+      (find-file-other-window out-file))))
 
 (setq plantuml-java-options "")
 (setq plantuml-options "-charset UTF-8")

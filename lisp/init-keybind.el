@@ -320,14 +320,20 @@
      (?e . graphviz-set-extension))
    '(("Output Image Extension" . graphviz-dot-preview-extension))))
 
+(defun toggle-plantuml-convert-to-latex ()
+  (interactive)
+  (setq plantuml-convert-to-latex (not plantuml-convert-to-latex)))
+
 (with-eval-after-load "plantuml-mode"
   (cu-set-key-bindings
    plantuml-mode-map
    "\C-c\C-d"
    '((?p . plantuml-execute)
      (?v . plantuml-preview)
-     (?e . graphviz-set-extension))
-   '(("Output Image Extension" . graphviz-dot-preview-extension))))
+     (?e . graphviz-set-extension)
+     (?t . toggle-plantuml-convert-to-latex))
+   '(("Output Image Extension" . graphviz-dot-preview-extension)
+     ("Convert to latex First" . plantuml-convert-to-latex))))
 
 (with-eval-after-load "tex-buf"
   (cu-set-key-bindings LaTeX-mode-map

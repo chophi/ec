@@ -485,11 +485,12 @@ The list of constant is available at http://www.research.att.com/~erg/graphviz\
      (0 font-lock-variable-name-face)))
   "Keyword highlighting specification for `graphviz-dot-mode'.")
 
-(defun graphviz-output-file-name (f-name)
+(defun graphviz-output-file-name (f-name &optional skip-check-pre-images)
   (let* ((defdir (substring default-directory 0 -1))
          (dir (file-name-nondirectory defdir))
          (predir (file-name-directory defdir)))
     (if (and (equal dir "src")
+             (not skip-check-pre-images)
              (file-exists-p (cu-join-path predir "images")))
         (cu-join-path
          predir

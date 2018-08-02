@@ -1,4 +1,4 @@
-(defvar tikz-latexmk-options nil)
+e(defvar tikz-latexmk-options nil)
 (defconst tikz-dvisvgm-options "--clipjoin --page=1- --no-fonts")
 (defconst tikz-output-buffer "*Generate tikz[Output]*")
 (defconst tikz-error-buffer "*Generate tikz[Error]*")
@@ -9,10 +9,11 @@
       (format "--libgs=\"%s\"" "/usr/local/lib/libgs.dylib")
     ""))
 
-(defun compile-tikz-to-svg ()
+(defun compile-tikz-to-svg (&optional file)
   (interactive)
   (let* ((tmp-dir (cu-join-path "/tmp" (sha1 default-directory)))
-         (file-name (file-name-nondirectory buffer-file-name))
+         (file (or file buffer-file-name))
+         (file-name (file-name-nondirectory file))
          (base-name (file-name-sans-extension file-name))
          (dvi-name (concat base-name ".dvi"))
          (svg-name (concat base-name ".svg"))
@@ -20,7 +21,7 @@
           (format
            "latexmk %s %s --output-directory=%s && dvisvgm %s %s %s --output=%s"
            (or tikz-latexmk-options " ")
-           buffer-file-name tmp-dir
+           file tmp-dir
            (dvisvgm-extra-gs-args)
            (or tikz-dvisvgm-options " ")
            (cu-join-path tmp-dir dvi-name)
