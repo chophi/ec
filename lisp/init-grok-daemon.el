@@ -38,14 +38,15 @@
   "Handle eopengrok PROCESS EVENT."
   (let* ((buf (process-buffer process))
          (project-dir (buffer-local-value 'grok-current-dir buf)))
-    (grok-log (format "Process Buffer: %s\n Received event %s\n" buf event))
+    (grok-log (format "Process Buffer: %s\n Received event [%s]\n" buf
+                      (cu-strip-string event t t)))
     (with-current-buffer buf
       (cond ((or (string= "killed\n" event) (string= "finished\n" event))
              (kill-buffer buf)
              (mutex-lock (condition-mutex global-grok-condition-var))
              (condition-notify global-grok-condition-var t)
              (mutex-unlock (condition-mutex global-grok-condition-var))
-             (grok-log (format "Save timestamp for [%s]\n" project-dir))
+             (grok-log (format "Save timestamp for [%s]\n\n" project-dir))
              (write-grok-complete-timestamp project-dir))
             (t nil)))))
 
