@@ -1,5 +1,4 @@
 skinparam roundcorner 20
-skinparam maxmessagesize 256
 skinparam backgroundColor #e0eee0
 skinparam handwritten false
 
