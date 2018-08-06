@@ -43,7 +43,7 @@
         ""))))
 
 (setq graphviz-dot-preview-extension "svg")
-(setq plantuml-convert-to-latex t)
+(setq plantuml-convert-to-latex nil)
 
 (defun plantuml-execute ()
   (interactive)

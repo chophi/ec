@@ -1,6 +1,7 @@
 skinparam roundcorner 20
 skinparam backgroundColor #e0eee0
 skinparam handwritten false
+skinparam dpi 300
 
 /' Skin for sequence '/
 skinparam sequence {
@@ -31,6 +32,7 @@ skinparam ClassFontColor                           #000000 /' github foreground'
 skinparam stereotypeCBackgroundColor               #00cdcd /' github current-line '/
 skinparam stereotypeABackgroundColor               #00bcbc /' sanityinc-tomorrow day current-line '/
 skinparam defaultFontName                          Monaco
+skinparam defaultMonospacedFontName                Monaco
 skinparam ClassFontName                            Consolas
 skinparam ClassFontStyle                           Bold
 
