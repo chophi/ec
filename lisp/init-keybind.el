@@ -82,9 +82,10 @@
                              '((?t . org-todo))))))
 
 ;; path utils
-(with-eval-after-load "cc-mode" (define-key c-mode-base-map "\C-c\C-l" nil))
+(with-eval-after-load "cc-mode"
+  (define-key c-mode-base-map "\C-c\C-l" nil)
+  (define-key java-mode-map "\C-c\C-l" nil))
 (with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-l" nil))
-(with-eval-after-load "java-mode" (define-key java-mode-map "\C-c\C-l" nil))
 (defconst cu-path-util-map
   '((?i . cu-insert-path-replace-home)
     (?I . cu-insert-path-absolute-home)
