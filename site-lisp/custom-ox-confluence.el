@@ -182,7 +182,8 @@ holding export options."
                             (string= todo ""))
                         ""
                       (format "*{{%s}}* " todo))))
-    (format "h%s. %s%s\n%s" level todo-text text
+    (format "h%s. %s%s\n%s%s" level todo-text text
+            (if (equal level 1) "----\n" "")
             (if (org-string-nw-p contents) contents ""))))
 
 (defvar private-local-server-image-map-alist nil)
