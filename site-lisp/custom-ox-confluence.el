@@ -104,9 +104,7 @@ holding export options."
 	    (let ((title (org-ascii--translate "Footnotes" info)))
 	      (concat
 	       title "\n"
-	       (make-string
-		(string-width title)
-		(if (eq (plist-get info :ascii-charset) 'utf-8) ?─ ?_))))
+	       "----"))
 	    "\n\n"
 	    (let ((text-width (- (plist-get info :ascii-text-width)
 				 global-margin)))
