@@ -1,4 +1,4 @@
-(require 'ox-confluence)
+(require 'custom-ox-confluence)
 
 (defconst org-confluence-export-use-html-engine nil
   (concat "Whether to use html engine to export the confluence org files\n"

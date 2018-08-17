@@ -35,6 +35,7 @@
 
 (require 'ox)
 (require 'ox-ascii)
+(require 'org-table)
 
 ;; Define the backend itself
 (org-export-define-derived-backend 'confluence 'ascii
@@ -42,8 +43,8 @@
                      (code . org-confluence-code)
                      (example-block . org-confluence-example-block)
                      (fixed-width . org-confluence-fixed-width)
-                     (footnote-definition . org-confluence-empty)
-                     (footnote-reference . org-confluence-empty)
+                     (footnote-definition . org-confluence-footnote-definition)
+                     (footnote-reference . org-confluence-footnote-reference)
                      (headline . org-confluence-headline)
                      (italic . org-confluence-italic)
                      (item . org-confluence-item)
@@ -58,6 +59,7 @@
                      (table-cell . org-confluence-table-cell)
                      (table-row . org-confluence-table-row)
                      (template . org-confluence-template)
+                     (inner-template . org-confluence-inner-template)
                      (timestamp . org-confluence-timestamp)
                      (underline . org-confluence-underline)
                      (verbatim . org-confluence-verbatim)))
@@ -71,8 +73,69 @@
 (defun org-confluence-bold (bold contents info)
   (format "*%s*" contents))
 
-(defun org-confluence-empty (empty contents info)
-  "")
+(defun org-confluence-footnote-reference (footnote-reference _contents info)
+  (let ((number (org-export-get-footnote-number footnote-reference info)))
+    (format "[^\\[%s\\]^|#_fn_-%s]" number number)))
+
+(defun org-confluence-footnote-definition (footnote-reference _contents info)
+  ""
+  ;; (let ((number (org-export-get-footnote-number footnote-reference info)))
+  ;;   (format "{anchor:foot-note-%s}" number))
+  )
+
+(defun org-confluence-inner-template (contents info)
+  "Return complete document string after ASCII conversion.
+CONTENTS is the transcoded contents string.  INFO is a plist
+holding export options."
+  (org-element-normalize-string
+   (let ((global-margin (plist-get info :ascii-global-margin)))
+     (org-ascii--indent-string
+      (concat
+       ;; 1. Document's body.
+       contents
+       ;; 2. Footnote definitions.
+       (let ((definitions (org-export-collect-footnote-definitions info))
+	     ;; Insert full links right inside the footnote definition
+	     ;; as they have no chance to be inserted later.
+	     (info (org-combine-plists info '(:ascii-links-to-notes nil))))
+	 (when definitions
+	   (concat
+	    "\n\n\n"
+	    (let ((title (org-ascii--translate "Footnotes" info)))
+	      (concat
+	       title "\n"
+	       (make-string
+		(string-width title)
+		(if (eq (plist-get info :ascii-charset) 'utf-8) ?─ ?_))))
+	    "\n\n"
+	    (let ((text-width (- (plist-get info :ascii-text-width)
+				 global-margin)))
+	      (mapconcat
+	       (lambda (ref)
+		 (let ((id (format "{anchor:_fn_-%s} %s. " (car ref) (car ref))))
+		   ;; Distinguish between inline definitions and
+		   ;; full-fledged definitions.
+		   (org-trim
+		    (let ((def (nth 2 ref)))
+		      (if (org-element-map def org-element-all-elements
+			    #'identity info 'first-match)
+			  ;; Full-fledged definition: footnote ID is
+			  ;; inserted inside the first parsed
+			  ;; paragraph (FIRST), if any, to be sure
+			  ;; filling will take it into consideration.
+			  (let ((first (car (org-element-contents def))))
+			    (if (not (eq (org-element-type first) 'paragraph))
+				(concat id "\n" (org-export-data def info))
+			      (push id (nthcdr 2 first))
+			      (concat id (org-export-data def info))))
+			;; Fill paragraph once footnote ID is inserted
+			;; in order to have a correct length for first
+			;; line.
+			(org-ascii--fill-string
+			 (concat id (org-export-data def info))
+			 text-width info))))))
+	       definitions "\n\n"))))))
+      global-margin))))
 
 (defun org-confluence-example-block (example-block contents info)
   ;; FIXME: provide a user-controlled variable for theme
@@ -232,9 +295,20 @@ CONTENTS and INFO are ignored."
 (defun org-confluence-underline (underline contents info)
   (format "+%s+" contents))
 
+(defun org-confluence-translate-language (lang)
+  (let ((lan-alist '(("c" . "cpp")
+                     ("cc" . "cpp")
+                     ("c++" . "cpp")
+                     ("python" . "py")
+                     ("sh" . "bash")))
+        (dc-lang (downcase lang)))
+    (if (assoc dc-lang lan-alist)
+        (cdr (assoc dc-lang lan-alist))
+      dc-lang)))
+
 (defun org-confluence--block (language theme contents &optional no-collapse linenumber)
   (concat "\{code:theme=" theme
-          (when language (format "|language=%s" language))
+          (when language (format "|language=%s" (org-confluence-translate-language language)))
           (when (not no-collapse) "|collapse=true")
           (when linenumbers "|linenumbers=true")
           "}\n"
@@ -292,4 +366,4 @@ is non-nil."
   (org-export-to-buffer 'confluence "*org CONFLUENCE Export*"
     async subtreep visible-only body-only ext-plist (lambda () (text-mode))))
 
-(provide 'ox-confluence)
+(provide 'custom-ox-confluence)
