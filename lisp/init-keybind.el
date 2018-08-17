@@ -58,8 +58,8 @@
 ;; confluence wiki
 (when (company-computer-p)
   (defconst publish-org-to-confluence-wiki-keymap
-    `(("d" . org-update-to-draft-page)
-      ("w" . org-update-related-wiki-page)
+    `(("w" . org-update-related-wiki-page)
+      ("d" . org-update-to-draft-page)
       ("r" . org-read-related-wiki-page)
       ("v" . org-export-buffer-to-wiki-and-view)
       ,@(when (fboundp 'confluence-view-the-wiki)
