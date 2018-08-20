@@ -43,7 +43,30 @@
         ""))))
 
 (setq graphviz-dot-preview-extension "svg")
-(setq plantuml-convert-to-latex nil)
+(defvar plantuml-convert-to-latex nil)
+(defvar plantuml-svg-text-to-path t)
+(defvar plantuml-inkscape-exist 'unknown)
+
+(defun inkscape-exist-p (&optional always-recheck)
+  (interactive "P")
+  (when (or always-recheck (eq 'unknown plantuml-inkscape-exist))
+    (message "recheck if inkscape exist")
+    (setq plantuml-inkscape-exist (eq (shell-command "which inkscape") 0)))
+  plantuml-inkscape-exist)
+
+(defun convert-svg-to-svg-no-font (file)
+  (unless (file-exists-p file)
+    (error "%s is not exist" file))
+  (if (not (inkscape-exist-p))
+      (message "inkscape is not exist, do nothing")
+    (let* ((target-file (concat (file-name-sans-extension file) ".nofonts.svg"))
+           (command (format "inkscape -z %s --export-plain-svg=%s --export-text-to-path"
+                            file target-file))
+           (ret (shell-command command)))
+      (if (equal 0 ret)
+          target-file
+        (message "command [%s] exit with %d" command ret)
+        file)))) 
 
 (defun plantuml-execute ()
   (interactive)
@@ -74,12 +97,15 @@
                plantuml-options " < "
                (buffer-file-name)
                " > " out-file))
-    (message cmd)
     (shell-command cmd)
-    (message "done")
+    (message "%s done" cmd)
     (if plantuml-convert-to-latex
         (funcall #'compile-tikz-to-svg out-file)
-      (find-file-other-window out-file))))
+      (if (and (equal graphviz-dot-preview-extension "svg")
+               plantuml-svg-text-to-path
+               (inkscape-exist-p))
+          (find-file-other-window (convert-svg-to-svg-no-font out-file))
+        (find-file-other-window out-file)))))
 
 (setq plantuml-java-options "")
 (setq plantuml-options "-charset UTF-8")
