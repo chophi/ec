@@ -100,12 +100,12 @@ holding export options."
 	     (info (org-combine-plists info '(:ascii-links-to-notes nil))))
 	 (when definitions
 	   (concat
-	    "\n\n\n"
-	    (let ((title (org-ascii--translate "Footnotes" info)))
-	      (concat
-	       title "\n"
-	       "----"))
-	    "\n\n"
+	    "\n"
+	    ;; (let ((title (org-ascii--translate "Footnotes" info)))
+	    ;;   (concat
+	    ;;    title "\n"
+	    ;;    "----"))
+	    ;; "\n\n"
 	    (let ((text-width (- (plist-get info :ascii-text-width)
 				 global-margin)))
 	      (mapconcat
