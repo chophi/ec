@@ -66,7 +66,19 @@
       (if (equal 0 ret)
           target-file
         (message "command [%s] exit with %d" command ret)
-        file)))) 
+        file))))
+
+(defun convert-all-svg-to-no-font (&optional dir)
+  (interactive)
+  (unless dir
+    (setq dir default-directory))
+  (let ((svg-files (cu-list-files-recursively dir ".svg")))
+    (dolist (f svg-files)
+      (if (or (cu-seq-ends-with f ".nofonts.svg")
+                  (file-exists-p
+                   (concat (file-name-sans-extension f) ".nofonts.svg")))
+          (message "skip %s" f)
+        (convert-svg-to-svg-no-font f)))))
 
 (defun plantuml-execute ()
   (interactive)

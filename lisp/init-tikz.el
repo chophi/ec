@@ -1,5 +1,8 @@
 (defvar tikz-latexmk-options nil)
-(defconst tikz-dvisvgm-options "--clipjoin --page=1- --no-fonts")
+(defvar tikz-svg-no-fonts t)
+(defconst tikz-dvisvgm-options
+  (concat "--clipjoin --page=1-" (if tikz-svg-no-fonts " --no-fonts" nil)))
+
 (defconst tikz-output-buffer "*Generate tikz[Output]*")
 (defconst tikz-error-buffer "*Generate tikz[Error]*")
 
@@ -17,7 +20,7 @@
          (file-name (file-name-nondirectory file))
          (base-name (file-name-sans-extension file-name))
          (dvi-name (concat base-name ".dvi"))
-         (svg-name (concat base-name ".svg"))
+         (svg-name (concat base-name (if tikz-svg-no-fonts  ".nofonts.svg" ".svg")))
          (cmd
           (format
            "latexmk %s %s --output-directory=%s && dvisvgm %s %s %s --output=%s"
