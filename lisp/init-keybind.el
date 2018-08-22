@@ -79,7 +79,7 @@
                          (?q . google-translate-query-translate)
                          (?b . google-translate-query-translate-reverse)
                          ,@(when (eq map org-mode-map)
-                             '((?t . org-todo))))))
+                             '((?T . org-todo))))))
 
 ;; path utils
 (with-eval-after-load "cc-mode"
