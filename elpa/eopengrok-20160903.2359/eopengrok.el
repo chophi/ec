@@ -52,6 +52,9 @@
 (defconst eopengrok-file-regexp
   "^\\([[:lower:][:upper:]]?:?.*?\\):\\(.*\\)")
 
+(defconst eopengrok-collect-the-rest
+  "^Collect the rest (y/n).*")
+
 (defconst eopengrok-page-separator-regexp
   "^clj-opengrok> \\([0-9]+\\)/\\([0-9]+\\)")
 
@@ -425,7 +428,7 @@
        (insert "\n")
        (setq eopengrok-last-filename file)))))
 
-(defun eopengrok--insert-line (line)
+(defun eopengrok--insert-line (line process)
   "Insert matching any regex in LINE."
   (cond
    ((string-match eopengrok-history-regexp line)
@@ -437,10 +440,12 @@
    ((and (string-match eopengrok-file-regexp line) (file-exists-p (match-string 1 line)))
     (eopengrok--file-line-properties
      (match-string 1 line) (match-string 2 line)))
-   ((string-match eopengrok-page-separator-regexp line)
-    (setq eopengrok-mode-line-status 'running
-          eopengrok-page (format "%s/%s" (match-string 1 line)
-                                 (match-string 2 line))))
+   ((string-match eopengrok-collect-the-rest line)
+    (process-send-string process "y\n"))
+   ;; ((string-match eopengrok-page-separator-regexp line)
+   ;;  (setq eopengrok-mode-line-status 'running
+   ;;        eopengrok-page (format "%s/%s" (match-string 1 line)
+   ;;                               (match-string 2 line))))
    (t (insert line "\n"))))
 
 (defun eopengrok--process-filter (process output)
@@ -455,7 +460,7 @@
             (setq pos (match-end 0))
             (goto-char (point-max))
             ;;(insert line "\n")
-            (eopengrok--insert-line line))))
+            (eopengrok--insert-line line process))))
       (setq eopengrok-pending-output (substring output pos)))))
 
 (defun eopengrok--process-sentinel (process event)
