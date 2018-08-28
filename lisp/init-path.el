@@ -71,4 +71,19 @@ but can also be added to head if AS-HEAD is not nil"
         (concat (getenv "LD_LIBRARY_PATH")
                 ":/usr/local/lib:/usr/local/lib32:/usr/local/lib64"))
 
+(when (eq system-type 'darwin)
+  (let ((man-list
+         '("/usr/local/share/man"
+           "/usr/share/man"))
+        (cellar-man
+         (shell-command-to-string "find /usr/local/Cellar -name \"man\""))
+        (tmp ""))
+    (dolist (cm (split-string cellar-man))
+      (add-to-list 'man-list cm))
+    (dolist (cm man-list)
+      (when (file-exists-p cm)
+        (setq tmp (concat tmp ":" cm))))
+    (unless (string-empty-p tmp)
+      (setenv "MANPATH" (concat (getenv "MANPATH") ":" tmp)))))
+
 (provide 'init-path)
