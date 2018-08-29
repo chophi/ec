@@ -83,7 +83,7 @@ but can also be added to head if AS-HEAD is not nil"
     (dolist (cm man-list)
       (when (file-exists-p cm)
         (setq tmp (concat tmp ":" cm))))
-    (unless (string-empty-p tmp)
+    (unless (equal tmp "")
       (setenv "MANPATH" (concat (getenv "MANPATH") ":" tmp)))))
 
 (provide 'init-path)
