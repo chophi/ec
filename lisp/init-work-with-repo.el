@@ -1,6 +1,5 @@
 (require 'init-custom-compile)
 
-(defvar g-repo-directory "~/.platform_script" "Dir where repo executable locates")
 (defvar g-repo-ws (or (getenv "DEFAULT_REPO_WS")
                       (if (boundp 'g-default-repo-ws) g-default-repo-ws nil))
   "The workspace for repo project")
@@ -25,8 +24,7 @@
   (interactive)
   (setq root (or root (current-repo-ws)))
   (let* ((raw (shell-command-to-string
-               (format "cd %s && %s/repo list"
-                       root g-repo-directory)))
+               (format "cd %s && repo list" root)))
          (proj-list (split-string raw "\n")))
     (setq proj-list
           (mapcar

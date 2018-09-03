@@ -171,16 +171,16 @@
     (?t . eopengrok-find-text)
     (?h . eopengrok-find-history)
     (?r . eopengrok-resume)
-    (?c . opengrok-create-index)
-    (?v . eopengrok-visit-nearest-ancestor-link)
-    (?p . eopengrok-choose-projects-from-database)
+    (?c . eopengrok-create-index)
+    (?v . eopengrok-visit-project-root)
+    (?p . eopengrok-narrow-to-project)
     (?l . eopengrok-list-projects)
     (?D . thread-grok-index-main)
     (?K . kill-grok-indexing-buffer)))
 
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)
- '(("default project" . (car eopengrok-default-project-alist-from-database))))
+ '(("narrowed project" . (eopengrok-get-current-narrowed-project))))
 
 (defun android-doc-local-server()
   (interactive)

@@ -175,12 +175,9 @@
       (sleep-for 0.1))
     (kill-buffer buf)))
 
-(defun eopengrok-visit-nearest-ancestor-link ()
+(defun eopengrok-visit-project-root ()
   (interactive)
-  (let ((possible-dir (cu-find-nearest-ancestor-link-in
-            eopengrok-database-root-dir default-directory)))
-    (if possible-dir
-        (find-file possible-dir))))
+  (find-file (car (eopengrok--get-configuration))))
 
 (defun eopengrok-get-source-config-alist ()
   (interactive)
@@ -191,15 +188,38 @@
            (cu-join-path eopengrok-database-root-dir dir)))
    (cddr (directory-files eopengrok-database-root-dir))))
 
-(defun eopengrok-choose-projects-from-database ()
-  (interactive)
-  (let ((source-config-alist
-         (eopengrok-get-source-config-alist)))
-    (setq eopengrok-default-project-alist-from-database
-          (assoc (ido-completing-read
-                  "Choose a project: "
-                  (mapcar 'car source-config-alist))
-                 source-config-alist))))
+(with-eval-after-load "init-work-with-repo"
+  (defun eopengrok-get-current-narrowed-project ()
+    (interactive)
+    (let* ((source-conf-cons (eopengrok--get-configuration))
+           (dir nil)
+           (buf nil))
+      (unless source-conf-cons
+        (error "no project for current working directory"))
+      (setq dir (car source-conf-cons)
+            buf (eopengrok-get-workspace-name dir :search-buffer))
+      (unless (and (file-exists-p buf)
+                   (with-current-buffer buf
+                     (boundp eopengrok-project)))
+        (with-current-buffer buf
+          eopengrok-project))))
+  
+  (defun eopengrok-narrow-to-project (&optional no-repo)
+    (interactive)
+    (let* ((source-conf-cons (eopengrok--get-configuration))
+           (dir nil))
+      (unless source-conf-cons
+        (error "no project for current working directory"))
+      (setq dir (car source-conf-cons))
+      (unless no-repo
+        (when (file-exists-p (cu-join-path dir ".repo"))
+          (with-current-buffer
+              (get-buffer-create (eopengrok-get-workspace-name dir :search-buffer))
+            (setq-local eopengrok-project
+                        (ido-completing-read
+                         "Choose a directory: "
+                         (mapcar 'car (gen-repo-list (expand-file-name dir)))))))))))
+
 
 (defconst eopengrok-file-link-map
   (let ((map (make-sparse-keymap)))
@@ -248,30 +268,40 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
   (interactive)
   (let ((exist-and-configuration-exist-p
          (lambda (dir)
-           (when (and dir (file-exists-p (cu-join-path dir eopengrok-configuration)))
-             (cons
-              (file-truename (cu-join-path dir "source"))
-              (cu-join-path dir eopengrok-configuration))))))
+           (when (and dir (file-directory-p dir))
+             (when (file-exists-p (cu-join-path dir eopengrok-configuration))
+               (cons
+                (file-truename (cu-join-path dir "source"))
+                (cu-join-path dir eopengrok-configuration))))))
+        (cwd (file-truename default-directory)))
     (or (funcall exist-and-configuration-exist-p
                  (cu-find-nearest-ancestor-link-in
-                  eopengrok-database-root-dir default-directory))
+                  eopengrok-database-root-dir cwd))
         ;; The source code project itself is a symbol link.
         (funcall exist-and-configuration-exist-p
-                 (eopengrok-has-database-source-of-dir default-directory))
+                 (eopengrok-has-database-source-of-dir cwd))
         ;; The project has no opengrok indexed database, however it was
         ;; symbolinked to an already indexed project.
         ;; So we can use that project to search the files.
         (funcall exist-and-configuration-exist-p
-                 (eopengrok-was-symbol-linked-under-a-project default-directory))
+                 (eopengrok-was-symbol-linked-under-a-project cwd))
         (user-error "Can't find configuration.xml"))))
 
-(defun eopengrok--search-option (conf text option symbol)
+(defun eopengrok--search-option (conf text option symbol dir)
   "Opengrok search option list with CONF TEXT OPTION SYMBOL."
   (if (eq symbol 'custom)
       (-flatten (list "search" "-R" conf (split-string text " " t)))
-    (if (equal "-f" option)
-        (list "search_full_text" "-R" conf option (format "\"%s\"" text))
-      (list "search" "-R" conf option text))))
+    (let ((key "search")
+          (narrowed-project nil))
+      (when (equal "-f" option)
+        (setq key "search_full_text"
+              text (format "\"%s\"" text)))
+      (unless (equal "-p" option)
+        (with-current-buffer (eopengrok-get-workspace-name dir :search-buffer)
+          (when (and (boundp 'eopengrok-project) eopengrok-project
+                     (not (string-empty-p eopengrok-project)))
+            (setq narrowed-project (list "-p" eopengrok-project)))))
+      (-flatten (list key "-R" conf option text narrowed-project)))))
 
 (defmacro eopengrok--properties-region (props &rest body)
   "Add PROPS and Execute BODY to all the text it insert."
@@ -527,7 +557,7 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
                                   (eopengrok-get-workspace-name dir :search-buffer)
                                   eopengrok-script-name
                                   (eopengrok--search-option conf text
-                                                            ,option ',sym))))
+                                                            ,option ',sym dir))))
                 (set-process-query-on-exit-flag proc nil)
                 (set-process-filter proc 'eopengrok--process-filter)
                 (set-process-sentinel proc 'eopengrok--process-sentinel)
