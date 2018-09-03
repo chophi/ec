@@ -54,7 +54,7 @@
   (let* ((cur-thread-name (thread-name (current-thread)))
          (eopengrok-indexing-buffer
           (format "*eopengrok-indexing[%s]*" cur-thread-name)))
-    (eopengrok-create-index dir nil '_eopengrok--process-sentinel t)))
+    (eopengrok-create-index dir '_eopengrok--process-sentinel t)))
 
 (defun project-timestamp-file (dir)
   (cu-join-path (expand-file-name dir) ".log" "last-index-timestamp"))

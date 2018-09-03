@@ -40,23 +40,45 @@
 (defvar eopengrok-page nil)
 (defvar eopengrok-mode-line-status 'not-running)
 
-(defconst eopengrok-buffer "*eopengrok*")
-(defconst eopengrok-indexing-buffer "*eopengrok-indexing*")
+(defun eopengrok-get-workspace-name (dir type)
+  (let ((workspace (cu-dir-to-sha1 (file-truename dir))))
+    (case type
+      (:index-process (format "opengrok-indexer[%s]" workspace))
+      (:index-buffer (format "*opengrok-indexer[%s]*" workspace))
+      (:search-process (format "opengrok-searcher[%s]" workspace))
+      (:search-buffer (format "*opengrok-searcher[%s]*" workspace))
+      (t "invalid"))))
 
+(defun eopengrok-workspace-name-p (name type)
+  (case type
+    (:index-process (cu-seq-starts-with name "opengrok-indexer"))
+    (:index-buffer (cu-seq-starts-with name "*opengrok-indexer"))
+    (:search-process (cu-seq-starts-with name "opengrok-searcher"))
+    (:search-buffer (cu-seq-starts-with name "*opengrok-searcher"))
+    (t nil)))
+
+(defun eopengrok-current-searcher ()
+  (unless (boundp 'eopengrok-cwd)
+    (error "eopengrok-cwd is not bound"))
+  (get-buffer-process (eopengrok-get-workspace-name eopengrok-cwd :search-buffer)))
+
+(defun eopengrok-current-search-buffer ()
+  (unless (boundp 'eopengrok-cwd)
+    (error "eopengrok-cwd is not bound"))
+  (eopengrok-get-workspace-name eopengrok-cwd :search-buffer))
+
+(defconst eopengrok-script-name "opengrok.sh")
 (defconst eopengrok-history-regexp
   "^\\([[:lower:][:upper:]]?:?.*?\\)::[ \t]+\\(\\w+\\)\\(.*\\)")
 
 (defconst eopengrok-source-regexp
-  "^\\([[:lower:][:upper:]]?:?.*?\\):\\([0-9]+\\):\\(.*\\)")
+  "^\\([[:lower:][:upper:]]?:?.*?\\):\\([0-9]+\\) \\[\\(.*\\)\\]")
 
 (defconst eopengrok-file-regexp
   "^\\([[:lower:][:upper:]]?:?.*?\\):\\(.*\\)")
 
 (defconst eopengrok-collect-the-rest
   "^Collect the rest (y/n).*")
-
-(defconst eopengrok-page-separator-regexp
-  "^clj-opengrok> \\([0-9]+\\)/\\([0-9]+\\)")
 
 (defgroup eopengrok nil
   "Opengrok interface for emacs."
@@ -117,26 +139,6 @@
   :group 'eopngrok
   :type 'string)
 
-;; FIXME: Will be reverted by the later call
-(defvar eopengrok-use-clj-opengrok t
-  "Whether use the clj-opengrok or jar")
-
-(defconst eopengrok-global-configuration-mode
-  nil
-  "Whether to use the global configuration")
-
-(defconst eopengrok-global-configuration-file
-  (expand-file-name "~/opengrok/data/configuration.xml")
-  "The global configuration file")
-
-(defconst eopengrok-global-source-dir
-  (expand-file-name "~/opengrok/source")
-  "The global configuration file")
-
-(defconst eopengrok-global-data-dir
-  (expand-file-name "~/opengrok/data")
-  "The global configuration file")
-
 (defface eopengrok-file-face
   '((t :inherit font-lock-function-name-face))
   "Face for files."
@@ -160,8 +162,8 @@
 (defun eopengrok-resume ()
   "Resume *eopengrok* buffer."
   (interactive)
-  (when (get-buffer eopengrok-buffer)
-    (pop-to-buffer eopengrok-buffer)))
+  (when (get-buffer (eopengrok-current-search-buffer))
+    (pop-to-buffer (eopengrok-current-search-buffer))))
 
 (defun eopengrok-quit ()
   "Quit eopengrok-mode."
@@ -175,10 +177,11 @@
 
 (defun eopengrok-visit-nearest-ancestor-link ()
   (interactive)
-  (let ((x (cu-find-nearest-ancestor-link-in
+  (let ((possible-dir (cu-find-nearest-ancestor-link-in
             eopengrok-database-root-dir default-directory)))
-    (if x
-        (find-file x))))
+    (if possible-dir
+        (find-file possible-dir))))
+
 (defun eopengrok-get-source-config-alist ()
   (interactive)
   (mapcar
@@ -224,33 +227,43 @@
 (defvar eopengrok-default-project-alist-from-database nil
   "default project alist from database")
 
-(defun eopengrok-has-database-source-of-dir (dir)
+(defun* eopengrok-has-database-source-of-dir (dir)
   (let ((ret))
     (dolist (lst (eopengrok-get-source-config-alist))
-      ;; (message "try to match [%s] and [%s]\n" (file-truename (car lst))
-      ;;          (file-truename (expand-file-name dir)))
       (when (string-match-p (file-truename (car lst)) (expand-file-name dir))
-        (setq ret (cdr lst))))
+        (return-from eopengrok-has-database-source-of-dir (cdr lst))))
     ret))
 
-(defun eopengrok--get-configuration ()
-  "Search for Project configuration.xml."
-  (let* ((start-dir (expand-file-name default-directory))
-         (index-dir (locate-dominating-file start-dir eopengrok-configuration)))
-    (if index-dir
-        (concat (expand-file-name index-dir) eopengrok-configuration)
-      (if eopengrok-default-project-alist-from-database
-          (cu-join-path (cdr eopengrok-default-project-alist-from-database)
-                        eopengrok-configuration)
-        ;; TODO: might be able to remove the cu-find-nearest-ancestor-link-in part.
-        (let ((x (cu-find-nearest-ancestor-link-in
-                  eopengrok-database-root-dir default-directory)))
-          (if (and x (file-exists-p (cu-join-path x eopengrok-configuration)))
-              (cu-join-path x eopengrok-configuration)
-            (setq x (eopengrok-has-database-source-of-dir default-directory))
-            (if (and x (file-exists-p (cu-join-path x eopengrok-configuration)))
-                (cu-join-path x eopengrok-configuration)
-              (user-error "Can't find configuration.xml"))))))))
+(defun* eopengrok-was-symbol-linked-under-a-project (dir)
+  (let ((ret))
+    (dolist (lst (eopengrok-get-source-config-alist))
+      (when (cu-search-child-symlink-recursively-in
+             (file-truename (cu-join-path (cdr lst) "source")) dir 1)
+        (return-from eopengrok-was-symbol-linked-under-a-project (cdr lst))))
+    ret))
+
+(defun* eopengrok--get-configuration ()
+  "Search for Project configuration.xml.
+Return CONS of paths: (ROOT . CONFIGURATION)"
+  (interactive)
+  (let ((exist-and-configuration-exist-p
+         (lambda (dir)
+           (when (and dir (file-exists-p (cu-join-path dir eopengrok-configuration)))
+             (cons
+              (file-truename (cu-join-path dir "source"))
+              (cu-join-path dir eopengrok-configuration))))))
+    (or (funcall exist-and-configuration-exist-p
+                 (cu-find-nearest-ancestor-link-in
+                  eopengrok-database-root-dir default-directory))
+        ;; The source code project itself is a symbol link.
+        (funcall exist-and-configuration-exist-p
+                 (eopengrok-has-database-source-of-dir default-directory))
+        ;; The project has no opengrok indexed database, however it was
+        ;; symbolinked to an already indexed project.
+        ;; So we can use that project to search the files.
+        (funcall exist-and-configuration-exist-p
+                 (eopengrok-was-symbol-linked-under-a-project default-directory))
+        (user-error "Can't find configuration.xml"))))
 
 (defun eopengrok--search-option (conf text option symbol)
   "Opengrok search option list with CONF TEXT OPTION SYMBOL."
@@ -274,7 +287,7 @@
 
 (defun eopengrok--show-source ()
   "Display original source."
-  (with-current-buffer eopengrok-buffer
+  (with-current-buffer (eopengrok-current-search-buffer)
     (-when-let* (((file number) (eopengrok--get-properties (point))))
       (let* ((buffer (find-file-noselect file))
              (window (display-buffer buffer)))
@@ -309,7 +322,7 @@
 (defun eopengrok-next-line ()
   "Move point to the next search result, if one exists."
   (interactive)
-  (with-current-buffer eopengrok-buffer
+  (with-current-buffer (eopengrok-current-search-buffer)
     (-when-let (pos (next-single-property-change
                      (save-excursion (end-of-line) (point)) :info))
       (goto-char pos)
@@ -320,7 +333,7 @@
 (defun eopengrok-previous-line ()
   "Move point to the previous search result, if one exists."
   (interactive)
-  (with-current-buffer eopengrok-buffer
+  (with-current-buffer (eopengrok-current-search-buffer)
     (-when-let (pos (previous-single-property-change
                      (save-excursion (beginning-of-line) (point)) :info))
       (goto-char pos)
@@ -387,7 +400,7 @@
                            'face 'eopengrok-info-face
                            'mouse-face 'highlight
                            'keymap eopengrok-mouse-map))
-         (proc (get-process "eopengrok")))
+         (proc (eopengrok-current-searcher)))
     (eopengrok--properties-region
      (list :page eopengrok-page)
      (eopengrok--properties-region
@@ -411,7 +424,7 @@
                                  'keymap eopengrok-mouse-map))
                (src (propertize (eopengrok--remove-html-tags src)
                                 'face 'eopengrok-source-face))
-               (proc (get-process "eopengrok")))
+               (proc (eopengrok-current-searcher)))
     (eopengrok--properties-region
      (list :page eopengrok-page)
      (progn
@@ -442,10 +455,6 @@
      (match-string 1 line) (match-string 2 line)))
    ((string-match eopengrok-collect-the-rest line)
     (process-send-string process "y\n"))
-   ;; ((string-match eopengrok-page-separator-regexp line)
-   ;;  (setq eopengrok-mode-line-status 'running
-   ;;        eopengrok-page (format "%s/%s" (match-string 1 line)
-   ;;                               (match-string 2 line))))
    (t (insert line "\n"))))
 
 (defun eopengrok--process-filter (process output)
@@ -471,7 +480,7 @@
              (kill-buffer buf))
             ((string= "finished\n" event)
              (setq eopengrok-mode-line-status 'finished)
-             (unless (equal (buffer-name buf) eopengrok-buffer)
+             (unless (eopengrok-workspace-name-p (buffer-name buf) :search-buffer)
                (kill-buffer buf)))
             (t nil)))))
 
@@ -505,25 +514,28 @@
         (str (format "Find %s: " sym)))
     `(defun ,fun () ,doc
             (interactive)
-            (let* ((conf (eopengrok--get-configuration))
-                   (proc (get-process "eopengrok"))
+            (let* ((source-conf-cons (eopengrok--get-configuration))
+                   (dir (car source-conf-cons))
+                   (conf (cdr source-conf-cons))
+                   (proc (eopengrok-get-workspace-name dir :search-process))
                    (text (read-string ,str (thing-at-point 'symbol))))
-              (when proc
-                (kill-process proc)
+              (when (process-live-p (get-process proc))
+                (kill-process (get-process proc))
                 (sleep-for 0.1))
               (let* ((proc (apply 'start-process
-                                  "eopengrok"
-                                  eopengrok-buffer
-                                  "clj-opengrok"
+                                  (eopengrok-get-workspace-name dir :search-process)
+                                  (eopengrok-get-workspace-name dir :search-buffer)
+                                  eopengrok-script-name
                                   (eopengrok--search-option conf text
                                                             ,option ',sym))))
                 (set-process-query-on-exit-flag proc nil)
                 (set-process-filter proc 'eopengrok--process-filter)
                 (set-process-sentinel proc 'eopengrok--process-sentinel)
                 (process-put proc :text text)
-                (with-current-buffer eopengrok-buffer
+                (with-current-buffer (eopengrok-get-workspace-name dir :search-buffer)
                   (eopengrok-mode t)
                   (eopengrok--init)
+                  (setq-local eopengrok-cwd dir)
                   (eopengrok--current-info
                    proc (s-chop-suffix eopengrok-configuration conf)
                    t (concat ,str text))))))))
@@ -535,15 +547,12 @@
 (eopengrok-define-find history "-h")
 (eopengrok-define-find custom "")
 
-(defvar eopengrok-create-index-quite-mode t
-  "crate index as quiet as possible")
-
 (defconst eopengrok-database-root-dir (expand-file-name "~/.opengrok-data-base")
   "The default directory for the opengrok database")
 
 (defun create-database-dir-if-not-exist (dir)
   (when (not (file-directory-p dir))
-    (error "%s is not a directory"))
+    (error "%s is not a directory" dir))
   (let* ((sha1-dir (cu-dir-to-sha1 dir))
          (absolute-path-sha1-dir
           (cu-join-path eopengrok-database-root-dir sha1-dir))
@@ -553,57 +562,45 @@
     (make-symbolic-link dir source-dir t)
     (list (file-chase-links source-dir) absolute-path-sha1-dir)))
 
-(defun eopengrok-create-index (dir &optional enable-projects-p sentinel inhabit-pop-buffer)
-  "Create an Index file in DIR, ENABLE-PROJECTS-P is flag for enable projects.
-If not nil every directory in DIR is considered a separate project."
-  (interactive "DRoot directory: ")
-  ;; (print eopengrok-ignore-list)
-  (let ((proc (apply 'start-process
-                     "eopengrok-indexer"
-                     eopengrok-indexing-buffer
-                     "clj-opengrok"
-                     (append (list "index")
-                             (when eopengrok-create-index-quite-mode
-                                 (list "-q"))
-                             (if eopengrok-use-clj-opengrok
-                                 (list "-s" (expand-file-name dir))
-                               (if eopengrok-global-configuration-mode
-                                   (list "-P"
-                                         "-s" eopengrok-global-source-dir
-                                         "-d" eopengrok-global-data-dir
-                                         "-W" eopengrok-global-configuration-file)
-                                 (let ((source-dir-pair (create-database-dir-if-not-exist dir)))
-                                   (list "-s" (car source-dir-pair)
-                                         "-d" (cu-join-path (cadr source-dir-pair) ".opengrok")
-                                         "-W" (cu-join-path (cadr source-dir-pair) eopengrok-configuration)))))
-                             (if eopengrok-use-clj-opengrok
-                                 (list "-i" eopengrok-ignore-file-or-directory)
-                               (seq-reduce
-                                (lambda (init ele)
-                                  (if (and (stringp ele) (not (equal ele "")))
-                                      (append (list "-i" ele) init)
-                                    init))
-                                eopengrok-ignore-list
-                                nil))
+(defvar eopengrok-create-index-quite-mode t
+  "crate index as quiet as possible")
 
-                             (when enable-projects-p '("-e"))))))
+(defconst eopengrok-enable-projects-p nil
+  "If enabled, every project in the root directory will be considered as a separate project")
+
+(defun eopengrok-create-index (dir &optional sentinel inhabit-pop-buffer)
+  "Create an Index file in DIR, optionally the caller can pass in a customized SENTINEL"
+  (interactive "DRoot directory: ")
+  (let* ((dir (file-truename dir))
+         (index-buffer-name (eopengrok-get-workspace-name dir :index-buffer))
+         (proc (apply 'start-process
+                      (eopengrok-get-workspace-name dir :index-process)
+                      index-buffer-name
+                      eopengrok-script-name
+                      (append (list "index")
+                              (when eopengrok-create-index-quite-mode
+                                (list "-q"))
+                              (let ((source-dir-pair (create-database-dir-if-not-exist dir)))
+                                (list "-s" (car source-dir-pair)
+                                      "-d" (cu-join-path (cadr source-dir-pair) ".opengrok")
+                                      "-W" (cu-join-path (cadr source-dir-pair) eopengrok-configuration)))
+                              (seq-reduce
+                               (lambda (init ele)
+                                 (if (and (stringp ele) (not (equal ele "")))
+                                     (append (list "-i" ele) init)
+                                   init))
+                               eopengrok-ignore-list
+                               nil)
+                              (when eopengrok-enable-projects-p '("-e"))))))
     (set-process-filter proc 'eopengrok--process-filter)
-    (set-process-sentinel proc (if sentinel
-                                   sentinel
-                                 'eopengrok--process-sentinel))
-    (with-current-buffer eopengrok-indexing-buffer
+    (set-process-sentinel proc (or sentinel 'eopengrok--process-sentinel))
+    (with-current-buffer index-buffer-name
       (eopengrok-mode t)
       (eopengrok--init)
-      (when (boundp 'grok-current-dir)
-        (setq-local grok-current-dir (expand-file-name dir)))
+      (setq-local eopengrok-cwd dir)
       (eopengrok--current-info proc (expand-file-name dir)
-                               nil nil enable-projects-p inhabit-pop-buffer)
+                               nil nil eopengrok-enable-projects-p inhabit-pop-buffer)
       (setq eopengrok-mode-line-status 'running))))
-
-(defun eopengrok-create-index-with-enable-projects (dir)
-  "Create an Index file, every directory in DIR is considered a separate project."
-  (interactive "DRoot directory (enable projects): ")
-  (eopengrok-create-index dir t))
 
 (defvar eopengrok-mode-map nil
   "Keymap for eopengrok minor mode.")

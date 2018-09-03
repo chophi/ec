@@ -12,12 +12,12 @@
 if AS-HEAD not specified or nil,
 but can also be added to head if AS-HEAD is not nil"
   (when (file-directory-p path)
-    (setenv "PATH"
-            (let ((a (expand-file-name path))
-                  (p (getenv "PATH")))
-              (if as-head
-                  (concat a path-separator p)
-                (concat p path-separator a))))))
+    (let ((a (expand-file-name path))
+          (p (getenv "PATH")))
+      (if as-head
+          (setenv "PATH" (concat a path-separator p))
+        (setenv "PATH" (concat p path-separator a)))
+      (add-to-list 'exec-path a (not as-head)))))
 
 (defconst linux-extra-path-list
   '(("/usr/local/texlive/2015/bin/x86_64-linux"))
@@ -41,7 +41,9 @@ but can also be added to head if AS-HEAD is not nil"
                ,(case system-type
                   (darwin "darwin")
                   (gnu/linux "linux")
-                  (t "unknown"))))))
+                  (t "unknown")))
+              ("${HOME}" ,(getenv "HOME"))
+              )))
        (dolist (p replace-pairs)
          (setq path (replace-regexp-in-string (car p) (cadr p) path t))))
      (list path t))
@@ -53,7 +55,9 @@ but can also be added to head if AS-HEAD is not nil"
      "${CONFIG_ROOT_DIR}/script/common"
      "${CONFIG_ROOT_DIR}/script/${MY_HOST_SYSTEM}"
      "${CONFIG_ROOT_DIR}/private/script/common"
-     "${CONFIG_ROOT_DIR}/private/script/${MY_HOST_SYSTEM}")))
+     "${CONFIG_ROOT_DIR}/private/script/${MY_HOST_SYSTEM}"
+     ;; 
+     "${HOME}/.emacs.d/scripts")))
 
 (dolist (extra-path-list
          (append

@@ -156,6 +156,35 @@ And return t if equals, compare the item with `equal'."
     (setq max-depth 10))
   (__cu-list-files-recursively dir re 0 max-depth))
 
+(defun* __cu-search-child-symlink-recursively-in (dir target-dir depth max-depth)
+  "Private support function for `cu-list-files-recursively'"
+  (when (>= depth max-depth)
+    (return-from __cu-search-child-symlink-recursively-in nil))
+  (when (file-accessible-directory-p dir)
+    (let ((files (directory-files dir t))
+          (matched nil))
+      (dolist (fullname files matched)
+        (let ((basename (file-name-nondirectory fullname)))
+          (cond
+           ;; filter out the "." and ".."
+           ((or (string= basename ".")
+                (string= basename "..")
+                (file-regular-p fullname))
+            nil)
+           ;; find the matching files recursively in subdirectories
+           ((and (file-directory-p fullname)
+                 (string-match-p (file-truename fullname) target-dir))
+            (return-from __cu-search-child-symlink-recursively-in fullname))
+           ((file-directory-p fullname)
+            (let ((possible (__cu-search-child-symlink-recursively-in fullname target-dir (1+ depth) max-depth)))
+              (when possible (return-from __cu-search-child-symlink-recursively-in possible))))))))))
+
+(defun cu-search-child-symlink-recursively-in (dir target-dir &optional max-depth)
+  "Return the directory in DIR which symlink to TARGET-DIR"
+  (when (not max-depth)
+    (setq max-depth 3))
+  (__cu-search-child-symlink-recursively-in dir (file-truename target-dir) 0 max-depth))
+
 (defun cu-generate-mode-list-string (mode-list)
   (seq-reduce
    (lambda (init ml)
@@ -616,7 +645,7 @@ NDIM is the dimentions of the choice items.
    root (file-name-directory (directory-file-name dir))))
 
 (defun cu-find-nearest-ancestor-link-in (root path)
-  "Find the nearest ancestor directory which symbolinked to root and named as `cu-dir-to-sha1`"
+  "Find the nearest ancestor directory who has `cu-dir-to-sha1(dir)` located under root"
   ;; append "/" for directory.
   (when (and (cu-is-dir-or-dirlink-p path)
              (not (equal (substring path (1- (length path))) "/")))
