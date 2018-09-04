@@ -240,9 +240,10 @@
            (dir nil)
            (bufname nil)
            (buf nil))
-      (unless source-conf-cons
-        (error "no project for current working directory"))
-      (eopengrok-get-workspace-value (car source-conf-cons) :narrow-to-project)))
+      (if source-conf-cons
+          (eopengrok-get-workspace-value (car source-conf-cons) :narrow-to-project)
+        (message "Not in a project")
+        nil)))
 
   (defun eopengrok-narrow-to-project (&optional no-repo)
     (interactive)
@@ -324,7 +325,7 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
         ;; So we can use that project to search the files.
         (funcall exist-and-configuration-exist-p
                  (eopengrok-was-symbol-linked-under-a-project cwd))
-        (user-error "Can't find configuration.xml"))))
+        nil)))
 
 (defun eopengrok--search-option (conf text option symbol dir)
   "Opengrok search option list with CONF TEXT OPTION SYMBOL."
@@ -584,7 +585,9 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
     `(defun ,fun () ,doc
             (interactive)
             (let* ((source-conf-cons (eopengrok--get-configuration))
-                   (dir (car source-conf-cons))
+                   (dir (if (not source-conf-cons)
+                            (user-error "No Configuration found for %s" default-directory)
+                            (car source-conf-cons)))
                    (conf (cdr source-conf-cons))
                    (proc (eopengrok-get-workspace-name dir :search-process))
                    (text (read-string ,str (thing-at-point 'symbol))))
