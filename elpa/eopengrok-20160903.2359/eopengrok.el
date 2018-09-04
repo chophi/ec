@@ -624,6 +624,9 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
 (defconst eopengrok-database-root-dir (expand-file-name "~/.opengrok-data-base")
   "The default directory for the opengrok database")
 
+(when (not (file-exists-p eopengrok-database-root-dir))
+  (make-directory eopengrok-database-root-dir))
+
 (defun create-database-dir-if-not-exist (dir)
   (when (not (file-directory-p dir))
     (error "%s is not a directory" dir))

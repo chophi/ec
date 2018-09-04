@@ -18,7 +18,4 @@
     ad-do-it))
 (ad-activate 'eopengrok-create-index)
 
-(when (not (file-exists-p eopengrok-database-root-dir))
-  (make-directory eopengrok-database-root-dir))
-
 (provide 'init-grok)
