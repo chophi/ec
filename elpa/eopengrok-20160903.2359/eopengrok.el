@@ -34,11 +34,36 @@
 (require 'etags)
 (require 'magit)
 (require 'cl-lib)
+(require 'pp)
 
 (defvar eopengrok-pending-output nil)
 (defvar eopengrok-last-filename nil)
 (defvar eopengrok-page nil)
 (defvar eopengrok-mode-line-status 'not-running)
+(defconst eopengrok-global-command-buffer-name "*opengrok-commands*")
+
+(defun eopengrok-global-command-buffer ()
+  (get-buffer-create eopengrok-global-command-buffer-name))
+
+(defun eopengrok-set-workspace-var (dir var val)
+  (unless (file-directory-p dir)
+    (error "Dir %s is not exist" dir))
+  (setq dir (file-truename dir))
+  (with-current-buffer (eopengrok-global-command-buffer)
+    (unless (boundp 'eopengrok-hashtab-vars)
+      (setq-local eopengrok-hashtab-vars (make-hash-table :test 'equal)))
+    (goto-char (point-max))
+    (insert (format "Dir: %s\nVariable: %s\nValue: %s\n\n" dir var (pp-to-string val)))
+    (puthash dir (plist-put (gethash dir eopengrok-hashtab-vars nil) var val)
+             eopengrok-hashtab-vars)))
+
+(defun eopengrok-get-workspace-value (dir var)
+  (unless (file-directory-p dir)
+    (error "Dir %s is not exist" dir))
+  (setq dir (file-truename dir))
+  (with-current-buffer (eopengrok-global-command-buffer)
+    (when (boundp 'eopengrok-hashtab-vars)
+      (plist-get (gethash dir eopengrok-hashtab-vars nil) var))))
 
 (defun eopengrok-get-workspace-name (dir type)
   (let ((workspace (cu-dir-to-sha1 (file-truename dir))))
@@ -189,21 +214,36 @@
    (cddr (directory-files eopengrok-database-root-dir))))
 
 (with-eval-after-load "init-work-with-repo"
+
+  (defun eopengrok-get-repo-list (dir)
+    (unless (file-exists-p dir)
+      (error "Dir %s is not exist!" dir))
+    (let* ((repo-list-file (cu-join-path dir ".repo-projects.el"))
+           (file-exists (file-exists-p repo-list-file))
+           (buf (find-file-noselect repo-list-file)))
+      (with-current-buffer buf
+        (if file-exists
+            (prog2
+                (goto-char (point-min))
+                (read (current-buffer))
+              (kill-buffer))
+          (erase-buffer)
+          (let ((lst (gen-repo-list dir)))
+            (pp lst buf)
+            (basic-save-buffer)
+            (kill-buffer)
+            lst)))))
+
   (defun eopengrok-get-current-narrowed-project ()
     (interactive)
     (let* ((source-conf-cons (eopengrok--get-configuration))
            (dir nil)
+           (bufname nil)
            (buf nil))
       (unless source-conf-cons
         (error "no project for current working directory"))
-      (setq dir (car source-conf-cons)
-            buf (eopengrok-get-workspace-name dir :search-buffer))
-      (unless (and (file-exists-p buf)
-                   (with-current-buffer buf
-                     (boundp eopengrok-project)))
-        (with-current-buffer buf
-          eopengrok-project))))
-  
+      (eopengrok-get-workspace-value (car source-conf-cons) :narrow-to-project)))
+
   (defun eopengrok-narrow-to-project (&optional no-repo)
     (interactive)
     (let* ((source-conf-cons (eopengrok--get-configuration))
@@ -213,12 +253,11 @@
       (setq dir (car source-conf-cons))
       (unless no-repo
         (when (file-exists-p (cu-join-path dir ".repo"))
-          (with-current-buffer
-              (get-buffer-create (eopengrok-get-workspace-name dir :search-buffer))
-            (setq-local eopengrok-project
-                        (ido-completing-read
-                         "Choose a directory: "
-                         (mapcar 'car (gen-repo-list (expand-file-name dir)))))))))))
+          (eopengrok-set-workspace-var
+           dir :narrow-to-project
+           (ido-completing-read
+            "Choose a directory: "
+            (mapcar 'car (eopengrok-get-repo-list (expand-file-name dir))))))))))
 
 
 (defconst eopengrok-file-link-map
@@ -297,10 +336,10 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
         (setq key "search_full_text"
               text (format "\"%s\"" text)))
       (unless (equal "-p" option)
-        (with-current-buffer (eopengrok-get-workspace-name dir :search-buffer)
-          (when (and (boundp 'eopengrok-project) eopengrok-project
-                     (not (string-empty-p eopengrok-project)))
-            (setq narrowed-project (list "-p" eopengrok-project)))))
+        (setq narrowed-project
+              (eopengrok-get-workspace-value dir :narrow-to-project))
+        (setq narrowed-project
+              (and narrowed-project (list "-p" narrowed-project))))
       (-flatten (list key "-R" conf option text narrowed-project)))))
 
 (defmacro eopengrok--properties-region (props &rest body)
@@ -552,12 +591,17 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
               (when (process-live-p (get-process proc))
                 (kill-process (get-process proc))
                 (sleep-for 0.1))
-              (let* ((proc (apply 'start-process
-                                  (eopengrok-get-workspace-name dir :search-process)
-                                  (eopengrok-get-workspace-name dir :search-buffer)
-                                  eopengrok-script-name
-                                  (eopengrok--search-option conf text
-                                                            ,option ',sym dir))))
+              (let* ((last-search-command
+                      (-flatten
+                       (list
+                        (eopengrok-get-workspace-name dir :search-process)
+                        (eopengrok-get-workspace-name dir :search-buffer)
+                        eopengrok-script-name
+                        (eopengrok--search-option conf text ,option ',sym dir))))
+                     (proc nil))
+                (eopengrok-set-workspace-var
+                 dir :last-search-command last-search-command)
+                (setq proc (apply 'start-process last-search-command))
                 (set-process-query-on-exit-flag proc nil)
                 (set-process-filter proc 'eopengrok--process-filter)
                 (set-process-sentinel proc 'eopengrok--process-sentinel)
