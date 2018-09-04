@@ -26,4 +26,5 @@
     (setq tab-width dmesg-tab-width))
   )
 
+(add-to-list 'auto-mode-alist '("/[kd]me?sg.*\.log$" . dmesg-mode))
 (provide 'init-dmesg-mode)

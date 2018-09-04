@@ -163,12 +163,6 @@
   (cu-set-key-bindings c-mode-base-map
                        "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
 
-(defun my-opengrok-create-index ()
-  (interactive)
-  (if eopengrok-global-configuration-mode
-      (eopengrok-create-index eopengrok-global-source-dir nil)
-    (call-interactively 'eopengrok-create-index)))
-
 ;; grok keybindings from init-grok.el
 (defconst my-opengrok-map
   '((?d . eopengrok-find-definition)
@@ -177,18 +171,16 @@
     (?t . eopengrok-find-text)
     (?h . eopengrok-find-history)
     (?r . eopengrok-resume)
-    (?c . my-opengrok-create-index)
-    (?m . eopengrok-toggle-global-mode)
-    (?v . eopengrok-visit-nearest-ancestor-link)
-    (?p . eopengrok-choose-projects-from-database)
+    (?c . eopengrok-create-index)
+    (?v . eopengrok-visit-project-root)
+    (?p . eopengrok-narrow-to-project)
     (?l . eopengrok-list-projects)
     (?D . thread-grok-index-main)
     (?K . kill-grok-indexing-buffer)))
 
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)
- '(("global configuration mode" . eopengrok-global-configuration-mode)
-   ("default project" . (car eopengrok-default-project-alist-from-database))))
+ '(("narrowed project" . (eopengrok-get-current-narrowed-project))))
 
 (defun android-doc-local-server()
   (interactive)
