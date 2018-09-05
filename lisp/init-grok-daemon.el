@@ -8,7 +8,6 @@
 (defvar some-thread-is-creating-grok-index nil)
 
 (setq-default thread-list nil)
-(setq-default grok-current-dir nil)
 
 (defun global-grok-indexing-buffer ()
   (get-buffer-create "*grok-indexing-buffer*"))
@@ -37,7 +36,7 @@
 (defun _eopengrok--process-sentinel (process event)
   "Handle eopengrok PROCESS EVENT."
   (let* ((buf (process-buffer process))
-         (project-dir (buffer-local-value 'grok-current-dir buf)))
+         (project-dir (buffer-local-value 'eopengrok-cwd buf)))
     (grok-log (format "Process Buffer: %s\n Received event [%s]\n" buf
                       (cu-strip-string event t t)))
     (with-current-buffer buf
@@ -147,19 +146,17 @@
   (setq some-thread-is-creating-grok-index nil)
   (when in-new-thread
     (add-to-thread-list (current-thread)))
-  (while t
-    (dolist (dir grok-indexing-list)
-      (setq dir (expand-file-name dir))
-      (grok-log (format "Check condition for dir: %s\n" dir))
-      (when (and (grok-need-to-renew-index dir))
-        (grok-log (format "Start to create grok index for %s\n" dir))
-        (add-to-thread-list
-         (make-thread `(lambda () (thread-opengrok-create-index ,dir))
-                      (concat "index-" (grok-construct-name-for dir))))
-        (mutex-lock (condition-mutex global-grok-condition-var))
-        (condition-wait global-grok-condition-var)
-        (mutex-unlock (condition-mutex global-grok-condition-var))
-        (sleep-for 3)))))
+  (dolist (dir grok-indexing-list)
+    (setq dir (expand-file-name dir))
+    (if (not (grok-need-to-renew-index dir))
+        (grok-log (format "No update for dir: [%s]\n" dir))
+      (grok-log (format "Update for [%s]\n" dir))
+      (add-to-thread-list
+       (make-thread `(lambda () (thread-opengrok-create-index ,dir))
+                    (concat "index-" (grok-construct-name-for dir))))
+      (mutex-lock (condition-mutex global-grok-condition-var))
+      (condition-wait global-grok-condition-var)
+      (mutex-unlock (condition-mutex global-grok-condition-var)))))
 
 (defun thread-grok-index-main ()
   (interactive)
