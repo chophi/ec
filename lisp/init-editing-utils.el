@@ -334,4 +334,6 @@
 
 (add-to-list 'auto-mode-alist '("\\.bbclass" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.bb" . shell-script-mode))
+
+(setq rainbow-html-colors t)
 (provide 'init-editing-utils)
