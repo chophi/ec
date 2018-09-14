@@ -306,13 +306,15 @@ CONTENTS and INFO are ignored."
       dc-lang)))
 
 (defun org-confluence--block (language theme contents &optional no-collapse linenumber)
-  (concat "\{code:theme=" theme
-          (when language (format "|language=%s" (org-confluence-translate-language language)))
-          (when (not no-collapse) "|collapse=true")
-          (when linenumbers "|linenumbers=true")
-          "}\n"
-          contents
-          "\{code\}\n"))
+  (let ((numlines (1- (cu-count-lines contents))))
+    (message "content is\n%s\nnumlines is %d" contents numlines)
+    (concat "\{code:theme=" theme
+            (when language (format "|language=%s" (org-confluence-translate-language language)))
+            (when (and (>= numlines 15) (not no-collapse)) "|collapse=true")
+            (when linenumbers "|linenumbers=true")
+            "}\n"
+            contents
+            "\{code\}\n")))
 
 (defun org-confluence--li-depth (item)
   "Return depth of a list item; -1 means not a list item"

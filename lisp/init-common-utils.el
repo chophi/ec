@@ -680,4 +680,12 @@ NDIM is the dimentions of the choice items.
       (add-to-list 'kill-buffer-hook-copy 'kill-processes-in-the-same-group)
       (setq-local kill-buffer-hook kill-buffer-hook-copy))))
 
+(defun cu-count-lines (string)
+  (let ((count 1))
+    (mapc (lambda (c)
+            (when (equal c ?\n)
+              (setq count (1+ count))))
+     string)
+    count))
+
 (provide 'init-common-utils)
