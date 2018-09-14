@@ -307,7 +307,6 @@ CONTENTS and INFO are ignored."
 
 (defun org-confluence--block (language theme contents &optional no-collapse linenumber)
   (let ((numlines (1- (cu-count-lines contents))))
-    (message "content is\n%s\nnumlines is %d" contents numlines)
     (concat "\{code:theme=" theme
             (when language (format "|language=%s" (org-confluence-translate-language language)))
             (when (and (>= numlines 15) (not no-collapse)) "|collapse=true")
