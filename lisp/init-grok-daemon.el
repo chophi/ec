@@ -146,6 +146,8 @@
   (setq some-thread-is-creating-grok-index nil)
   (when in-new-thread
     (add-to-thread-list (current-thread)))
+  (when (fboundp 'generate-grok-indexing-list)
+    (setq grok-indexing-list (generate-grok-indexing-list)))
   (dolist (dir grok-indexing-list)
     (setq dir (expand-file-name dir))
     (if (not (grok-need-to-renew-index dir))
