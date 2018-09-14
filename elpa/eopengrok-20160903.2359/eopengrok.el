@@ -339,6 +339,8 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
       (unless (equal "-p" option)
         (setq narrowed-project
               (eopengrok-get-workspace-value dir :narrow-to-project))
+        (when (and (stringp narrowed-project) (string-empty-p narrowed-project))
+          (setq narrowed-project nil))
         (setq narrowed-project
               (and narrowed-project (list "-p" narrowed-project))))
       (-flatten (list key "-R" conf option text narrowed-project)))))
