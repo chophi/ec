@@ -37,7 +37,7 @@ Apply the tomorrow blue theme.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "color-theme-sanityinc-tomorrow" '("color-theme-sanityinc-tomorrow" "sanityinc-tomorrow-interpolate")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "color-theme-sanityinc-tomorrow" '("color-theme-sanityinc-tomorrow" "sanityinc-tomorrow--")))
 
 ;;;***
 
