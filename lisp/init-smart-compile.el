@@ -11,7 +11,7 @@
         (octave-mode run-octave)
         (groovy-mode . "groovy %f")
         ("\\.c\\'" . "gcc -O2 -Wall -g %f -lm -o %n")
-        ("\\.[Cc]+[Pp]*\\'" . "g++ -O2 -Wall -g -std=gnu++0x %f -lm -o %n")
+        ("\\.[Cc]+[Pp]*\\'" . "g++ -O2 -Wall -g -std=c++1z %f -lm -o %n")
         ("\\.m\\'" . "gcc -O2 %f -lobjc -lpthread -o %n")
         ("\\.java\\'" . "javac %f")
         ("\\.php\\'" . "php -l %f")
