@@ -13,12 +13,17 @@
   (setq color-theme
         (or color-theme
             (ido-completing-read "Choose a theme: "
-                                 '("sanityinc-tommorrow" "zenburn"))))
+                                 '("zenburn" "sanityinc-tommorrow" "dracula"))))
   (cond ((equal color-theme "sanityinc-tommorrow")
          (require-package 'color-theme-sanityinc-tomorrow)
          (load-theme 'sanityinc-tomorrow-eighties t)
          (setq global-background-color "#2D2D2D"
-               global-foreground-color "#CCCCCC"))
+               global-foreground-color "#CCCCCC")
+         (setq ansi-color-faces-vector
+               [default bold shadow italic underline bold bold-italic bold]
+               ansi-color-names-vector
+               ["#c5c8c6" "#cc6666" "#b5bd68" "#f0c674"
+                "#81a2be" "#b294bb" "#8abeb7" "#1d1f21"]))
         ((equal color-theme "zenburn")
          (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/themes")
          (load-theme 'zenburn t)
@@ -26,6 +31,11 @@
                (cdr (assoc "zenburn-bg" zenburn-default-colors-alist))
                global-foreground-color
                (cdr (assoc "zenburn-fg" zenburn-default-colors-alist))))
+        ((equal color-theme "dracula")
+         (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/themes")
+         (load-theme 'dracula t)
+         (setq global-background-color "#282a36"
+               global-foreground-color "#f8f8f2"))
         ((equal global-use-theme "paper")
          (require-package 'paper-theme)
          ;; It's not necessary to modify these variables, they all have sane
@@ -37,12 +47,6 @@
         (t nil)))
 
 (choose-color-theme global-use-theme)
-
-(setq ansi-color-faces-vector
-      [default bold shadow italic underline bold bold-italic bold]
-      ansi-color-names-vector
-      ["#c5c8c6" "#cc6666" "#b5bd68" "#f0c674"
-       "#81a2be" "#b294bb" "#8abeb7" "#1d1f21"])
 
 (when global-background-color
   (set-background-color global-background-color))
