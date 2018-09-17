@@ -8,29 +8,35 @@
 (defvar global-background-color nil "global background color")
 (defvar global-foreground-color nil "global foreground color")
 
-(cond ((equal global-use-theme "sanityinc-tommorrow")
-       (require 'custom)
-       (require-package 'color-theme-sanityinc-tomorrow)
-       (load-theme 'sanityinc-tomorrow-eighties t)
-       (setq global-background-color "#2D2D2D"
-             global-foreground-color "#CCCCCC"))
-      ((equal global-use-theme "zenburn")
-       (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/themes")
-       (load-theme 'zenburn t)
-       (setq global-background-color
-             (cdr (assoc "zenburn-bg" zenburn-default-colors-alist))
-             global-foreground-color
-             (cdr (assoc "zenburn-fg" zenburn-default-colors-alist))))
-      ((equal global-use-theme "paper")
-       (require-package 'paper-theme)
-       ;; It's not necessary to modify these variables, they all have sane
-       ;; defaults.
-       (setf paper-paper-colour 'paper-parchment ; Custom background.
-             paper-tint-factor 45) ; Tint factor for org-level-* faces
-       ;; Activate the theme.
-       (load-theme 'paper t))
-      (t nil))
+(defun choose-color-theme (&optional color-theme)
+  (interactive)
+  (setq color-theme
+        (or color-theme
+            (ido-completing-read "Choose a theme: "
+                                 '("sanityinc-tommorrow" "zenburn"))))
+  (cond ((equal color-theme "sanityinc-tommorrow")
+         (require-package 'color-theme-sanityinc-tomorrow)
+         (load-theme 'sanityinc-tomorrow-eighties t)
+         (setq global-background-color "#2D2D2D"
+               global-foreground-color "#CCCCCC"))
+        ((equal color-theme "zenburn")
+         (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/themes")
+         (load-theme 'zenburn t)
+         (setq global-background-color
+               (cdr (assoc "zenburn-bg" zenburn-default-colors-alist))
+               global-foreground-color
+               (cdr (assoc "zenburn-fg" zenburn-default-colors-alist))))
+        ((equal global-use-theme "paper")
+         (require-package 'paper-theme)
+         ;; It's not necessary to modify these variables, they all have sane
+         ;; defaults.
+         (setf paper-paper-colour 'paper-parchment ; Custom background.
+               paper-tint-factor 45) ; Tint factor for org-level-* faces
+         ;; Activate the theme.
+         (load-theme 'paper t))
+        (t nil)))
 
+(choose-color-theme global-use-theme)
 
 (setq ansi-color-faces-vector
       [default bold shadow italic underline bold bold-italic bold]
