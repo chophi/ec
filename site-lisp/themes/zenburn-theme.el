@@ -1340,21 +1340,21 @@ Also bind `class' to ((class color) (min-colors 89))."
                                         :box (:line-width -1 :style released-button)))))
 ;;;;; term
    `(term-color-black ((t (:foreground ,zenburn-bg
-                                       :background ,zenburn-bg-1))))
+                                       :background ,zenburn-bg))))
    `(term-color-red ((t (:foreground ,zenburn-red-2
-                                     :background ,zenburn-red-4))))
+                                     :background ,zenburn-red-2))))
    `(term-color-green ((t (:foreground ,zenburn-green
-                                       :background ,zenburn-green+2))))
+                                       :background ,zenburn-green))))
    `(term-color-yellow ((t (:foreground ,zenburn-orange
-                                        :background ,zenburn-yellow))))
+                                        :background ,zenburn-orange))))
    `(term-color-blue ((t (:foreground ,zenburn-blue-1
-                                      :background ,zenburn-blue-4))))
+                                      :background ,zenburn-blue-1))))
    `(term-color-magenta ((t (:foreground ,zenburn-magenta
-                                         :background ,zenburn-red))))
+                                         :background ,zenburn-magenta))))
    `(term-color-cyan ((t (:foreground ,zenburn-cyan
-                                      :background ,zenburn-blue))))
+                                      :background ,zenburn-cyan))))
    `(term-color-white ((t (:foreground ,zenburn-fg
-                                       :background ,zenburn-fg-1))))
+                                       :background ,zenburn-fg))))
    '(term-default-fg-color ((t (:inherit term-color-white))))
    '(term-default-bg-color ((t (:inherit term-color-black))))
 ;;;;; undo-tree
