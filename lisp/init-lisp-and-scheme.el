@@ -1,7 +1,8 @@
 (require-package 'paredit)
 
 (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
-
+(font-lock-add-keywords 'emacs-lisp-mode
+                        '(("\\<\\(require-package\\)" . font-lock-keyword-face)))
 (require-package 'racket-mode)
 (add-hook 'racket-mode-hook
           '(lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
