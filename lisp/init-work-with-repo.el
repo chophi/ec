@@ -1,8 +1,9 @@
 (require 'init-custom-compile)
 
-(defvar g-repo-ws (or (getenv "DEFAULT_REPO_WS")
-                      (if (boundp 'g-default-repo-ws) g-default-repo-ws nil))
-  "The workspace for repo project")
+(defun g-repo-ws ()
+  (or (getenv "DEFAULT_REPO_WS")
+      (if (boundp 'g-default-repo-ws) g-default-repo-ws nil)))
+
 (defvar g-repo-proj-list nil "The default project list")
 
 (defun repo-ws ()
@@ -13,11 +14,7 @@
     (file-name-directory repo)))
 
 (defun current-repo-ws ()
-  (or g-repo-ws
-      ;; re-evaluate so if the environment set or g-default-repo-ws set,
-      ;; it takes effect immediately.
-      (or (getenv "DEFAULT_REPO_WS")
-          (if (boundp 'g-default-repo-ws) g-default-repo-ws nil))
+  (or (g-repo-ws)
       (repo-ws)))
 
 (defun gen-repo-list (&optional root)
@@ -41,11 +38,11 @@
 (defun change-repo-ws ()
   (interactive)
   (let ((dir (read-directory-name
-              (message "Current workspace is: %s\nChange to: " g-repo-ws))))
+              (message "Current workspace is: %s\nChange to: " (g-repo-ws)))))
     (when (not (file-exists-p (cu-join-path dir ".repo")))
       (error "There's no repo in %s" dir))
-    (when (not (equal dir g-repo-ws))
-      (setq g-repo-ws dir
+    (when (not (equal dir (g-repo-ws)))
+      (setq g-default-repo-ws dir
             g-repo-proj-list (gen-repo-list dir)))))
 
 (defun repo-goto-project ()
