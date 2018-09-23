@@ -161,6 +161,7 @@
 (require 'init-grok-daemon)
 (require 'init-powerline)
 (require 'init-kotlin)
+(require 'init-gradle)
 (require 'init-keybind)
 (setq sanityinc/require-times
       (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
