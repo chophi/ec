@@ -10,7 +10,8 @@
       (when possible-gradle
         (message "found a gradle project: %s\n" possible-gradle)
         (let ((project-root (file-name-directory possible-gradle)))
-          (add-to-list 'compile-exprs `(,project-root ,(_generate-gradle-mode-map-commands)))))
+          (unless (equal project-root (concat (getenv "HOME") "/"))
+            (add-to-list 'compile-exprs `(,project-root ,(_generate-gradle-mode-map-commands))))))
       compile-exprs))
   (_check-dir default-directory))
 
