@@ -1,5 +1,7 @@
 (require-package 'kotlin-mode)
 (require-package 'flycheck-kotlin)
 (add-hook 'kotlin-mode-hook 'flycheck-mode)
+(add-hook 'kotlin-mode-hook 'electric-pair-mode)
+(add-to-path (format "%s/.sdkman/candidates/kotlin/current/bin" (getenv "HOME")))
 (require-package 'ob-kotlin)
 (provide 'init-kotlin)
