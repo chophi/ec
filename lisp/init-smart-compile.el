@@ -3,6 +3,10 @@
 (defvar smart-compile-state nil
   "Is it compiling, run, or doing something else?")
 
+(defun just-run-the-script ()
+  (interactive)
+  (error "It's script, just run with smart-compile-run"))
+
 (defconst smart-compile-compile-alist
       '((emacs-lisp-mode emacs-lisp-byte-compile)
         (html-mode browse-url-of-buffer)
@@ -10,7 +14,8 @@
         (html-helper-mode browse-url-of-buffer)
         (octave-mode run-octave)
         (groovy-mode . "groovy %f")
-        (kotlin-mode . "kotlinc %f -include-runtime -d %n.jar")
+        ("\\.kt\\'" . "kotlinc %f -include-runtime -d %n.jar")
+        ("\\.kts\\'" just-run-the-script)
         ("\\.c\\'" . "gcc -O2 -Wall -g %f -lm -o %n")
         ("\\.[Cc]+[Pp]*\\'" . "g++ -O2 -Wall -g -std=c++1z %f -lm -o %n")
         ("\\.m\\'" . "gcc -O2 %f -lobjc -lpthread -o %n")
@@ -30,7 +35,8 @@
     ("\\.[Cc]+[Pp]*\\'" . "./%n")
     ("\\.m\\'" . "./%n")
     ("\\.java\\'" . "java %n")
-    (kotlin-mode . "java -jar %n.jar")))
+    ("\\.kt\\'" . "java -jar %n.jar")
+    ("\\.kts\\'" . "kotlinc -script %f")))
 
 (defun smart-compile-compile ()
   (interactive)
