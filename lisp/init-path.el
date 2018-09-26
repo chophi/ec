@@ -20,7 +20,8 @@ but can also be added to head if AS-HEAD is not nil"
       (add-to-list 'exec-path a (not as-head)))))
 
 (defconst linux-extra-path-list
-  '(("/usr/local/texlive/2015/bin/x86_64-linux"))
+  '(("/usr/local/texlive/2015/bin/x86_64-linux")
+    ("/home/linuxbrew/.linuxbrew/bin/"))
   "The list of paths which will be add to path on linux if the path exists")
 
 (defconst mac-extra-path-list
