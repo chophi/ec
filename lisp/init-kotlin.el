@@ -1,5 +1,8 @@
 (require-package 'kotlin-mode)
+
 (require-package 'flycheck-kotlin)
+(flycheck-kotlin-setup)
+
 (require-package 'ob-kotlin)
 
 (add-hook 'kotlin-mode-hook 'flycheck-mode)
