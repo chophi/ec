@@ -367,4 +367,10 @@
                          (?o . pri-jira-open-issue-org-file)
                          (?u . pri-jira-update-issues)
                          (?U . pri-jira-force-update-issues))))
+
+(cu-set-key-bindings dmesg-mode-map
+                     "\C-c\C-d"
+                     '((?D . dmesg-associate-device)
+                       (?d . dmesg-get-device-dsn)
+                       (?h . dmesg-highlight-init-rc-files)))
 (provide 'init-keybind)
