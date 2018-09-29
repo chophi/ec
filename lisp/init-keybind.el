@@ -250,7 +250,8 @@
 (cu-set-key-bindings global-map "\C-cg"
                      '((?a . ag)
                        (?h . helm-do-grep-ag)
-                       (?g . helm-grep-do-git-grep)))
+                       (?g . helm-grep-do-git-grep)
+                       (?m . list-matching-lines)))
 
 ;; ;; ido gnus deprecated
 ;; (cu-set-key-bindings global-map "\C-c\C-m"
