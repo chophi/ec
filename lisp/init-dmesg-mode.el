@@ -58,10 +58,13 @@
 
 (defun dmesg-goto-file ()
   (interactive)
-  (let ((file-location (get-text-property (point)'file-location)))
-    (if file-location
-        (find-file-other-window (message file-location))
-      (error "no file-location"))))
+  (let ((file-location (get-text-property (point) 'file-location)))
+    (if (not file-location)
+        (error "no file-location")
+      (delete-other-windows)
+      (split-window-vertically)
+      (switch-window)
+      (find-file (message file-location)))))
 
 (defconst dmesg-goto-file-map
   (let ((map (make-sparse-keymap)))
@@ -77,20 +80,41 @@
          (dsn (dmesg-get-device-dsn t t))
          (pull-files (when (and dsn (_adb dsn "root"))
                        (y-or-n-p "Pull files?")))
-         (file-name t))
+         (file-name t)
+         (source-name nil)
+         (filename-text-properties-ht (make-hash-table :test 'equal))
+         (text-properties nil))
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "init: Parsing file \\(/.*rc\\)" nil t)
+    (while (re-search-forward "init: Parsing file \\(/[^[:space:]]*\\.rc\\)" nil t)
       (setq start (match-beginning 1)
             end (match-end 1))
+      (setq source-name (buffer-substring start end))
       (when pull-files
-        (setq file-name (_try_pull dsn (buffer-substring start end))))
+        (setq file-name (_try_pull dsn source-name)))
       (when file-name
-        (add-text-properties start end `(file-location
-                                         ,file-name
-                                         keymap
-                                         ,dmesg-goto-file-map))
-        (overlay-put (make-overlay start end) 'face 'link))))))
+        (cond ((stringp file-name)
+               (puthash source-name `(file-location
+                                    ,file-name
+                                    keymap
+                                    ,dmesg-goto-file-map)
+                        filename-text-properties-ht))
+              (t (overlay-put (make-overlay start end) 'face 'link)))))
+    (unless (hash-table-empty-p filename-text-properties-ht)
+      (goto-char (point-min))
+      (dolist (ovl (-flatten (overlay-lists)))
+        (delete-overlay ovl))
+      (while (re-search-forward "/[^[:space:]]*\\.rc" nil t)
+        (setq start (match-beginning 0)
+              end (match-end 0)
+              source-name (buffer-substring start end)
+              text-properties (gethash source-name filename-text-properties-ht nil))
+        ;; (message "Render: %s" source-name)
+        (if (not text-properties)
+            (overlay-put (make-overlay start end) 'face
+                         '(:foreground "cyan" :slant italic))
+          (add-text-properties start end text-properties)
+          (overlay-put (make-overlay start end) 'face 'link)))))))
 
 (add-to-list 'auto-mode-alist '("/[kd]me?sg.*\.log$" . dmesg-mode))
 (provide 'init-dmesg-mode)
