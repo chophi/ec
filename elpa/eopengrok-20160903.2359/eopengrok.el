@@ -553,6 +553,16 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
             ((string= "finished\n" event)
              (setq eopengrok-mode-line-status 'finished)
              (unless (eopengrok-workspace-name-p (buffer-name buf) :search-buffer)
+               (when (and (boundp 'eopengrok-old-index-dir) eopengrok-old-index-dir)
+                 (let ((command (format "mv %s %s.old && mv %s.new %s && rm -rf %s.old"
+                                        eopengrok-old-index-dir
+                                        eopengrok-old-index-dir
+                                        eopengrok-old-index-dir
+                                        eopengrok-old-index-dir
+                                        eopengrok-old-index-dir)))
+                   (message "Start to swap index directories:")
+                   (message command)
+                   (shell-command command)))
                (kill-buffer buf)))
             (t nil)))))
 
@@ -632,20 +642,35 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
 (when (not (file-exists-p eopengrok-database-root-dir))
   (make-directory eopengrok-database-root-dir))
 
-(defun create-database-dir-if-not-exist (dir)
+(defun create-database-dir-if-not-exist (dir swap-mode)
   (when (not (file-directory-p dir))
     (error "%s is not a directory" dir))
   (let* ((sha1-dir (cu-dir-to-sha1 dir))
          (absolute-path-sha1-dir
           (cu-join-path eopengrok-database-root-dir sha1-dir))
-         (source-dir (cu-join-path absolute-path-sha1-dir "source")))
-    (when (not (file-exists-p absolute-path-sha1-dir))
-      (make-directory absolute-path-sha1-dir))
+         (old-dir nil)
+         (source-dir nil))
+    (when (and swap-mode (file-exists-p absolute-path-sha1-dir))
+      (setq old-dir absolute-path-sha1-dir)
+      (setq absolute-path-sha1-dir (concat old-dir ".new"))
+      (when (file-exists-p absolute-path-sha1-dir)
+        (if (y-or-n-p (format "Remove %s first?" absolute-path-sha1-dir))
+            (shell-command (format "rm -rf %s" absolute-path-sha1-dir))
+          (error "You should remove %s or swap it first!" absolute-path-sha1-dir))))
+    (make-directory absolute-path-sha1-dir t)
+    (setq source-dir (cu-join-path absolute-path-sha1-dir "source"))
     (make-symbolic-link dir source-dir t)
-    (list (file-chase-links source-dir) absolute-path-sha1-dir)))
+    (list (file-chase-links source-dir) absolute-path-sha1-dir old-dir)))
 
 (defvar eopengrok-create-index-quite-mode t
   "crate index as quiet as possible")
+
+(defvar eopengrok-swap-mode nil
+  "Create in new space and swap only")
+
+(defun eopengrok-toggle-swap-mode ()
+  (interactive)
+  (setq eopengrok-swap-mode (not eopengrok-swap-mode)))
 
 (defconst eopengrok-enable-projects-p nil
   "If enabled, every project in the root directory will be considered as a separate project")
@@ -654,6 +679,7 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
   "Create an Index file in DIR, optionally the caller can pass in a customized SENTINEL"
   (interactive "DRoot directory: ")
   (let* ((dir (file-truename dir))
+         (old-index-dir nil)
          (index-buffer-name (eopengrok-get-workspace-name dir :index-buffer))
          (proc (apply 'start-process
                       (eopengrok-get-workspace-name dir :index-process)
@@ -662,7 +688,8 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
                       (append (list "index")
                               (when eopengrok-create-index-quite-mode
                                 (list "-q"))
-                              (let ((source-dir-pair (create-database-dir-if-not-exist dir)))
+                              (let ((source-dir-pair (create-database-dir-if-not-exist dir eopengrok-swap-mode)))
+                                (setq old-index-dir (caddr source-dir-pair))
                                 (list "-s" (car source-dir-pair)
                                       "-d" (cu-join-path (cadr source-dir-pair) ".opengrok")
                                       "-W" (cu-join-path (cadr source-dir-pair) eopengrok-configuration)))
@@ -680,6 +707,7 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
       (eopengrok-mode t)
       (eopengrok--init)
       (setq-local eopengrok-cwd dir)
+      (setq-local eopengrok-old-index-dir old-index-dir)
       (eopengrok--current-info proc (expand-file-name dir)
                                nil nil eopengrok-enable-projects-p inhabit-pop-buffer)
       (setq eopengrok-mode-line-status 'running))))
