@@ -554,15 +554,26 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
              (setq eopengrok-mode-line-status 'finished)
              (unless (eopengrok-workspace-name-p (buffer-name buf) :search-buffer)
                (when (and (boundp 'eopengrok-old-index-dir) eopengrok-old-index-dir)
-                 (let ((command (format "mv %s %s.old && mv %s.new %s && rm -rf %s.old"
-                                        eopengrok-old-index-dir
-                                        eopengrok-old-index-dir
-                                        eopengrok-old-index-dir
-                                        eopengrok-old-index-dir
-                                        eopengrok-old-index-dir)))
+                 (let* ((index-dir eopengrok-old-index-dir)
+                        (command (format "mv %s %s.old && mv %s.new %s && rm -rf %s.old"
+                                         index-dir
+                                         index-dir
+                                         index-dir
+                                         index-dir
+                                         index-dir)))
                    (message "Start to swap index directories:")
                    (message command)
-                   (shell-command command)))
+                   (shell-command command)
+                   (message "Replace the path in configuration")
+                   (let ((config-buf (find-file-noselect
+                                      (cu-join-path
+                                       index-dir
+                                       ".opengrok/configuration.xml"))))
+                     (with-current-buffer config-buf
+                       (mark-whole-buffer)
+                       (replace-string (concat index-dir ".new") index-dir)
+                       (save-buffer)
+                       (kill-buffer)))))
                (kill-buffer buf)))
             (t nil)))))
 
