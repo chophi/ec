@@ -74,7 +74,7 @@ is a convention for multi-build projects, where dirname is under some
   (let ((dirname (file-name-nondirectory
 		  (directory-file-name (expand-file-name dir)))))
     (or (file-exists-p (expand-file-name "build.gradle" dir))
-	(file-exists-p (expand-file-name
+	    (file-exists-p (expand-file-name
 			(concat dirname ".gradle") dir)))))
 
 (defun gradle-is-gradlew-dir (dir)
@@ -97,11 +97,7 @@ If there is a folder you care to run from higher than this level, you need to mo
 (defun gradle-run (gradle-tasks)
   "Run gradle command with `GRADLE-TASKS' and options supplied."
   (gradle-kill-compilation-buffer)
-  (let ((default-directory
-	  (gradle-run-from-dir (if gradle-use-gradlew
-				   'gradle-is-gradlew-dir
-				 'gradle-is-project-dir))))
-    (compile (gradle-make-command gradle-tasks))))
+  (compile (gradle-make-command gradle-tasks)))
 
 (defun gradle-make-command (gradle-tasks)
   "Make the gradle command, using some executable path and GRADLE-TASKS."
@@ -180,8 +176,7 @@ If there is a folder you care to run from higher than this level, you need to mo
 Run gradle tasks from any buffer, scanning up to nearest gradle
 directory to run tasks."
   :lighter " Gradle"
-  :keymap 'gradle-mode-map
-  :global t)
+  :keymap 'gradle-mode-map)
 
 (provide 'gradle-mode)
 
