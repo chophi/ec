@@ -13,7 +13,7 @@
               commands)))
   (defun _check-dir (dir)
     (let ((compile-exprs nil)
-          (possible-gradle (cu-find-nearest-ancestor-match dir ".gradle")))
+          (possible-gradle (cu-find-nearest-ancestor-match dir (regexp-opt '("build.gradle" "build.gradle.kts")) t)))
       (when possible-gradle
         (message "found a gradle project: %s\n" possible-gradle)
         (let ((project-root (file-name-directory possible-gradle)))
