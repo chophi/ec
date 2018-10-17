@@ -8,7 +8,7 @@
           (unless (equal project-root (concat (getenv "HOME") "/"))
             (add-to-list 'compile-exprs `(,project-root
                                           ((unit "gradle-build"
-                                                 (elisp (call-interactively (gradle--make-build-map))))))))))
+                                                 (elisp (call-interactively (gradle--make-build-lambda))))))))))
       compile-exprs))
   (_check-dir default-directory))
 
