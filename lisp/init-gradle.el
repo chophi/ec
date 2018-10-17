@@ -16,12 +16,14 @@
      (?S . gradle-single-test--daemon)
      (?E . gradle-execute--daemon)
      (?e . gradle-execute))))
+
 (defun gradle--make-build-map ()
   (interactive)
-  (when (file-exists-p "gradlew")
-    (setq-local gradle-use-gradlew t)
-    (setq-local gradle-gradlew-executable "./gradlew"))
-  (call-interactively (_gradle--make-build-map)))
+  (if (file-executable-p "gradlew")
+    (let ((gradle-use-gradlew t)
+          (gradle-gradlew-executable "./gradlew"))
+      (call-interactively (_gradle--make-build-map)))
+    (call-interactively (_gradle--make-build-map))))
 
 (add-hook 'gradle-build-mode
           (lambda ()
