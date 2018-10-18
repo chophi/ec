@@ -375,4 +375,72 @@
                      '((?D . dmesg-associate-device)
                        (?d . dmesg-get-device-dsn)
                        (?h . dmesg-highlight-init-rc-files)))
+
+(cu-set-key-bindings
+ projectile-mode-map
+ "\C-cp"
+ `((?O . projectile-project-buffers-other-buffer)
+   (?! . projectile-run-shell-command-in-root)
+   (?& . projectile-run-async-shell-command-in-root)
+   (?C . projectile-configure-project)
+   (?D . projectile-dired)
+   (?E . projectile-edit-dir-locals)
+   (?I . projectile-ibuffer)
+   (?P . projectile-test-project)
+   (?R . projectile-regenerate-tags)
+   (?S . projectile-save-project-buffers)
+   (?V . projectile-browse-dirty-projects)
+   (?b . projectile-switch-to-buffer)
+   (?c . projectile-compile-project)
+   (?e . projectile-recentf)
+   (?i . projectile-invalidate-cache)
+   (?k . projectile-kill-buffers)
+   (?m . projectile-commander)
+   (?o . projectile-multi-occur)
+   (?p . projectile-switch-project)
+   (?q . projectile-switch-open-project)
+   (?r . projectile-replace)
+   (?t . projectile-toggle-between-implementation-and-test)
+   (?u . projectile-run-project)
+   (?v . projectile-vc)
+   (?z . projectile-cache-current-file)
+   (?f . ,(cu-make-keymap-func
+           "projectile-find"
+           '((?n . projectile-find-file-in-known-projects)
+             (?t . projectile-find-test-file)
+             (?o . projectile-find-other-file)
+             (?d . projectile-find-dir)
+             (?f . projectile-find-file)
+             (?w . projectile-find-file-dwim)
+             (?g . projectile-find-tag)
+             (?i . projectile-find-file-in-directory))))
+   (?5 . ,(cu-make-keymap-func
+           "projectile-display-in-other-frame"
+           '((?D . projectile-dired-other-frame)
+             (?b . projectile-switch-to-buffer-other-frame)
+             (?a . projectile-find-other-file-other-frame)
+             (?d . projectile-find-dir-other-frame)
+             (?f . projectile-find-file-other-frame)
+             (?g . projectile-find-file-dwim-other-frame)
+             (?t . projectile-find-implementation-or-test-other-frame))))
+   (?4 . ,(cu-make-keymap-func
+           "projectile-display-in-other-window"
+           '((?o . projectile-display-buffer)
+             (?D . projectile-dired-other-window)
+             (?b . projectile-switch-to-buffer-other-window)
+             (?a . projectile-find-other-file-other-window)
+             (?d . projectile-find-dir-other-window)
+             (?f . projectile-find-file-other-window)
+             (?g . projectile-find-file-dwim-other-window)
+             (?t . projectile-find-implementation-or-test-other-window))))
+   (?x . ,(cu-make-keymap-func
+           "projectile-run"
+           '((?e . projectile-run-eshell)
+             (?s . projectile-run-shell)
+             (?t . projectile-run-term))))
+   (?s . ,(cu-make-keymap-func
+           "projectile-search"
+           '((?g . projectile-grep)
+             (?r . projectile-ripgrep)
+             (?s . projectile-ag))))))
 (provide 'init-keybind)
