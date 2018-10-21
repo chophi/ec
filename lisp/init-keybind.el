@@ -74,10 +74,10 @@
 ;; google translate
 (dolist (map (list org-mode-map global-map))
   (cu-set-key-bindings map "\C-c\C-t"
-                       `((?t . google-translate-at-point)
-                         (?r . google-translate-at-point-reverse)
-                         (?q . google-translate-query-translate)
-                         (?b . google-translate-query-translate-reverse)
+                       `((?e . google-translate-at-point-to-english)
+                         (?c . google-translate-at-point-to-chinese)
+                         (?E . google-translate-query-to-english)
+                         (?C . google-translate-query-to-chinese)
                          ,@(when (eq map org-mode-map)
                              '((?T . org-todo))))))
 

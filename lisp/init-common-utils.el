@@ -698,4 +698,13 @@ NDIM is the dimentions of the choice items.
      string)
     count))
 
+(defun cu-read-word-or-region ()
+  (interactive)
+  (let ((bounds nil))
+    (if (use-region-p)
+        (buffer-substring-no-properties (region-beginning) (region-end))
+      (or (and (setq bounds (bounds-of-thing-at-point 'word))
+               (buffer-substring-no-properties (car bounds) (cdr bounds)))
+          (error "No word at point.")))))
+
 (provide 'init-common-utils)
