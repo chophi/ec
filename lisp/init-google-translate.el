@@ -16,7 +16,7 @@
 
 (defun google-translate-at-point-to-chinese ()
   (interactive)
-  (_google-translate "ch"))
+  (_google-translate "zh"))
 
 (defun google-translate-query-to-english ()
   (interactive)
@@ -24,6 +24,6 @@
 
 (defun google-translate-query-to-chinese ()
   (interactive)
-  (_google-translate "ch" nil t))
+  (_google-translate "zh" nil t))
 
 (provide 'init-google-translate)
