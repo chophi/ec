@@ -10,10 +10,64 @@
   (interactive)
   (gradle-run "-q run"))
 
+(defun _get-gradle-target-list ()
+  (interactive)
+  (let* ((str (shell-command-to-string "gradle task --all"))
+         (regex-str "\\([a-zA-Z1-9_]+\\) - \\(.+\\)")
+         (task-lines (seq-filter (lambda (line)
+                                   (string-match-p regex-str line))
+                                 (split-string str "\n")))
+         (task-list (mapcar (lambda (line)
+                              (progn (string-match regex-str line)
+                                     (cons (match-string 1 line) (match-string 2 line))))
+                            task-lines)))
+    task-list))
+
+(defun _move-the-chosen-to-first ()
+  (let ((the-chosen (assoc local-gradle-target local-gradle-target-list)))
+    (when the-chosen
+      (setq-local local-gradle-target-list
+                  (remove the-chosen local-gradle-target-list))
+      (add-to-list 'local-gradle-target-list the-chosen))))
+
+(defun _gradle-get-targets (&optional re-new)
+  (interactive "P")
+  (with-current-buffer current-custom-compile-log-buffer
+    (when (or re-new (not (boundp 'local-gradle-target-list))
+              (not local-gradle-target-list))
+      (setq-local local-gradle-target-list (_get-gradle-target-list)))
+    (when (not (boundp 'local-gradle-target))
+      (setq-local local-gradle-target nil))
+    (_move-the-chosen-to-first)
+    (setq-local local-gradle-target
+                (ido-completing-read "Choose a target: "
+                                     (mapcar 'car local-gradle-target-list)))
+    (_move-the-chosen-to-first)))
+
+(defun gradle-make-target (re-new)
+  (interactive "P")
+  (unless (boundp 'in-custom-compile-environment)
+    (error "Only used in the custom compile environment"))
+  (with-current-buffer current-custom-compile-log-buffer
+    (_gradle-get-targets re-new)
+    (gradle-run (format "-q %s" local-gradle-target))))
+
+(defun gradle-show-current-target ()
+  (interactive)
+  (unless (boundp 'in-custom-compile-environment)
+    (error "Only used in the custom compile environment"))
+  (with-current-buffer current-custom-compile-log-buffer
+    (if (and (boundp 'local-gradle-target-list) (boundp 'local-gradle-target))
+        (message "Current Target is:\n[%s] - [%s]" local-gradle-target
+                 (cdr (assoc local-gradle-target local-gradle-target-list)))
+      (message "local-gradle-target-list or local-gradle-target not bound"))))
+
 (defun _gradle--make-build-map ()
   (_make-commands-map-with-help-msg
-   '((?b . gradle-build)
+   '((?m . gradle-make-target)
+     (?i . gradle-show-current-target)
      (?r . gradle-q-run)
+     (?b . gradle-build)
      (?t . gradle-test)
      (?s . gradle-single-test)
      (?B . gradle-build--daemon)
@@ -37,8 +91,6 @@
 (require 'gradle-mode)
 (setq gradle-mode-map-old gradle-mode-map
       gradle-mode-map nil)
-(define-key gradle-build-mode-map "\C-c\C-g"
-  (lambda () (interactive) (call-interactively (gradle--make-build-lambda))))
 
 (with-eval-after-load 'flycheck
   (flycheck-gradle-setup))

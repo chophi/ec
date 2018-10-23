@@ -182,7 +182,9 @@ to '((program-name project-root compilation-configuration expression) ...)"
              (_send-command-to-terminal
               (get-or-select-buffer-local-terminal enforce-reselect)
               (format "cd %s &&\\\n %s" project-root command)))
-            ('elisp (eval command))
+            ('elisp (let ((in-custom-compile-environment t)
+                          (current-custom-compile-log-buffer compile-log))
+                      (eval command)))
             ('t (message "Unknown command type, exiting")
                 (return-from cp-custom-compile nil))))))))
 
