@@ -62,10 +62,15 @@
                  (cdr (assoc local-gradle-target local-gradle-target-list)))
       (message "local-gradle-target-list or local-gradle-target not bound"))))
 
+(defun gradle-list-target ()
+  (interactive)
+  (gradle-run "-q task --all"))
+
 (defun _gradle--make-build-map ()
   (_make-commands-map-with-help-msg
    '((?m . gradle-make-target)
      (?i . gradle-show-current-target)
+     (?l . gradle-list-target)
      (?r . gradle-q-run)
      (?b . gradle-build)
      (?t . gradle-test)
