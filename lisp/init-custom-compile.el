@@ -119,6 +119,7 @@ to '((program-name project-root compilation-configuration expression) ...)"
 (defun* cp-custom-compile (enforce-reselect)
   (interactive "P")
   (let* ((path default-directory)
+         (run-on-file (buffer-file-name))
          ;; make reshaped multi level choice list.
          (reshaped-mlcl
           (cu-reshape-multi-level-choice-list*
@@ -174,6 +175,8 @@ to '((program-name project-root compilation-configuration expression) ...)"
         (message "Run: %S" command)
         ;; Run the command.
         (with-current-buffer (get-buffer-create compile-log)
+          (setq-local custom-compile-project-root project-root)
+          (setq-local custom-compile-run-on-file run-on-file)
           (cd project-root)
           (case command-type
             ('compile (compile command))
