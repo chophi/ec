@@ -8,7 +8,9 @@
                              (read-string "To Translate: ")
                            (cu-read-word-or-region)))
                  google-translate-buffer
-                 google-translate-buffer))
+                 google-translate-buffer)
+  (with-current-buffer google-translate-buffer
+    (ansi-color-apply-on-region (point-min) (point-max))))
 
 (defun google-translate-at-point-to-english ()
   (interactive)
