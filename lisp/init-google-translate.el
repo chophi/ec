@@ -2,13 +2,14 @@
 (defvar google-translate-buffer "*google-translate*")
 
 (defun _google-translate (to-language &optional brief query)
-  (shell-command (format "%s :%s %s \"%s\"" google-translate-program
-                         to-language (if brief "-b" "")
-                         (if query
-                             (read-string "To Translate: ")
-                           (cu-read-word-or-region)))
-                 google-translate-buffer
-                 google-translate-buffer)
+  (let ((max-mini-window-height 0.0))
+    (shell-command (format "%s :%s %s \"%s\"" google-translate-program
+                           to-language (if brief "-b" "")
+                           (if query
+                               (read-string "To Translate: ")
+                             (cu-read-word-or-region)))
+                   google-translate-buffer
+                   google-translate-buffer))
   (with-current-buffer google-translate-buffer
     (ansi-color-apply-on-region (point-min) (point-max))))
 
