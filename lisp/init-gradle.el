@@ -62,6 +62,24 @@
                  (cdr (assoc local-gradle-target local-gradle-target-list)))
       (message "local-gradle-target-list or local-gradle-target not bound"))))
 
+(defun* gradle-visit-build-file ()
+  (interactive)
+  (unless (boundp 'in-custom-compile-environment)
+    (error "Only used in the custom compile environment"))
+  (let ((cur-file custom-compile-run-on-file))
+    (with-current-buffer current-custom-compile-log-buffer
+      (let* ((possible-build-file
+              '("build.gradle" "build.gradle.kts"))
+             (build-file nil)
+             (file nil))
+        (dolist (f possible-build-file)
+          (setq file (cu-join-path custom-compile-project-root f))
+          (when (and (file-exists-p file))
+            (if (equal file cur-file)
+                (message "You're currently visiting the build file")
+              (find-file-other-window file))
+            (return-from gradle-visit-build-file t)))))))
+
 (defun gradle-list-target ()
   (interactive)
   (gradle-run "-q task --all"))
@@ -79,7 +97,8 @@
      (?T . gradle-test--daemon)
      (?S . gradle-single-test--daemon)
      (?E . gradle-execute--daemon)
-     (?e . gradle-execute))))
+     (?e . gradle-execute)
+     (?v . gradle-visit-build-file))))
 
 (defun gradle--make-build-lambda ()
   (interactive)
