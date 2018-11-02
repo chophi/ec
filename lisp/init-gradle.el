@@ -8,7 +8,23 @@
 
 (defun gradle-q-run ()
   (interactive)
-  (gradle-run "-q run"))
+  (gradle-kill-compilation-buffer)
+  (let ((choices (list (gradle-make-command "-q run"))))
+    (let ((exe-dir "build/exe"))
+      (when (file-exists-p exe-dir)
+        (setq choices (append
+                       (mapcar (lambda (file) (cu-join-path "build/exe" file))
+                                 (cu-list-files-recursively-general
+                                  exe-dir
+                                  #'(lambda (fulpath)
+                                      (and (file-regular-p fulpath)
+                                           (file-executable-p fulpath)))
+                                  3 t)) 
+                              choices)))
+      )
+    (if (equal (length choices) 1)
+        (compile (car choices))
+      (compile (ido-completing-read "Choose a command: " choices)))))
 
 (defun _get-gradle-target-list ()
   (interactive)
