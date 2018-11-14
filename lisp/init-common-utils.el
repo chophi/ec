@@ -128,33 +128,47 @@ And return t if equals, compare the item with `equal'."
           args
           :initial-value root))
 
-(defun __cu-list-files-recursively (dir re depth max-depth)
+(defun __cu-list-files-recursively-general (dir filter-function depth max-depth relative)
   "Private support function for `cu-list-files-recursively'"
+  (print "relative is: ")
+  (print relative)
   (when (file-accessible-directory-p dir)
     (let ((files (directory-files dir t))
           (matched nil))
       (dolist (fullname files matched)
-        (let ((basename (file-name-nondirectory fullname)))
+        (let* ((basename (file-name-nondirectory fullname))
+               (relative-path (when relative
+                                (if (eq relative t)
+                                    basename
+                                  (cu-join-path relative basename)))))
           (cond
            ;; filter out the "." and ".."
            ((or (string= basename ".")
                 (string= basename "..")) nil)
-           ;; append the matched regular file to matched
-           ((and (file-regular-p fullname)
-                 (string-match re basename))
-            (setq matched (cons fullname matched)))
+           ;; append the files which meets the requirement
+           ((funcall filter-function fullname)
+            (setq matched (cons (or relative-path fullname) matched)))
            ;; find the matching files recursively in subdirectories
            ((and (file-directory-p fullname)
                  (< depth max-depth))
             (let ((more-files
-                   (__cu-list-files-recursively fullname re (1+ depth) max-depth)))
+                   (__cu-list-files-recursively-general fullname filter-function (1+ depth) max-depth relative-path)))
               (when more-files (setq matched (append matched more-files)))))))))))
 
-(defun cu-list-files-recursively (dir re &optional max-depth)
-  "Returns list of files in DIR matching to given regexp RE"
+(defun cu-list-files-recursively-general (dir filter-function &optional max-depth relative)
+  "Returns list of files which FILTER-FUNCTION(fullpath) return `t'"
   (when (not max-depth)
     (setq max-depth 10))
-  (__cu-list-files-recursively dir re 0 max-depth))
+  (__cu-list-files-recursively-general dir filter-function 0 max-depth relative))
+
+(defun cu-list-files-recursively (dir re &optional max-depth relative)
+  "Returns list of files in DIR matching to given regexp RE"
+  (cu-list-files-recursively-general
+   dir
+   #'(lambda (fullpath)
+       (and (file-regular-p fullpath)
+            (string-match re (file-name-nondirectory fullpath))))
+   max-depth relative))
 
 (defun* __cu-search-child-symlink-recursively-in (dir target-dir depth max-depth)
   "Private support function for `cu-list-files-recursively'"
