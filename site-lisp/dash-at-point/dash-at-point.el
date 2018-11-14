@@ -215,16 +215,22 @@ the combined docset.")
 
 (defun dash-at-point-run-search (search-string &optional docset)
   "Directly execute search for SEARCH-STRING in Dash."
-  (start-process "Dash" nil "open"
+  (let ((param
 		 (if dash-at-point-legacy-mode
 		     (concat "dash://"
-			     (when docset
-			       (concat docset ":"))
-			     search-string)
+			         (when docset
+			           (concat docset ":"))
+			         search-string)
 		   (concat "dash-plugin://"
-			   (when docset
-			     (concat "keys=" docset "&"))
-			   "query=" (url-hexify-string search-string)))))
+			       (when docset
+			         (concat "keys=" docset
+                             (if (fboundp 'remote-dash-command) "\\\\\\&" "&")))
+			       "query=" (url-hexify-string search-string)))))
+    (if (fboundp 'remote-dash-command)
+        (let ((command (format "%s %s" (remote-dash-command) param)))
+          (message "Run %s" command)
+          (shell-command command))
+      (start-process "Dash" nil "open" param))))
 
 ;;;###autoload
 (defun dash-at-point (&optional edit-search)

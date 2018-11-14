@@ -162,8 +162,7 @@
 (require 'init-powerline)
 (require 'init-kotlin)
 (require 'init-gradle)
-(when (eq os 'macos)
-  (require 'init-dash))
+(require 'init-dash)
 (require 'init-keybind)
 (setq sanityinc/require-times
       (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
