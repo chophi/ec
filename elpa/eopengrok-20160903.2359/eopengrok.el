@@ -549,31 +549,34 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
   (let ((buf (process-buffer process)))
     (with-current-buffer buf
       (cond ((string= "killed\n" event)
-             (kill-buffer buf))
+              (kill-buffer buf))
             ((string= "finished\n" event)
              (setq eopengrok-mode-line-status 'finished)
              (unless (eopengrok-workspace-name-p (buffer-name buf) :search-buffer)
                (when (and (boundp 'eopengrok-old-index-dir) eopengrok-old-index-dir)
                  (let* ((index-dir eopengrok-old-index-dir)
-                        (command (format "mv %s %s.old && mv %s.new %s && rm -rf %s.old"
-                                         index-dir
-                                         index-dir
-                                         index-dir
-                                         index-dir
-                                         index-dir)))
-                   (message "Start to swap index directories:")
-                   (message command)
-                   (shell-command command)
-                   (message "Replace the path in configuration")
-                   (let ((config-buf (find-file-noselect
-                                      (cu-join-path
-                                       index-dir
-                                       ".opengrok/configuration.xml"))))
-                     (with-current-buffer config-buf
-                       (mark-whole-buffer)
-                       (replace-string (concat index-dir ".new") index-dir)
-                       (save-buffer)
-                       (kill-buffer)))))
+                        (command-swap (format "mv %s %s.old && mv %s.new %s"
+                                              index-dir
+                                              index-dir
+                                              index-dir
+                                              index-dir))
+                        (command-delete-old (format "rm %s" index-dir)))
+                   (message "Start to swap index directories: {%s}" command-swap)
+                   (if (equal (shell-command command) 0)
+                       (progn
+                         (message "Swap success, start to replace the path in configuration")
+                         (let ((config-buf (find-file-noselect
+                                            (cu-join-path
+                                             index-dir
+                                             ".opengrok/configuration.xml"))))
+                           (with-current-buffer config-buf
+                             (mark-whole-buffer)
+                             (replace-string (concat index-dir ".new") index-dir)
+                             (save-buffer)
+                             (kill-buffer)))
+                         (message "Start to delete old directory: {%s}" command-delete-old)
+                         (async-shell-command command-delete-old))
+                     (message "Failed to swap directories!"))))
                (kill-buffer buf)))
             (t nil)))))
 
