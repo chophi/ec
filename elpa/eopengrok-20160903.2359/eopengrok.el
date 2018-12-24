@@ -544,6 +544,42 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
             (eopengrok--insert-line line process))))
       (setq eopengrok-pending-output (substring output pos)))))
 
+(defun eopengrok-use-newer-index-file (index-dir)
+  (interactive "P")
+  (unless index-dir
+    (setq index-dir (cdr (eopengrok--get-configuration)))
+    (when index-dir (setq index-dir
+                          (substring index-dir 0
+                                     (- (length "/.opengrok/configuration.xml"))))))
+  (unless (and index-dir (file-exists-p index-dir))
+    (error "no project database directory found"))
+
+  (unless (file-exists-p (format "%s.new" index-dir))
+    (error "new database is not exist"))
+
+  (let* ((command-swap (format "mv %s %s.old && mv %s.new %s"
+                               index-dir
+                               index-dir
+                               index-dir
+                               index-dir))
+         (command-delete-old (format "rm -rf %s.old" index-dir)))
+    (message "Start to swap index directories: {%s}" command-swap)
+    (if (equal (shell-command command-swap) 0)
+        (progn
+          (message "Swap success, start to replace the path in configuration")
+          (let ((config-buf (find-file-noselect
+                             (cu-join-path
+                              index-dir
+                              ".opengrok/configuration.xml"))))
+            (with-current-buffer config-buf
+              (mark-whole-buffer)
+              (replace-string (concat index-dir ".new") index-dir)
+              (save-buffer)
+              (kill-buffer)))
+          (message "Start to delete old directory: {%s}" command-delete-old)
+          (async-shell-command command-delete-old))
+      (message "Failed to swap directories!"))))
+
 (defun eopengrok--process-sentinel (process event)
   "Handle eopengrok PROCESS EVENT."
   (let ((buf (process-buffer process)))
@@ -554,29 +590,7 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
              (setq eopengrok-mode-line-status 'finished)
              (unless (eopengrok-workspace-name-p (buffer-name buf) :search-buffer)
                (when (and (boundp 'eopengrok-old-index-dir) eopengrok-old-index-dir)
-                 (let* ((index-dir eopengrok-old-index-dir)
-                        (command-swap (format "mv %s %s.old && mv %s.new %s"
-                                              index-dir
-                                              index-dir
-                                              index-dir
-                                              index-dir))
-                        (command-delete-old (format "rm %s" index-dir)))
-                   (message "Start to swap index directories: {%s}" command-swap)
-                   (if (equal (shell-command command) 0)
-                       (progn
-                         (message "Swap success, start to replace the path in configuration")
-                         (let ((config-buf (find-file-noselect
-                                            (cu-join-path
-                                             index-dir
-                                             ".opengrok/configuration.xml"))))
-                           (with-current-buffer config-buf
-                             (mark-whole-buffer)
-                             (replace-string (concat index-dir ".new") index-dir)
-                             (save-buffer)
-                             (kill-buffer)))
-                         (message "Start to delete old directory: {%s}" command-delete-old)
-                         (async-shell-command command-delete-old))
-                     (message "Failed to swap directories!"))))
+                 (eopengrok-use-newer-index-file eopengrok-old-index-dir))
                (kill-buffer buf)))
             (t nil)))))
 

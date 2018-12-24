@@ -177,7 +177,8 @@
     (?l . eopengrok-list-projects)
     (?S . eopengrok-toggle-swap-mode)
     (?D . thread-grok-index-main)
-    (?K . kill-grok-indexing-buffer)))
+    (?K . kill-grok-indexing-buffer)
+    (?n . eopengrok-use-newer-index-file)))
 
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)
