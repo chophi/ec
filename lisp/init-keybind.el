@@ -254,7 +254,8 @@
                      '((?a . ag)
                        (?h . helm-do-grep-ag)
                        (?g . helm-grep-do-git-grep)
-                       (?m . list-matching-lines)))
+                       (?m . list-matching-lines)
+                       (?f . find-name-dired)))
 
 ;; ;; ido gnus deprecated
 ;; (cu-set-key-bindings global-map "\C-c\C-m"
