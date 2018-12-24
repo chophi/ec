@@ -130,8 +130,6 @@ And return t if equals, compare the item with `equal'."
 
 (defun __cu-list-files-recursively-general (dir filter-function depth max-depth relative)
   "Private support function for `cu-list-files-recursively'"
-  (print "relative is: ")
-  (print relative)
   (when (file-accessible-directory-p dir)
     (let ((files (directory-files dir t))
           (matched nil))
@@ -665,7 +663,6 @@ NDIM is the dimentions of the choice items.
     (sha1 d)))
 
 (defun* __cu-find-nearest-ancestor-link-in (root dir)
-  (message "%s" dir)
   (when (or (not dir) (equal dir "/"))
     (return-from __cu-find-nearest-ancestor-link-in nil))
   (let ((link (cu-join-path root (cu-dir-to-sha1 dir))))
