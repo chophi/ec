@@ -174,6 +174,7 @@
     (?c . eopengrok-create-index)
     (?v . eopengrok-visit-project-root)
     (?p . eopengrok-narrow-to-project)
+    (?P . eopengrok-toggle-narrow-to-current-project)
     (?l . eopengrok-list-projects)
     (?S . eopengrok-toggle-swap-mode)
     (?D . thread-grok-index-main)
@@ -183,6 +184,7 @@
 (cu-set-key-bindings
  global-map "\C-c\C-g" `(,my-opengrok-map)
  '(("narrowed project" . (eopengrok-get-current-narrowed-project))
+   ("narrow to current project" . eopengrok-search-current-project)
    ("swap mode" . eopengrok-swap-mode)))
 
 (defun android-doc-local-server()

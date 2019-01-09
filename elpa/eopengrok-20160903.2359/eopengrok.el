@@ -327,6 +327,43 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
                  (eopengrok-was-symbol-linked-under-a-project cwd))
         nil)))
 
+(defvar eopengrok-search-current-project nil
+  "Get the narrow project if in a repo project")
+
+(defun eopengrok-toggle-narrow-to-current-project ()
+  (interactive)
+  (setq eopengrok-search-current-project (not eopengrok-search-current-project)))
+
+(defun eopengrok-get-narrow-project (&optional dir)
+  (interactive)
+  (unless dir (setq dir default-directory))
+  (let* ((source-conf-cons (eopengrok--get-configuration))
+         (repo-dir nil)
+         (project-list nil)
+         (project nil))
+    (unless source-conf-cons
+      (error "no project for current working directory"))
+    (setq repo-dir (car source-conf-cons))
+    (unless (file-exists-p (cu-join-path repo-dir ".repo"))
+      (setq repo-dir nil))
+    (unless repo-dir
+      (error "you can only narrow to project in repo project"))
+    (setq project-list (mapcar
+                        'car
+                        (eopengrok-get-repo-list (expand-file-name repo-dir))))
+    (dolist (proj project-list)
+      ;; (message "%s %s" (expand-file-name dir) (cu-join-path repo-dir proj))
+      (when (and (string-prefix-p
+                  (cu-join-path repo-dir proj)
+                  (expand-file-name dir))
+                 (> (length proj) (length project)))
+        (setq project proj)))
+    (unless project
+      (error "Can't find repo project"))
+    (when (called-interactively-p 'interactive)
+      (message "Found narrowed project: %s" project))
+    project))
+
 (defun eopengrok--search-option (conf text option symbol dir)
   "Opengrok search option list with CONF TEXT OPTION SYMBOL."
   (if (eq symbol 'custom)
@@ -336,13 +373,14 @@ Return CONS of paths: (ROOT . CONFIGURATION)"
       (when (equal "-f" option)
         (setq key "search_full_text"
               text (format "\"%s\"" text)))
-      (unless (equal "-p" option)
-        (setq narrowed-project
-              (eopengrok-get-workspace-value dir :narrow-to-project))
-        (when (and (stringp narrowed-project) (string-empty-p narrowed-project))
-          (setq narrowed-project nil))
-        (setq narrowed-project
-              (and narrowed-project (list "-p" narrowed-project))))
+      (if eopengrok-search-current-project
+          (setq narrowed-project (eopengrok-get-narrow-project default-directory))
+          (setq narrowed-project
+                (eopengrok-get-workspace-value dir :narrow-to-project)))
+      (when (and (stringp narrowed-project) (string-empty-p narrowed-project))
+        (setq narrowed-project nil))
+      (setq narrowed-project
+            (and narrowed-project (list "-p" narrowed-project)))
       (-flatten (list key "-R" conf option text narrowed-project)))))
 
 (defmacro eopengrok--properties-region (props &rest body)
