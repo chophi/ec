@@ -36,13 +36,18 @@
                (y-or-n-p (format "Remove grafts: [%s]" file-name)))
       (shell-command (format "rm %s" file-name)))))
 
+(defun magit-my-ediff-show-commit ()
+  (interactive)
+  (magit-ediff-show-commit (magit-commit-at-point)))
+
 (with-eval-after-load "magit-log"
   (plist-put
    magit-log-popup :actions
    (let ((lst (plist-get magit-log-popup :actions)))
      (dolist (to-add
               '((?g "Set Grafts" magit-log-set-grafts)
-                (?G "Remove Grafts" magit-log-remove-grafts))
+                (?G "Remove Grafts" magit-log-remove-grafts)
+                (?e "Ediff commits" magit-my-ediff-show-commit))
               lst)
        (setq lst (add-to-list 'lst to-add t))))))
 
