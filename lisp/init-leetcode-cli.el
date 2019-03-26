@@ -2,7 +2,7 @@
   (interactive)
   (cu-strip-string
    (shell-command-to-string
-    "leetcode list -q LhD | tac | head -1 | cut -d \"[\" -f 2 | cut -d \"]\" -f 1")
+    "leetcode list -q LhD | tac | head -2 | tail -1 | cut -d \"[\" -f 2 | cut -d \"]\" -f 1")
    t t))
 
 (defvar lc-home-dir (format "%s/work/lc" (getenv "HOME")))
