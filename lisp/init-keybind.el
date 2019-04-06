@@ -147,7 +147,8 @@
   '((?i . semantic-ia-fast-jump)
     (?p . semantic-analyze-proto-impl-toggle)
     (?b . semantic-mrub-switch-tags)
-    (?s . semantic-ia-show-summary)
+    (?S . semantic-ia-show-summary)
+    (?s . semantic-save-bookmark-to-mru-ring)
     ;;(?d . semantic-ia-show-doc)
     ;; tag folding
     (?f . semantic-tag-folding-fold-block)

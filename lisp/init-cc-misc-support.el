@@ -193,4 +193,11 @@ window side by side"
 
 (ad-activate 'eassist-switch-h-cpp-try-replace)
 
+(defun semantic-save-bookmark-to-mru-ring (pt)
+  "Store tag info into semantic-mru-bookmark-ring"
+  (interactive "d")
+  (semantic-mrub-push semantic-mru-bookmark-ring
+                      pt
+			          'edit))
+
 (provide 'init-cc-misc-support)
