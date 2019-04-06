@@ -98,24 +98,21 @@
      pdflatex, or xelatex as appropriate, using latexmk."
   ;; (print exporter)
   (when (eq exporter 'latex)
-    (let ((texcmd "latexmk -dvi -pdfps -shell-escape %f"))
+    (let ((texcmd-latex "latexmk -pdf -f -shell-escape %f")
+          (texcmd-xelatex "latexmk -pdf -f -xelatex -shell-escape %f")
+          (bufstr (buffer-string))
+          (texcmd nil))
       ;; pdflatex -> .pdf
-      (cond ((string-match "LATEX_CMD: pdflatex" (buffer-string))
-             (setq texcmd "latexmk -pdf %f"))
-            ((or (string-match "LATEX_CMD: xelatex" (buffer-string))
-                 (string-match "LATEX_CLASS: cn-article" (buffer-string)))
-             (setq texcmd "xelatex -interaction=nonstopmode -shell-escape %f"
-                   org-latex-pdf-process (list texcmd texcmd texcmd)))
-            (t (setq texcmd "latexmk -pdf -shell-escape %f")))
+      (cond ((or (string-match "LATEX_CMD: xelatex" bufstr)
+                 (string-match "LATEX_CLASS: cn-article" bufstr))
+             (setq texcmd texcmd-xelatex))
+            (t (setq texcmd texcmd-latex)))
       (setq org-latex-pdf-process (list texcmd)))))
-
-(with-eval-after-load "ox-latex"
-  (setq org-latex-pdf-process '("latexmtk -pdf -shell-escape -output-directory=%o %f")))
 
 (add-hook 'org-export-before-processing-hook 'my-auto-tex-cmd)
 
 (defconst xelatex-temp-ext-list
-  '(".pyg" ".fls" ".fdb_latexmk" ".aux" ".log" ".out" ".toc" ".bbl")
+  '(".pyg" ".fls" ".fdb_latexmk" ".aux" ".log" ".out" ".toc" ".bbl" ".xdv" ".tex")
   "xelatex temp file extention list")
 
 (defun my-trash-xelatex-temp-files ()

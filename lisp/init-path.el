@@ -29,7 +29,8 @@ but can also be added to head if AS-HEAD is not nil"
     ("/usr/local/texlive/2016/bin/universal-darwin")
     ("~/Library/Android/sdk/platform-tools/")
     ("~/Library/Android/android-ndk-r10e/")
-    ("~/Library/Android/sdk/tools/"))
+    ("~/Library/Android/sdk/tools/")
+    ("/usr/local/opt/coreutils/libexec/gnubin"))
   "The list of paths which will be add to path on linux if the path exists")
 
 (defconst bash-config-root-dir "~/git-repo/config")
