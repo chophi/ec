@@ -1,0 +1,5 @@
+(autoload 'go-mode "go-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+(add-hook 'go-mode-hook 'turn-on-fci-mode)
+(add-hook 'go-mode-hook (lambda () (paredit-mode 1)))
+(provide 'init-go)
