@@ -15,6 +15,7 @@
   (define-key go-mode-map
     "\C-c\C-e"
     '(lambda () (interactive)
+       (save-buffer)
        (compile (format "go run %s" (buffer-name)))))
   (cu-set-key-bindings go-mode-map "\C-c\C-f" go-mode-goto-keybindings))
 
@@ -25,6 +26,5 @@
             (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
             (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
             (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-            ;;(local-set-key (kbd "{") (lambda () (interactive) (skeleton-pair-insert-maybe) (newline-and-indent)))))
             ))
 (provide 'init-go)
