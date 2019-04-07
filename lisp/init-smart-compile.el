@@ -14,6 +14,7 @@
         (html-helper-mode browse-url-of-buffer)
         (octave-mode run-octave)
         (groovy-mode . "groovy %f")
+        (go-mode . "go build %f")
         ("\\.kt\\'" . "kotlinc %f -include-runtime -d %n.jar")
         ("\\.kts\\'" just-run-the-script)
         ("\\.c\\'" . "gcc -O2 -Wall -g %f -lm -o %n")
@@ -31,7 +32,8 @@
         ("\\.rb\\'" . "ruby -cw %f")))
 
 (defconst smart-compile-run-alist
-  '(("\\.c\\'" . "./%n")
+  '((go-mode . "./%n")
+    ("\\.c\\'" . "./%n")
     ("\\.[Cc]+[Pp]*\\'" . "./%n")
     ("\\.m\\'" . "./%n")
     ("\\.java\\'" . "java %n")
