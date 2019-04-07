@@ -25,7 +25,6 @@
             (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
             (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
             (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-            ;;(local-set-key (kbd "{") (lambda () (interactive) (skeleton-pair-insert-maybe) (newline-and-indent)))))
             ))
 
 ;;; gdb many windows
