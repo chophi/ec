@@ -18,14 +18,7 @@
                   comment-end "")))
 
 ;;; automatic insert matched pairs
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (setq skeleton-pair t)
-            (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-            ))
+(add-hook 'c-mode-common-hook 'cu-set-skeleton-pair-indent)
 
 ;;; gdb many windows
 (setq gdb-many-windows t)

@@ -718,4 +718,26 @@ NDIM is the dimentions of the choice items.
                (buffer-substring-no-properties (car bounds) (cdr bounds)))
           (error "No word at point.")))))
 
+(defun cu-newline-and-indent ()
+  (interactive "*")
+  (let ((cur (char-after (point)))
+        (prev (char-before (point))))
+    (if (or (and  (equal prev ?\() (equal cur ?\)))
+            (and  (equal prev ?\{) (equal cur ?\}))
+            (and  (equal prev ?\[) (equal cur ?\])))
+        (progn
+          (newline)
+          (save-excursion
+            (newline)
+            (indent-according-to-mode))
+          (indent-according-to-mode))
+      (newline-and-indent))))
+
+(defun cu-set-skeleton-pair-indent ()
+  (setq skeleton-pair t)
+  (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
+  (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
+  (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
+  (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
+  (local-set-key [(return)] 'cu-newline-and-indent))
 (provide 'init-common-utils)

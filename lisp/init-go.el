@@ -66,13 +66,6 @@
   (when (go-flymake-exists-p)
     (add-go-flymake-features)))
 
-(add-hook 'go-mode-hook
-          (lambda ()
-            (setq skeleton-pair t)
-            (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-            ) t)
+(add-hook 'go-mode-hook 'cu-set-skeleton-pair-indent t)
 
 (provide 'init-go)
