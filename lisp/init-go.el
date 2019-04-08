@@ -20,6 +20,18 @@
   (format "%s/git-repo/go_tour/bin/guru" (getenv "HOME")))
 (defconst possible-go-flymake-executable
   (format "%s/git-repo/go_tour/bin/goflymake" (getenv "HOME")))
+(defconst possible-go-gocode-executable
+  (format "%s/git-repo/go_tour/bin/gocode" (getenv "HOME")))
+
+(defun go-guru-exists-p ()
+  (file-executable-p possible-guru-executable))
+
+(defun go-flymake-exists-p ()
+  (file-executable-p possible-go-flymake-executable))
+
+(defun go-gocode-exists-p ()
+  (file-executable-p possible-go-gocode-executable))
+
 (defun add-go-guru-features ()
   (require 'go-guru)
   (defconst go-mode-go-guru-keybindings
@@ -48,11 +60,10 @@
     (when (equal (cadr govet) "tool")
       (setf (cdr govet) (cddr govet)))))
 
-(defun go-guru-exists-p ()
-  (file-executable-p possible-guru-executable))
-
-(defun go-flymake-exists-p ()
-  (file-executable-p possible-go-flymake-executable))
+(defun add-go-gocode-features ()
+  (require 'go-autocomplete)
+  (require 'auto-complete-config)
+  (define-key go-mode-map (kbd "C-TAB") 'auto-complete))
 
 (with-eval-after-load "go-mode"
   (define-key go-mode-map
@@ -64,7 +75,9 @@
   (when (go-guru-exists-p)
     (add-go-guru-features))
   (when (go-flymake-exists-p)
-    (add-go-flymake-features)))
+    (add-go-flymake-features))
+  (when (go-gocode-exists-p)
+    (add-go-gocode-features)))
 
 (add-hook 'go-mode-hook 'cu-set-skeleton-pair-indent t)
 
