@@ -11,15 +11,6 @@
     (?n . go-goto-function-name)
     (?r . go-goto-return-values)))
 
-(add-hook 'go-common-hook
-          (lambda ()
-            (setq skeleton-pair t)
-            (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
-            (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-            ))
-
 (defconst possible-guru-executable
   (format "%s/git-repo/go_tour/bin/guru" (getenv "HOME")))
 (defconst possible-go-flymake-executable
@@ -69,5 +60,14 @@
     (add-go-guru-features))
   (when (go-flymake-exists-p)
     (add-go-flymake-features)))
+
+(add-hook 'go-mode-hook
+          (lambda ()
+            (setq skeleton-pair t)
+            (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
+            (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
+            (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
+            (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
+            ) t)
 
 (provide 'init-go)
