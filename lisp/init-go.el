@@ -2,6 +2,11 @@
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
 (add-hook 'go-mode-hook 'turn-on-fci-mode)
 
+(let ((p (format "%s/git-repo/go_tour" (getenv "HOME"))))
+  (when (file-directory-p p)
+    (setenv "GOPATH" p)
+    (add-to-path (cu-join-path p "bin"))))
+
 (defconst go-mode-goto-keybindings
   '((?a . go-goto-arguments)
     (?d . go-goto-docstring)
