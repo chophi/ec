@@ -6,4 +6,5 @@
 (add-to-list 'dash-at-point-mode-alist '(racket-mode . "racket"))
 (add-to-list 'dash-at-point-mode-alist '(cmake-mode . "cmake"))
 (add-to-list 'dash-at-point-mode-alist '(gradle-build-mode . "gradle"))
+(add-to-list 'dash-at-point-mode-alist '(go-mode . "go"))
 (provide 'init-dash)
