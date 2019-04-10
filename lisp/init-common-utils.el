@@ -740,4 +740,9 @@ NDIM is the dimentions of the choice items.
   (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
   (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
   (local-set-key [(return)] 'cu-newline-and-indent))
+
+(defun cu-set-gopath (path)
+  (message "set GOPATH to %s" path)
+  (setenv "GOPATH" path))
+
 (provide 'init-common-utils)
