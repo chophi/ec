@@ -1,4 +1,5 @@
 (require-package 'auto-complete)
 (global-auto-complete-mode)
 (setq ac-max-width 0.4)
+(require 'auto-complete-config)
 (provide 'init-auto-complete)

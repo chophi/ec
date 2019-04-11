@@ -53,8 +53,7 @@
       (setf (cdr govet) (cddr govet)))))
 
 (defun add-go-gocode-features ()
-  (require 'go-complete)
-  (add-hook 'completion-at-point-functions 'go-complete-at-point))
+  (require 'go-autocomplete))
 
 (with-eval-after-load "go-mode"
   (define-key go-mode-map
