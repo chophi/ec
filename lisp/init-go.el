@@ -1,5 +1,3 @@
-(autoload 'go-mode "go-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
 (add-hook 'go-mode-hook 'turn-on-fci-mode)
 
 (let ((p (format "%s/git-repo/go_tour" (getenv "HOME"))))
@@ -18,16 +16,11 @@
 
 (defconst possible-guru-executable
   (format "%s/git-repo/go_tour/bin/guru" (getenv "HOME")))
-(defconst possible-go-flymake-executable
-  (format "%s/git-repo/go_tour/bin/goflymake" (getenv "HOME")))
 (defconst possible-go-gocode-executable
   (format "%s/git-repo/go_tour/bin/gocode" (getenv "HOME")))
 
 (defun go-guru-exists-p ()
   (file-executable-p possible-guru-executable))
-
-(defun go-flymake-exists-p ()
-  (file-executable-p possible-go-flymake-executable))
 
 (defun go-gocode-exists-p ()
   (file-executable-p possible-go-gocode-executable))
@@ -51,21 +44,17 @@
       (?x . go-guru-expand-region)))
   (add-to-path (file-name-directory possible-guru-executable))
   (cu-set-key-bindings go-mode-map "\C-c\C-d" go-mode-go-guru-keybindings)
-  (go-guru-hl-identifier-mode)
   (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode))
 
 (defun add-go-flymake-features ()
-  (require 'go-flymake)
-  (add-hook 'go-mode-hook (lambda () (flycheck-mode 1)))
   ;; workaround the "go tool vet -> go vet" problem
   (let ((govet (flycheck-checker-get 'go-vet 'command)))
     (when (equal (cadr govet) "tool")
       (setf (cdr govet) (cddr govet)))))
 
 (defun add-go-gocode-features ()
-  (require 'go-autocomplete)
-  (require 'auto-complete-config)
-  (define-key go-mode-map (kbd "C-TAB") 'auto-complete))
+  (require 'go-complete)
+  (add-hook 'completion-at-point-functions 'go-complete-at-point))
 
 (with-eval-after-load "go-mode"
   (define-key go-mode-map
@@ -76,8 +65,7 @@
   (cu-set-key-bindings go-mode-map "\C-c\C-f" go-mode-goto-keybindings)
   (when (go-guru-exists-p)
     (add-go-guru-features))
-  (when (go-flymake-exists-p)
-    (add-go-flymake-features))
+  (add-go-flymake-features)
   (when (go-gocode-exists-p)
     (add-go-gocode-features)))
 

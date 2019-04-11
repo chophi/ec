@@ -745,4 +745,8 @@ NDIM is the dimentions of the choice items.
   (message "set GOPATH to %s" path)
   (setenv "GOPATH" path))
 
+(defun cu-get-gopath ()
+  (interactive)
+  (message "GOPATH: %s" (getenv "GOPATH")))
+
 (provide 'init-common-utils)

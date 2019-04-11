@@ -8,6 +8,5 @@
 
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
-(add-to-list 'load-path (concat user-emacs-directory "site-lisp/go-mode.el"))
 
 (require 'init-emacs)
