@@ -242,7 +242,7 @@ Use this together with the `option', `option-list' and
 ;;;### (autoloads nil "flycheck-ert" "flycheck-ert.el" (0 0 0 0))
 ;;; Generated autoloads from flycheck-ert.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck-ert" '("flycheck-ert-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck-ert" '("flycheck-er")))
 
 ;;;***
 
