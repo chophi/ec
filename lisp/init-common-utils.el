@@ -749,4 +749,12 @@ NDIM is the dimentions of the choice items.
   (interactive)
   (message "GOPATH: %s" (getenv "GOPATH")))
 
+(defun cu-cycle-flycheck-error (&optional arg)
+  (interactive "P")
+  (let ((pos (flycheck-next-error-pos (if arg -1 1))))
+    (if pos
+        (goto-char pos)
+      (when (not arg)
+        (flycheck-first-error)))))
+
 (provide 'init-common-utils)

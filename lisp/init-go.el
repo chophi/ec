@@ -43,7 +43,7 @@
       (?s . go-guru-callstack)
       (?x . go-guru-expand-region)))
   (add-to-path (file-name-directory possible-guru-executable))
-  (cu-set-key-bindings go-mode-map "\C-c\C-d" go-mode-go-guru-keybindings)
+  (cu-set-key-bindings go-mode-map "\C-c\C-s" go-mode-go-guru-keybindings)
   (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode))
 
 (defun add-go-flymake-features ()
@@ -62,6 +62,8 @@
        (save-buffer)
        (compile (format "go run %s" (buffer-name)))))
   (cu-set-key-bindings go-mode-map "\C-c\C-f" go-mode-goto-keybindings)
+  (cu-set-key-bindings go-mode-map "\C-ce" '((?e . cu-cycle-flycheck-error)
+                                             (?c . flycheck-compile)))
   (when (go-guru-exists-p)
     (add-go-guru-features))
   (add-go-flymake-features)
