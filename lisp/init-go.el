@@ -64,6 +64,9 @@
   (cu-set-key-bindings go-mode-map "\C-c\C-f" go-mode-goto-keybindings)
   (cu-set-key-bindings go-mode-map "\C-ce" '((?e . cu-cycle-flycheck-error)
                                              (?c . flycheck-compile)))
+  (cu-set-key-bindings go-mode-map "\C-c\C-i"
+                       '((?i . go-import-add)
+                         (?d . go-remove-unused-imports)))
   (when (go-guru-exists-p)
     (add-go-guru-features))
   (add-go-flymake-features)
