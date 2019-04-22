@@ -167,4 +167,5 @@
 (setq sanityinc/require-times
       (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
 (require 'init-go)
+(require 'init-rust)
 (provide 'init-emacs)

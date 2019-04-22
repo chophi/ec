@@ -15,6 +15,7 @@
         (octave-mode run-octave)
         (groovy-mode . "groovy %f")
         (go-mode . "go build %f")
+        (rust-mode . "rustc %f")
         ("\\.kt\\'" . "kotlinc %f -include-runtime -d %n.jar")
         ("\\.kts\\'" just-run-the-script)
         ("\\.c\\'" . "gcc -O2 -Wall -g %f -lm -o %n")
@@ -33,6 +34,7 @@
 
 (defconst smart-compile-run-alist
   '((go-mode . "./%n")
+    (rust-mode . "./%n")
     ("\\.c\\'" . "./%n")
     ("\\.[Cc]+[Pp]*\\'" . "./%n")
     ("\\.m\\'" . "./%n")
