@@ -757,4 +757,10 @@ NDIM is the dimentions of the choice items.
       (when (not arg)
         (flycheck-first-error)))))
 
+(with-eval-after-load "org"
+  (defun cu-offline-org-to-latex (file output-file)
+    (with-current-buffer (find-file-noselect file)
+      (org-export-to-file 'latex output-file nil nil nil nil nil)
+      (kill-buffer))))
+
 (provide 'init-common-utils)
