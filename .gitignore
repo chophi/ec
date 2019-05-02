@@ -41,3 +41,4 @@ lisp-snippets/az-common-env.el
 url/
 /gnus/init-gnus-private.el
 /projectile-bookmarks.eld
+/.cache/
