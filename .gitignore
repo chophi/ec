@@ -42,3 +42,4 @@ url/
 /gnus/init-gnus-private.el
 /projectile-bookmarks.eld
 /.cache/
+/.lsp-session-v1
