@@ -763,4 +763,14 @@ NDIM is the dimentions of the choice items.
       (org-export-to-file 'latex output-file nil nil nil nil nil)
       (kill-buffer))))
 
+(with-eval-after-load "lsp-mode"
+  (defun toggle-lsp ()
+    (interactive)
+    (if lsp-mode
+        (progn (lsp-mode -1)
+               (lsp-ui-mode -1)
+               (fci-mode 1))
+      (lsp)
+      (fci-mode -1))))
+
 (provide 'init-common-utils)

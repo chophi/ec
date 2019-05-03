@@ -22,7 +22,7 @@
                      '((?c . change-repo-ws)
                        (?g . repo-goto-project)))
 
-;; magit 
+;; magit
 (defun my-magit-log-head-fast()
   (interactive)
   (let ((magit-log-arguments
@@ -92,7 +92,7 @@
     (?s . cu-save-current-file-path)
     (?o . cu-save-current-file-path-org-style)
     (?O . org-store-link)
-    (?j . cu-open-link)    
+    (?j . cu-open-link)
     (?f . cu-visit-file-follow-symlink)
     (?n . find-name-dired)
     (?L . lc-open-next-problem)
@@ -158,7 +158,8 @@
     ;; complete
     (?m . semantic-ia-complete-symbol-menu)
     (?c . semantic-ia-complete-symbol)
-    (?t . semantic-ia-complete-tip))
+    (?t . semantic-ia-complete-tip)
+    (?e . toggle-lsp))
   "Key bindings for semantic")
 (with-eval-after-load "cc-mode"
   (cu-set-key-bindings c-mode-base-map
@@ -312,7 +313,7 @@
   (define-key graphviz-dot-mode-map
     (kbd "<tab>")
     'graphviz-indent-or-complet-word)
-  
+
   (cu-set-key-bindings
    graphviz-dot-mode-map
    "\C-c\C-d"
