@@ -28,4 +28,5 @@
 
 (use-package dap-java :after (lsp-java))
 (use-package lsp-java-treemacs :after (treemacs))
+(setq lsp-java-server-install-dir (cu-join-path (getenv "HOME") ".jdt-server/"))
 (provide 'init-lsp-java)
