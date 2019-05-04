@@ -97,4 +97,8 @@
 (with-eval-after-load "cc-mode"
   (add-to-list 'auto-mode-alist '("\\.hal\\'" . java-mode))
   (add-to-list 'auto-mode-alist '("\\.aidl\\'" . java-mode)))
+
+(require 'modern-cpp-font-lock)
+(add-hook 'c++-mode-hook #'modern-c++-font-lock-mode)
+
 (provide 'init-cc-mode)

@@ -7,8 +7,6 @@
 (require-package 'helm-pydoc)
 (require 'smart-shift)
 (with-eval-after-load "python"
-  (when (and (eq os 'macos) (file-executable-p "/usr/local/bin/python2"))
-    (setq python-shell-interpreter "/usr/local/bin/python2"))
   (add-hook 'python-mode-hook 'jedi:setup)
   (add-hook 'python-mode-hook 'jedi:ac-setup)
   (add-hook 'python-mode-hook 'smart-shift-mode-on)

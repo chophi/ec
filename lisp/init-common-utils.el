@@ -763,4 +763,24 @@ NDIM is the dimentions of the choice items.
       (org-export-to-file 'latex output-file nil nil nil nil nil)
       (kill-buffer))))
 
+(with-eval-after-load "lsp-mode"
+  (defun cu-toggle-lsp ()
+    (interactive)
+    (if lsp-mode
+        (progn (lsp-mode -1)
+               (lsp-ui-mode -1)
+               (fci-mode 1))
+      (lsp)
+      (fci-mode -1))))
+
+(defun cu-set-python-virtualenv (&optional python-home)
+  (interactive)
+  (unless python-home
+    (setq python-home (ido-read-file-name "Choose PYTHONHOME: " (cu-join-path (getenv "HOME") ".py-vir-env"))))
+  (unless (file-exists-p python-home)
+    (error "%s not exist" python-home))
+  (setenv "PYTHONHOME" python-home)
+  (setenv "VIRTUAL_ENV" python-home)
+  (add-to-path (cu-join-path python-home "bin") t))
+
 (provide 'init-common-utils)
