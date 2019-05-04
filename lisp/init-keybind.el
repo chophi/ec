@@ -159,7 +159,7 @@
     (?m . semantic-ia-complete-symbol-menu)
     (?c . semantic-ia-complete-symbol)
     (?t . semantic-ia-complete-tip)
-    (?e . toggle-lsp))
+    (?e . cu-toggle-lsp))
   "Key bindings for semantic")
 (with-eval-after-load "cc-mode"
   (cu-set-key-bindings c-mode-base-map
