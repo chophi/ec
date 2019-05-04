@@ -12,7 +12,8 @@
         "LDFLAGS" "CPPFLAGS"            ; for clang
         "JAVA_HOME" "JRE_HOME" "CLASSPATH"  ; for java
         "PKG_CONFIG_PATH" "LD_LIBRARY_PATH"
-        "ANDROID_NDK_HOME" "ANDROID_SDK_HOME"))
+        "ANDROID_NDK_HOME" "ANDROID_SDK_HOME"
+        "VIRTUAL_ENV"))
 (exec-path-from-shell-initialize)
 
 (defun add-to-path(path &optional as-head)
