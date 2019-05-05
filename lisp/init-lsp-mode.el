@@ -6,6 +6,8 @@
               lsp-java-boot-enabled nil
               lsp-java-workspace-dir (cu-join-path (getenv "HOME") ".jdt-workspace"))
 
+;;; prefer lsp-ui
+(setq-default lsp-prefer-flymake nil)
 
 (condition-case nil
     (require 'use-package)
