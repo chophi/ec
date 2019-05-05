@@ -28,4 +28,5 @@ but can also be added to head if AS-HEAD is not nil"
         (setenv "PATH" (concat p path-separator a)))
       (add-to-list 'exec-path a (not as-head)))))
 
+(add-to-path (concat (getenv "HOME") "/.emacs.d/scripts"))
 (provide 'init-path)
