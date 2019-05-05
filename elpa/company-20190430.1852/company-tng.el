@@ -60,6 +60,29 @@
 ;; candidates. You also need to decide which keys to unbind, depending
 ;; on whether you want them to do the Company action or the default
 ;; Emacs action (for example C-s or C-w).
+;;
+;; We recommend to disable `company-require-match' to allow free typing at any
+;; point.
+;;
+;; By default, company-tng doesn't work well with backends that use
+;; `post-completion' (for actions such as expanding snippets in
+;; company-yasnippet or company-template). In company-tng, completion candidates
+;; are inserted into the buffer as the user selects them and the completion is
+;; finished implicitly when the user continues typing after selecting a
+;; candidate. Modifying the buffer (by expanding a snippet) when the user
+;; continues typing would be surprising and undesirable, since the candidate was
+;; already inserted into the buffer. For this reason company-tng disables
+;; `post-completion' in all backends.
+;;
+;; YASnippet and company-tng both use TAB, which causes conflicts. The
+;; recommended way to use YASnippet with company-tng is to choose a different
+;; key for expanding a snippet and moving to the next snippet field:
+;;
+;;   (define-key yas-minor-mode-map "\C-j" 'yas-expand)
+;;   (define-key yas-keymap "\C-j" 'yas-next-field-or-maybe-expand)
+;;   (dolist (keymap (list yas-minor-mode-map yas-keymap))
+;;     (define-key keymap (kbd "TAB") nil)
+;;     (define-key keymap [(tab)] nil))
 
 ;;; Code:
 
@@ -99,11 +122,13 @@ confirm the selection and finish the completion."
      (when (and company-selection-changed
                 (not (company--company-command-p (this-command-keys))))
        (company--unread-this-command-keys)
-       (setq this-command 'company-complete-selection)))))
+       (setq this-command 'company-complete-selection)
+       (advice-add 'company-call-backend :before-until 'company-tng--supress-post-completion)))))
 
 ;;;###autoload
 (defun company-tng-configure-default ()
   "Applies the default configuration to enable company-tng."
+  (setq company-require-match nil)
   (setq company-frontends '(company-tng-frontend
                             company-pseudo-tooltip-frontend
                             company-echo-metadata-frontend))
@@ -154,6 +179,16 @@ made explicitly (i.e. `company-selection-changed' is true)"
     ;; The 4th arg of `company-fill-propertize' is selected
     (setf (nth 3 args) nil))
   args)
+
+(defun company-tng--supress-post-completion (command &rest args)
+  "Installed as a :before-until advice on `company-call-backend' and
+prevents the 'post-completion command from being delivered to the backend
+for the next iteration. post-completion do things like expand snippets
+which are undesirable because completions are implicit in company-tng and
+visible side-effects after the completion are surprising."
+  (when (eq command 'post-completion)
+    (advice-remove 'company-call-backend 'company-tng--supress-post-completion)
+    t))
 
 (provide 'company-tng)
 ;;; company-tng.el ends here

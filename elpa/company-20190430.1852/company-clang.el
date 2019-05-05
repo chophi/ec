@@ -1,6 +1,6 @@
 ;;; company-clang.el --- company-mode completion backend for Clang  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2009, 2011, 2013-2016  Free Software Foundation, Inc.
+;; Copyright (C) 2009, 2011, 2013-2019  Free Software Foundation, Inc.
 
 ;; Author: Nikolaj Schumacher
 
@@ -45,7 +45,8 @@ symbol is preceded by \".\", \"->\" or \"::\", ignoring
 
 If `company-begin-commands' is a list, it should include `c-electric-lt-gt'
 and `c-electric-colon', for automatic completion right after \">\" and
-\":\".")
+\":\"."
+  :type 'boolean)
 
 (defcustom company-clang-arguments nil
   "Additional arguments to pass to clang when completing.
@@ -110,7 +111,7 @@ or automatically through a custom `company-clang-prefix-guesser'."
 ;; TODO: Handle Pattern (syntactic hints would be neat).
 ;; Do we ever see OVERLOAD (or OVERRIDE)?
 (defconst company-clang--completion-pattern
-  "^COMPLETION: \\_<\\(%s[a-zA-Z0-9_:]*\\)\\(?: : \\(.*\\)$\\)?$")
+  "^COMPLETION: \\_<\\(%s[a-zA-Z0-9_:]*\\)\\(?:\\(?: (InBase)\\)? : \\(.*\\)$\\)?$")
 
 (defconst company-clang--error-buffer-name "*clang-error*")
 
@@ -182,11 +183,12 @@ or automatically through a custom `company-clang-prefix-guesser'."
   (let* ((buf (get-buffer-create company-clang--error-buffer-name))
          (cmd (concat company-clang-executable " " (mapconcat 'identity args " ")))
          (pattern (format company-clang--completion-pattern ""))
+         (message-truncate-lines t)
          (err (if (re-search-forward pattern nil t)
                   (buffer-substring-no-properties (point-min)
                                                   (1- (match-beginning 0)))
                 ;; Warn the user more aggressively if no match was found.
-                (message "clang failed with error %d:\n%s" res cmd)
+                (message "clang failed with error %d: %s" res cmd)
                 (buffer-string))))
 
     (with-current-buffer buf
@@ -200,34 +202,35 @@ or automatically through a custom `company-clang-prefix-guesser'."
         (goto-char (point-min))))))
 
 (defun company-clang--start-process (prefix callback &rest args)
-  (let ((objc (derived-mode-p 'objc-mode))
-        (buf (get-buffer-create "*clang-output*"))
-        ;; Looks unnecessary in Emacs 25.1 and later.
-        (process-adaptive-read-buffering nil))
-    (if (get-buffer-process buf)
-        (funcall callback nil)
-      (with-current-buffer buf
-        (erase-buffer)
-        (setq buffer-undo-list t))
-      (let* ((process-connection-type nil)
-             (process (apply #'start-file-process "company-clang" buf
-                             company-clang-executable args)))
-        (set-process-sentinel
-         process
-         (lambda (proc status)
-           (unless (string-match-p "hangup" status)
-             (funcall
-              callback
-              (let ((res (process-exit-status proc)))
-                (with-current-buffer buf
-                  (unless (eq 0 res)
-                    (company-clang--handle-error res args))
-                  ;; Still try to get any useful input.
-                  (company-clang--parse-output prefix objc)))))))
-        (unless (company-clang--auto-save-p)
-          (send-region process (point-min) (point-max))
-          (send-string process "\n")
-          (process-send-eof process))))))
+  (let* ((objc (derived-mode-p 'objc-mode))
+         (buf (get-buffer-create "*clang-output*"))
+         ;; Looks unnecessary in Emacs 25.1 and later.
+         (process-adaptive-read-buffering nil)
+         (existing-process (get-buffer-process buf)))
+    (when existing-process
+      (kill-process existing-process))
+    (with-current-buffer buf
+      (erase-buffer)
+      (setq buffer-undo-list t))
+    (let* ((process-connection-type nil)
+           (process (apply #'start-file-process "company-clang" buf
+                           company-clang-executable args)))
+      (set-process-sentinel
+       process
+       (lambda (proc status)
+         (unless (string-match-p "hangup\\|killed" status)
+           (funcall
+            callback
+            (let ((res (process-exit-status proc)))
+              (with-current-buffer buf
+                (unless (eq 0 res)
+                  (company-clang--handle-error res args))
+                ;; Still try to get any useful input.
+                (company-clang--parse-output prefix objc)))))))
+      (unless (company-clang--auto-save-p)
+        (send-region process (point-min) (point-max))
+        (send-string process "\n")
+        (process-send-eof process)))))
 
 (defsubst company-clang--build-location (pos)
   (save-excursion
@@ -263,7 +266,10 @@ or automatically through a custom `company-clang-prefix-guesser'."
   (apply 'company-clang--start-process
          prefix
          callback
-         (company-clang--build-complete-args (point))))
+         (company-clang--build-complete-args
+          (if (company-clang--check-version 4.0 9.0)
+              (point)
+            (- (point) (length prefix))))))
 
 (defun company-clang--prefix ()
   (if company-clang-begin-after-member-access
@@ -277,18 +283,26 @@ or automatically through a custom `company-clang-prefix-guesser'."
 (defvar company-clang--version nil)
 
 (defun company-clang--auto-save-p ()
-  (< company-clang--version 2.9))
+  (not
+   (company-clang--check-version 2.9 3.1)))
+
+(defun company-clang--check-version (min apple-min)
+  (pcase company-clang--version
+    (`(apple . ,ver) (>= ver apple-min))
+    (`(normal . ,ver) (>= ver min))
+    (_ (error "pcase-exhaustive is not in Emacs 24.3!"))))
 
 (defsubst company-clang-version ()
   "Return the version of `company-clang-executable'."
   (with-temp-buffer
     (call-process company-clang-executable nil t nil "--version")
     (goto-char (point-min))
-    (if (re-search-forward "clang\\(?: version \\|-\\)\\([0-9.]+\\)" nil t)
-        (let ((ver (string-to-number (match-string-no-properties 1))))
-          (if (> ver 100)
-              (/ ver 100)
-            ver))
+    (if (re-search-forward "\\(clang\\|Apple LLVM\\) version \\([0-9.]+\\)" nil t)
+        (cons
+         (if (equal (match-string-no-properties 1) "Apple LLVM")
+             'apple
+           'normal)
+         (string-to-number (match-string-no-properties 2)))
       0)))
 
 (defun company-clang (command &optional arg &rest ignored)
@@ -310,8 +324,11 @@ passed via standard input."
             (unless company-clang-executable
               (error "Company found no clang executable"))
             (setq company-clang--version (company-clang-version))
-            (when (< company-clang--version company-clang-required-version)
-              (error "Company requires clang version 1.1"))))
+            (unless (company-clang--check-version
+                     company-clang-required-version
+                     company-clang-required-version)
+              (error "Company requires clang version %s"
+                     company-clang-required-version))))
     (prefix (and (memq major-mode company-clang-modes)
                  buffer-file-name
                  company-clang-executable
