@@ -769,9 +769,14 @@ NDIM is the dimentions of the choice items.
     (if lsp-mode
         (progn (lsp-mode -1)
                (lsp-ui-mode -1)
-               (fci-mode 1))
+               (fci-mode 1)
+               (flycheck-may-enable-mode)
+               (when (memq major-mode '(c++-mode c-mode emacs-lisp-mode))
+                 (flymake-mode)))
       (lsp)
-      (fci-mode -1))))
+      (fci-mode -1)
+      (flycheck-mode -1)
+      (flymake-mode -1))))
 
 (defun cu-set-python-virtualenv (&optional python-home)
   (interactive)
