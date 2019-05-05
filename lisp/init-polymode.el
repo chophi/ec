@@ -1,3 +1,3 @@
 (require-package 'polymode)
-(require 'poly-org)
+;; (require 'poly-org)
 (provide 'init-polymode)

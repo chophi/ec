@@ -413,13 +413,13 @@ FULL specify whether full or incremental build will be performed."
 
 (cl-defmethod lsp-execute-command
   (_server (command (eql java.show.references)) params)
-  (if-let (refs (cl-third params))
+  (if-let* (refs (cl-third params))
       (xref--show-xrefs (lsp--locations-to-xref-items refs) nil)
     (user-error "No references")))
 
 (cl-defmethod lsp-execute-command
   (_server (command (eql java.show.implementations)) params)
-  (if-let (refs (cl-third params))
+  (if-let* (refs (cl-third params))
       (xref--show-xrefs (lsp--locations-to-xref-items refs) nil)
     (user-error "No implementations")))
 
@@ -621,7 +621,7 @@ PARAMS progress report notification data."
 (defun lsp-java-actionable-notifications ()
   "Lists current actionable notifications."
   (interactive)
-  (when-let ((notifications (lsp-workspace-get-metadata "actionable-notifications"))
+  (when-let* ((notifications (lsp-workspace-get-metadata "actionable-notifications"))
              (selected-notification (completing-read
                                      "Select notification to fix:"
                                      notifications
@@ -782,7 +782,7 @@ current symbol."
 
 (defun lsp-java--tree-under-cursor ()
   "Get tree under cursor."
-  (-when-let (widget-under-cursor (lsp-java--nearest-widget))
+  (-when-let* (widget-under-cursor (lsp-java--nearest-widget))
     (if (tree-widget-p widget-under-cursor)
         widget-under-cursor
       (widget-get widget-under-cursor :parent))))
@@ -790,7 +790,7 @@ current symbol."
 (defun lsp-java-classpath-open ()
   "Open object at path."
   (interactive)
-  (if-let ((file (widget-get (lsp-java--tree-under-cursor) :file)))
+  (if-let* ((file (widget-get (lsp-java--tree-under-cursor) :file)))
       (if (file-exists-p file)
           (find-file file)
         (user-error "File %s does not exists" file))
@@ -910,7 +910,7 @@ PROJECT-URI uri of the item."
   (interactive)
   (let ((workspace (lsp-java--current-workspace-or-lose)))
     (with-lsp-workspace workspace
-      (if-let (project-uri (lsp-java--find-project-uri buffer-file-name))
+      (if-let* (project-uri (lsp-java--find-project-uri buffer-file-name))
           (let ((inhibit-read-only t)
                 (buf (get-buffer-create "*classpath*")))
             (with-current-buffer buf
@@ -939,13 +939,13 @@ PROJECT-URI uri of the item."
 
 (cl-defmethod lsp-execute-command
   (_server (command (eql java.show.references)) params)
-  (if-let (refs (cl-third params))
+  (if-let* (refs (cl-third params))
       (xref--show-xrefs (lsp--locations-to-xref-items refs) nil)
     (user-error "No references")))
 
 (cl-defmethod lsp-execute-command
   (_server (command (eql java.show.implementations)) params)
-  (if-let (refs (cl-third params))
+  (if-let* (refs (cl-third params))
       (xref--show-xrefs (lsp--locations-to-xref-items refs) nil)
     (user-error "No implementations")))
 
