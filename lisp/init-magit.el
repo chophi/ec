@@ -40,17 +40,6 @@
   (interactive)
   (magit-ediff-show-commit (magit-commit-at-point)))
 
-;; (with-eval-after-load "magit-log"
-;;   (plist-put
-;;    magit-log-popup :actions
-;;    (let ((lst (plist-get magit-log-popup :actions)))
-;;      (dolist (to-add
-;;               '((?g "Set Grafts" magit-log-set-grafts)
-;;                 (?G "Remove Grafts" magit-log-remove-grafts)
-;;                 (?e "Ediff commits" magit-my-ediff-show-commit))
-;;               lst)
-;;        (setq lst (add-to-list 'lst to-add t))))))
-
 (defun gerrit-get-remote ()
   (interactive)
   (let* ((get-remote-command "git remote -v | grep push")
@@ -86,6 +75,7 @@
 (defun gerrit-draft () (interactive) (_gerrit_push t))
 (defun gerrit-push () (interactive) (_gerrit_push nil))
 
+;; TODO: to make it work or delete.
 ;; (with-eval-after-load "magit-remote"
 ;;   (plist-put
 ;;    magit-push-popup :actions
@@ -95,5 +85,17 @@
 ;;                 (?g "Push Gerrit Patch" gerrit-push))
 ;;               lst)
 ;;        (setq lst (add-to-list 'lst to-add t))))))
+
+;; (with-eval-after-load "magit-log"
+;;   (plist-put
+;;    magit-log-popup :actions
+;;    (let ((lst (plist-get magit-log-popup :actions)))
+;;      (dolist (to-add
+;;               '((?g "Set Grafts" magit-log-set-grafts)
+;;                 (?G "Remove Grafts" magit-log-remove-grafts)
+;;                 (?e "Ediff commits" magit-my-ediff-show-commit))
+;;               lst)
+;;        (setq lst (add-to-list 'lst to-add t))))))
+
 
 (provide 'init-magit)
