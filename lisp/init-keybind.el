@@ -28,20 +28,33 @@
   (let ((magit-log-arguments
          (remove "--graph" (remove "--decorate" magit-log-arguments))))
     (magit-log-head)))
+
+(setq-default magit-blame-echo-style 'headlines)
 (defun my-toggle-magit-blame-mode ()
   (interactive)
   (if (and (boundp 'magit-blame-mode) magit-blame-mode)
       (call-interactively 'magit-blame-mode)
-    (call-interactively 'magit-blame)))
-(defvar my-magit-key-map
+    (call-interactively 'magit-blame-echo)))
+
+(defun my-select-magit-style (&optional full)
+  (interactive)
+  (let ((choice (if full
+                    (mapcar (lambda (x) (symbol-name (car x))) magit-blame-styles)
+                  '("margin" "headlines"))))
+    (setq-local magit-blame-echo-style
+                (intern (ido-completing-read "Choose Style: " choice)))))
+
+(defconst my-magit-key-map
   '((?s . magit-status)
     (?b . my-toggle-magit-blame-mode)
+    (?B . my-select-magit-style)
     (?p . magit-pull)
     (?l . magit-log-head)
     (?L . my-magit-log-head-fast))
   "my keymap for magit")
 
-(cu-set-key-bindings global-map "\C-c\C-v" my-magit-key-map)
+(cu-set-key-bindings global-map "\C-c\C-v" my-magit-key-map
+                     '(("Magit Style" . magit-blame-echo-style)))
 (with-eval-after-load "sgml-mode"
   (define-key html-mode-map "\C-c\C-v" nil))
 (with-eval-after-load "python"
