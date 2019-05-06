@@ -20,6 +20,7 @@
    (require 'use-package)))
 
 (use-package projectile :ensure t)
+(use-package pfuture :ensure t)
 (use-package treemacs :ensure t)
 (use-package yasnippet :ensure t)
 (use-package lsp-mode :ensure t)
