@@ -34,7 +34,8 @@
   (interactive)
   (if (and (boundp 'magit-blame-mode) magit-blame-mode)
       (call-interactively 'magit-blame-mode)
-    (call-interactively 'magit-blame-echo)))
+    (call-interactively 'magit-blame-echo)
+    (magit-blame-read-only-mode)))
 
 (defun my-select-magit-style (&optional full)
   (interactive)
