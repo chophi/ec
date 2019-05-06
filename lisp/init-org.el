@@ -97,5 +97,6 @@
 (setq org-mode-gerrit-map (make-keymap))
 (define-key org-mode-map (kbd "C-c g") org-mode-gerrit-map)
 (define-key org-mode-gerrit-map "v" 'cu-show-gerrit-at-point)
-
+(with-eval-after-load "fci-mode"
+  (add-hook org-mode-hook (lambda () (fci-mode -1))))
 (provide 'init-org)
