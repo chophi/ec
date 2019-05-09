@@ -1,1 +1,1 @@
-This repo is for storing my emacs configs
+My emacs configuration.
