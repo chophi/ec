@@ -29,6 +29,11 @@
             (set-face-background 'org-hide global-background-color)
             (set-face-foreground 'org-hide global-background-color)) t)
 
+(add-hook 'org-src-mode-hook
+          (lambda ()
+            (when (equal major-mode 'go-mode)
+              (flycheck-mode -1))))
+
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 
