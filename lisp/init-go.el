@@ -72,7 +72,7 @@
                          (?d . go-remove-unused-imports)))
   (when (go-guru-exists-p)
     (add-go-guru-features))
-  (add-go-flymake-features)
+  ;; (add-go-flymake-features)
   (when (go-gocode-exists-p)
     (add-go-gocode-features)))
 
