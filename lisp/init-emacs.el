@@ -166,6 +166,7 @@
 (require 'init-go)
 (require 'init-rust)
 (require 'init-lsp-mode)
+(require 'init-haskell)
 (require 'init-keybind)
 (setq sanityinc/require-times
       (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
