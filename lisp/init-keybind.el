@@ -146,11 +146,6 @@
                          `(,ctrl-c-ctrl-i-keymap
                            ((?F . makefile-insert-gmake-function))))))
 
-;; uniform environment
-(cu-set-key-bindings global-map "\C-c\C-f"
-                     '((?f . ue-env-find-file)
-                       (?i . ue-insert-to-env-list)))
-
 ;; from init-cc-misc-support
 (defconst eassist-key-bindings
   '(("g" . eassist-switch-h-cpp-try-replace)
@@ -227,11 +222,6 @@
           (lambda () (define-key org-mode-map "\C-\M-t" nil)))
 (add-hook 'paredit-mode-hook
           (lambda () (define-key paredit-mode-map "\C-\M-p" nil)))
-
-(when (fboundp 'control-x-f)
-  (global-set-key "\C-cw" 'control-x-f))
-
-(global-set-key "\C-ct" 'my-switch-to-terminal-frame)
 
 ;; grep
 (cu-set-key-bindings global-map "\C-cg"
@@ -330,31 +320,27 @@
                          (?i . jedi:show-doc)
                          (?c . jedi:complete)
                          (?n . jedi:goto-definition-next))))
+;; ;; uniform environment
+;; (cu-set-key-bindings global-map "\C-c\C-f"
+;;                      '((?f . ue-env-find-file)
+;;                        (?i . ue-insert-to-env-list)))
 
-(with-eval-after-load "ace-jump-mode"
-  (setq ace-jump-word-mode-use-query-char nil)
-  (cu-set-key-bindings global-map
-                       "\C-xj"
-                       '((?c . ace-jump-char-mode)
-                         (?w . ace-jump-word-mode)
-                         (?l . ace-jump-line-mode))))
+;; (with-eval-after-load "ace-jump-mode"
+;;   (setq ace-jump-word-mode-use-query-char nil)
+;;   (cu-set-key-bindings global-map
+;;                        "\C-xj"
+;;                        '((?c . ace-jump-char-mode)
+;;                          (?w . ace-jump-word-mode)
+;;                          (?l . ace-jump-line-mode))))
 
-(defun cp-custom-compile-no-rule ()
-  (interactive)
-  (call-interactively
-   (_make-commands-map-with-help-msg
-    '((?c . smart-compile-compile)
-      (?e . smart-compile-run)
-      (?r . recompile-quietly)))))
-
-(when (boundp 'pri-jira-home)
-  (cu-set-key-bindings global-map
-                       "\C-ch"
-                       '((?i . pri-jira-open-index-file)
-                         (?h . pri-jira-goto-issue-home)
-                         (?o . pri-jira-open-issue-org-file)
-                         (?u . pri-jira-update-issues)
-                         (?U . pri-jira-force-update-issues))))
+;; (when (boundp 'pri-jira-home)
+;;   (cu-set-key-bindings global-map
+;;                        "\C-ch"
+;;                        '((?i . pri-jira-open-index-file)
+;;                          (?h . pri-jira-goto-issue-home)
+;;                          (?o . pri-jira-open-issue-org-file)
+;;                          (?u . pri-jira-update-issues)
+;;                          (?U . pri-jira-force-update-issues))))
 
 (cu-set-key-bindings dmesg-mode-map
                      "\C-c\C-d"

@@ -166,4 +166,6 @@
 ;;                               (?p . my-previous-frame))
 ;;                           `((?n . my-switch-to-next-screen-clockwise)
 ;;                             (?p . my-switch-to-next-screen-anticlockwise))))))))
+;; (global-set-key "\C-ct" 'my-switch-to-terminal-frame)
+
 (provide 'init-frame-utils)
