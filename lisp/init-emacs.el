@@ -168,6 +168,7 @@
 (require 'init-lsp-mode)
 (require 'init-haskell)
 (require 'init-keybind)
+(require 'init-keybind-no-freq)
 (setq sanityinc/require-times
       (sort sanityinc/require-times (lambda (a b) (> (cdr a) (cdr b)))))
 (provide 'init-emacs)

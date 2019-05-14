@@ -65,8 +65,7 @@
 
 ;; Remapping org-babel-key-prefix to \C-cv for magit key bindings.
 (with-eval-after-load "org"
-  (setq org-babel-key-prefix "\C-cv")
-  (define-key org-mode-map org-babel-key-prefix org-babel-map)
+  (define-key org-mode-map "\C-cb" org-babel-map)
   (cu-set-key-bindings org-mode-map "\C-c\C-v" my-magit-key-map))
 
 ;; confluence wiki
@@ -114,7 +113,6 @@
     (?J . lc-judge-current-buffer)
     (?C . lc-clear-cache))
   "Util key map for path saving to ring / paste, etc")
-
 (cu-set-key-bindings global-map "\C-c\C-l" cu-path-util-map)
 (with-eval-after-load "python"
   (cu-set-key-bindings python-mode-map "\C-c\C-l"
@@ -124,7 +122,7 @@
                        `(,cu-path-util-map ((?l . org-insert-link)))))
 
 ;; yasnippet keymap and spell-check
-(defvar ctrl-c-ctrl-i-keymap
+(defvar spell-and-snippet-key-binding
   `((?i . yas-insert-snippet)
     (?n . yas-new-snippet)
     (?t . yas-tryout-snippet)
@@ -133,18 +131,12 @@
   "keymap for ctrl-c-ctrl-i")
 
 (when (and (boundp 'my-ispell-is-enabled) my-ispell-is-enabled)
-  (defconst my-ispell-keymap
+  (append spell-and-snippet-key-binding
     `((?w . ispell-word)
       (?b . ispell-buffer)
       (?f . flyspell-mode)
-      (?c . flyspell-auto-correct-word))
-    "The keymap for ispell")
-  (setq ctrl-c-ctrl-i-keymap (append ctrl-c-ctrl-i-keymap my-ispell-keymap))
-  (cu-set-key-bindings global-map "\C-c\C-i" ctrl-c-ctrl-i-keymap)
-  (with-eval-after-load "make-mode"
-    (cu-set-key-bindings makefile-mode-map "\C-c\C-i"
-                         `(,ctrl-c-ctrl-i-keymap
-                           ((?F . makefile-insert-gmake-function))))))
+      (?c . flyspell-auto-correct-word)))
+  (cu-set-key-bindings global-map "\C-cs" spell-and-snippet-key-binding))
 
 ;; from init-cc-misc-support
 (defconst eassist-key-bindings
@@ -170,6 +162,7 @@
     (?t . semantic-ia-complete-tip)
     (?e . cu-toggle-lsp))
   "Key bindings for semantic")
+
 (with-eval-after-load "cc-mode"
   (cu-set-key-bindings c-mode-base-map
                        "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
@@ -197,22 +190,6 @@
  '(("narrowed project" . (eopengrok-get-current-narrowed-project))
    ("narrow to current project" . eopengrok-search-current-project)
    ("swap mode" . eopengrok-swap-mode)))
-
-(defun android-doc-local-server()
-  (interactive)
-  (shell-command
-   "dev_appserver.py ~/EDocs/android-docs/online-sac &"
-   "*android local doc*" "*android local doc*"))
-
-;; neo-tree
-(cu-set-key-bindings global-map "\C-c\C-n"
-                     `((?t . neotree-toggle)
-                       (?O . open-nanoc-private-site)
-                       (?D . nanoc-daemon-private)
-                       (?o . open-nanoc-public-site)
-                       (?d . nanoc-daemon-public)
-                       ,@(if (file-exists-p "~/EDocs/android-docs")
-                             `((?a . android-doc-local-server)))))
 
 
 
@@ -262,18 +239,6 @@
       (dolist (key keymap)
         (define-key term-raw-map (char-to-string (car key)) (cdr key))))))
 
-(add-to-list
- 'term-bind-key-alist
- `("C-c e" .
-   ,(_make-commands-map-with-help-msg
-     '((?c . my-compilation-shell-minor-mode)
-       (?n . compilation-next-error)
-       (?p . compilation-previous-error)
-       (?g . compile-goto-error)
-       (?f . compilation-next-file)
-       (?F . compilation-previous-file))))
- t)
-
 (defun graphviz-set-extension()
   (interactive)
   (setq graphviz-dot-preview-extension
@@ -320,40 +285,21 @@
                          (?i . jedi:show-doc)
                          (?c . jedi:complete)
                          (?n . jedi:goto-definition-next))))
-;; ;; uniform environment
-;; (cu-set-key-bindings global-map "\C-c\C-f"
-;;                      '((?f . ue-env-find-file)
-;;                        (?i . ue-insert-to-env-list)))
-
-;; (with-eval-after-load "ace-jump-mode"
-;;   (setq ace-jump-word-mode-use-query-char nil)
-;;   (cu-set-key-bindings global-map
-;;                        "\C-xj"
-;;                        '((?c . ace-jump-char-mode)
-;;                          (?w . ace-jump-word-mode)
-;;                          (?l . ace-jump-line-mode))))
-
-;; (when (boundp 'pri-jira-home)
-;;   (cu-set-key-bindings global-map
-;;                        "\C-ch"
-;;                        '((?i . pri-jira-open-index-file)
-;;                          (?h . pri-jira-goto-issue-home)
-;;                          (?o . pri-jira-open-issue-org-file)
-;;                          (?u . pri-jira-update-issues)
-;;                          (?U . pri-jira-force-update-issues))))
-
-(cu-set-key-bindings dmesg-mode-map
-                     "\C-c\C-d"
-                     '((?D . dmesg-associate-device)
-                       (?d . dmesg-get-device-dsn)
-                       (?h . dmesg-highlight-init-rc-files)))
 
 (global-set-key "\C-cd" 'dash-at-point)
 (global-set-key "\C-ce" 'dash-at-point-with-docset)
 
-(cu-set-key-bindings
- projectile-mode-map
- "\C-cp"
+(cu-set-key-bindings projectile-mode-map "\C-c\C-f"
+                     '((?n . projectile-find-file-in-known-projects)
+                       (?t . projectile-find-test-file)
+                       (?o . projectile-find-other-file)
+                       (?d . projectile-find-dir)
+                       (?f . projectile-find-file)
+                       (?w . projectile-find-file-dwim)
+                       (?g . projectile-find-tag)
+                       (?i . projectile-find-file-in-directory)))
+
+(cu-set-key-bindings projectile-mode-map "\C-cf"
  `((?v . projectile-vc)
    (?r . projectile-replace)
    (?e . projectile-recentf)
@@ -379,16 +325,6 @@
    (?t . projectile-toggle-between-implementation-and-test)
    (?u . projectile-run-project)
    (?z . projectile-cache-current-file)
-   (?f . ,(cu-make-keymap-func
-           "projectile-find"
-           '((?n . projectile-find-file-in-known-projects)
-             (?t . projectile-find-test-file)
-             (?o . projectile-find-other-file)
-             (?d . projectile-find-dir)
-             (?f . projectile-find-file)
-             (?w . projectile-find-file-dwim)
-             (?g . projectile-find-tag)
-             (?i . projectile-find-file-in-directory))))
    (?5 . ,(cu-make-keymap-func
            "projectile-display-in-other-frame"
            '((?D . projectile-dired-other-frame)
