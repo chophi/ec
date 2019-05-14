@@ -233,40 +233,6 @@
 
 (global-set-key "\C-ct" 'my-switch-to-terminal-frame)
 
-(defun _my-switch-screen ()
-  (interactive)
-  (if window-system
-    (call-interactively
-     (_make-commands-map-with-help-msg
-      '((?l . my-switch-to-leftmost-screen)
-        (?r . my-switch-to-rightmost-screen)
-        (?t . my-switch-to-topmost-screen)
-        (?d . my-switch-to-downmost-screen)
-        (?n . my-switch-to-next-screen-clockwise)
-        (?p . my-switch-to-next-screen-anticlockwise)
-        (?s . my-select-frame))))
-    (my-select-frame)))
-
-(global-set-key "\C-cf" '_my-switch-screen)
-
-(global-set-key "\C-xf"
-                (lambda () (interactive)
-                  (call-interactively
-                   (_make-commands-map-with-help-msg
-                    `((?c . my-make-frame)
-                      (?d . delete-frame)
-                      (?w . my-delete-other-frames)
-                      (?r . my-set-frame-name)
-                      ,@(when (fboundp 'control-x-f)
-                          `((?f . control-x-f)))
-                      (?s . my-select-frame)
-                      (?t . my-set-term-frame)
-                      ,@(if (not window-system)
-                          `((?n . my-next-frame)
-                            (?p . my-previous-frame))
-                          `((?n . my-switch-to-next-screen-clockwise)
-                            (?p . my-switch-to-next-screen-anticlockwise))))))))
-
 ;; grep
 (cu-set-key-bindings global-map "\C-cg"
                      '((?a . ag)
