@@ -1,7 +1,5 @@
 (add-to-list 'load-path (concat user-emacs-directory "site-lisp/dash-at-point"))
 (require 'dash-at-point)
-(global-set-key "\C-cd" 'dash-at-point)
-(global-set-key "\C-ce" 'dash-at-point-with-docset)
 (add-to-list 'dash-at-point-mode-alist '(kotlin-mode . "kotlin"))
 (add-to-list 'dash-at-point-mode-alist '(racket-mode . "racket"))
 (add-to-list 'dash-at-point-mode-alist '(cmake-mode . "cmake"))

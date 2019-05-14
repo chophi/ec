@@ -362,6 +362,9 @@
                        (?d . dmesg-get-device-dsn)
                        (?h . dmesg-highlight-init-rc-files)))
 
+(global-set-key "\C-cd" 'dash-at-point)
+(global-set-key "\C-ce" 'dash-at-point-with-docset)
+
 (cu-set-key-bindings
  projectile-mode-map
  "\C-cp"
