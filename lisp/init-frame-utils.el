@@ -138,7 +138,7 @@
   (interactive)
   (if window-system
       (call-interactively
-       (_make-commands-map-with-help-msg
+       (cu-make-commands-map-with-help-msg
         '((?l . my-switch-to-leftmost-screen)
           (?r . my-switch-to-rightmost-screen)
           (?t . my-switch-to-topmost-screen)
@@ -152,7 +152,7 @@
 ;; (global-set-key "\C-xf"
 ;;                 (lambda () (interactive)
 ;;                   (call-interactively
-;;                    (_make-commands-map-with-help-msg
+;;                    (cu-make-commands-map-with-help-msg
 ;;                     `((?c . my-make-frame)
 ;;                       (?d . delete-frame)
 ;;                       (?w . my-delete-other-frames)

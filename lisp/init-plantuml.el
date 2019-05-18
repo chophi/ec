@@ -80,10 +80,15 @@
           (message "skip %s" f)
         (convert-svg-to-svg-no-font f)))))
 
+(defun toggle-plantuml-convert-to-latex ()
+  (interactive)
+  (setq plantuml-convert-to-latex (not plantuml-convert-to-latex)))
+
 (defun plantuml-execute ()
   (interactive)
   (when (buffer-modified-p)
-    (map-y-or-n-p "Save this buffer before executing PlantUML?"
+    (map-y-or-n-p (format "Save this buffer (%s) before executing PlantUML?"
+                          (current-buffer))
                   'save-buffer (list (current-buffer))))
   (let ((code (buffer-string))
         out-file
@@ -95,7 +100,7 @@
                    (if plantuml-convert-to-latex
                        "latex"
                      graphviz-dot-preview-extension)))
-              (graphviz-output-file-name (buffer-file-name) plantuml-convert-to-latex))))
+              (graphviz-output-file-name (buffer-file-name)))))
     (when plantuml-convert-to-latex
       (setq out-file (cu-join-path "/tmp" (file-name-nondirectory out-file)))
       (when (file-exists-p out-file) (delete-file out-file)))

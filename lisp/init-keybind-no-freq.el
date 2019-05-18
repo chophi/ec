@@ -7,7 +7,7 @@
 ;; (add-to-list
 ;;  'term-bind-key-alist
 ;;  `("C-c e" .
-;;    ,(_make-commands-map-with-help-msg
+;;    ,(cu-make-commands-map-with-help-msg
 ;;      '((?c . my-compilation-shell-minor-mode)
 ;;        (?n . compilation-next-error)
 ;;        (?p . compilation-previous-error)

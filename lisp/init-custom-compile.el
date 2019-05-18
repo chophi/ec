@@ -96,6 +96,7 @@ SWITCH-TO is not nil"
                 (setq is-processed-file t)))
           (when (not is-processed-file)
             (dolist (compile-expr (cu-eval-file config))
+              (print compile-expr)
               (add-to-list 'compile-exprs (list (car compile-expr)
                                                 config
                                                 (cadr compile-expr))))
@@ -120,6 +121,7 @@ to '((program-name project-root compilation-configuration expression) ...)"
   (interactive "P")
   (let* ((path default-directory)
          (run-on-file (buffer-file-name))
+         (curbuf (current-buffer))
          ;; make reshaped multi level choice list.
          (reshaped-mlcl
           (cu-reshape-multi-level-choice-list*
@@ -187,7 +189,8 @@ to '((program-name project-root compilation-configuration expression) ...)"
               (format "cd %s &&\\\n %s" project-root command)))
             ('elisp (let ((in-custom-compile-environment t)
                           (current-custom-compile-log-buffer compile-log))
-                      (eval command)))
+                      (with-current-buffer curbuf
+                        (eval command))))
             ('t (message "Unknown command type, exiting")
                 (return-from cp-custom-compile nil))))))))
 

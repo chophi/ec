@@ -101,7 +101,7 @@
   (gradle-run "-q task --all"))
 
 (defun _gradle--make-build-map ()
-  (_make-commands-map-with-help-msg
+  (cu-make-commands-map-with-help-msg
    '((?m . gradle-make-target)
      (?i . gradle-show-current-target)
      (?l . gradle-list-target)
