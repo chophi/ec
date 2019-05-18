@@ -290,19 +290,21 @@
 (global-set-key "\C-ce" 'dash-at-point-with-docset)
 
 (cu-set-key-bindings projectile-mode-map "\C-c\C-f"
-                     '((?n . projectile-find-file-in-known-projects)
+                     '((?f . projectile-find-file)
+                       (?r . projectile-recentf)
+                       (?w . projectile-find-file-dwim)
+                       (?d . projectile-find-dir)
                        (?t . projectile-find-test-file)
                        (?o . projectile-find-other-file)
-                       (?d . projectile-find-dir)
-                       (?f . projectile-find-file)
-                       (?w . projectile-find-file-dwim)
                        (?g . projectile-find-tag)
-                       (?i . projectile-find-file-in-directory)))
+                       (?i . projectile-find-file-in-directory)
+                       (?n . projectile-find-file-in-known-projects)))
 
-(cu-set-key-bindings projectile-mode-map "\C-cf"
+(cu-set-key-bindings
+ projectile-mode-map "\C-cf"
  `((?v . projectile-vc)
-   (?r . projectile-replace)
-   (?e . projectile-recentf)
+   (?r . projectile-recentf)
+   (?s . projectile-replace)
    (?d . projectile-dired)
    (?g . projectile-multi-occur)
    (?o . projectile-project-buffers-other-buffer)
