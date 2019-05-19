@@ -1,4 +1,4 @@
-(require-package 'auctex)
+;;(require-package 'auctex)
 (add-to-list 'auto-mode-alist '("\\.latex\\'" . latex-mode))
 (add-hook 'LaTeX-mode-hook
  (lambda()

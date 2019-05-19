@@ -6,10 +6,12 @@
 ;; and is basically for toggle some features on different desktops/laptops.
 (defun require-if-exist (feature)
   "Search FEATURE in the `user-emacs-directory'/lisp folder, load it if exist."
-  (when (file-exists-p
-         (format "%s/lisp/%s.el" user-emacs-directory
-                 (symbol-name feature)))
-    (require feature)))
+  (if (file-exists-p
+       (format "%s/lisp/%s.el" user-emacs-directory
+               (symbol-name feature)))
+      (require feature)
+    (message "feature %s is not exist" (symbol-name feature))
+    'not-exist))
 (require-if-exist 'init-private-custom)
 
 (defmacro with-parameters-bounded (parameters &rest body)

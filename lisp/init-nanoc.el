@@ -1,5 +1,3 @@
-(require 'init-private-custom)
-
 (defun nanoc-daemon-public ()
   (interactive)
   (cu-start-process "nanoc-public-daemon" "*nanoc-public*" "nanoc-viewer.sh" "public")
