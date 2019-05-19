@@ -726,8 +726,11 @@ NDIM is the dimentions of the choice items.
                (buffer-substring-no-properties (car bounds) (cdr bounds)))
           (error "No word at point.")))))
 
-(defun cu-newline-and-indent ()
+(defun* cu-newline-and-indent ()
   (interactive "*")
+  (when (and (boundp 'magit-blame-mode) magit-blame-mode)
+    (call-interactively 'magit-show-commit)
+    (return-from cu-newline-and-indent t))
   (let ((cur (char-after (point)))
         (prev (char-before (point))))
     (if (or (and  (equal prev ?\() (equal cur ?\)))
