@@ -794,12 +794,14 @@ NDIM is the dimentions of the choice items.
   (add-to-path (cu-join-path python-home "bin") t))
 
 (defun cu-make-mode-specific-custom-compile-rule-map
-    (mode binding-lists &optional mode-list show-message)
+    (mode with-cur-buffer binding-lists &optional mode-list show-message)
   (when (equal major-mode mode)
     `((,default-directory
         ((unit ,(concat "mode-specific" (symbol-name major-mode))
-               (elisp (call-interactively
-                       ,(cu-make-commands-map-with-help-msg
-                         binding-lists mode-list show-message)))))))))
+               (elisp (when ,with-cur-buffer
+                        (with-current-buffer cp-custom-compile-current-buffer
+                          (call-interactively
+                           ,(cu-make-commands-map-with-help-msg
+                             binding-lists mode-list show-message)))))))))))
 
 (provide 'init-common-utils)

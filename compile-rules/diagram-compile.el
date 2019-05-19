@@ -2,6 +2,7 @@
  ;; For graphviz-dot-mode
  (cu-make-mode-specific-custom-compile-rule-map
   'graphviz-dot-mode
+  t
   '((?p . graphviz-dot-preview)
     (?v . graphviz-dot-view)
     (?e . graphviz-set-extension))
@@ -9,6 +10,7 @@
  ;; For plantuml-mode
  (cu-make-mode-specific-custom-compile-rule-map
   'plantuml-mode
+  t
   '((?p . plantuml-execute)
     (?v . plantuml-preview)
     (?e . graphviz-set-extension)
@@ -18,6 +20,7 @@
  ;; For latex-mode
  (cu-make-mode-specific-custom-compile-rule-map
   'latex-mode
+  t
   '((?p . compile-tikz-to-svg)))
 
  ) ;; append

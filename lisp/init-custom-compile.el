@@ -189,7 +189,7 @@ to '((program-name project-root compilation-configuration expression) ...)"
               (format "cd %s &&\\\n %s" project-root command)))
             ('elisp (let ((in-custom-compile-environment t)
                           (current-custom-compile-log-buffer compile-log))
-                      (with-current-buffer curbuf
+                      (let ((cp-custom-compile-current-buffer curbuf))
                         (eval command))))
             ('t (message "Unknown command type, exiting")
                 (return-from cp-custom-compile nil))))))))
