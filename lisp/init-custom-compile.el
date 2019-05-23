@@ -103,6 +103,14 @@ SWITCH-TO is not nil"
             (push config processed-config)))))
     compile-exprs))
 
+(defun cp-custom-compile-no-rule ()
+  (interactive)
+  (call-interactively
+   (cu-make-commands-map-with-help-msg
+    '((?r . smart-compile-run)
+      (?c . smart-compile-compile)
+      (?q . recompile-quietly)))))
+
 (defun cp-reshape-compile-exprs (compile-exprs)
   "Reshape the compile expressions.
 to '((program-name project-root compilation-configuration expression) ...)"
