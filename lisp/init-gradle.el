@@ -135,4 +135,16 @@
 (with-eval-after-load 'flycheck
   (flycheck-gradle-setup))
 
+(defun gradle-get-java-main-classes ()
+  (interactive)
+  "Return package list (\"PACKAGE/CLASSNAME.java\")"
+  (let ((dir (cu-join-path default-directory "src/main/java"))
+        (files (directory-files-recursively "src/main/java" ".java" nil)))
+    (when files
+      (mapcar (lambda (file) (substring file (1+ (length dir))))
+              files))))
+
+(defun gradle-choose-main-class ()
+  (interactive)
+  (ido-completing-read "Choose a class:" (gradle-get-java-main-classes)))
 (provide 'init-gradle)

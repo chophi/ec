@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: javamain
+# key: javamain
+# --
+task run_${1:$(file-name-base yas-text)}(dependsOn: 'classes', type: JavaExec) {
+    description = 'run main for ${1:`(gradle-choose-main-class)`}'
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = '${1:$(replace-regexp-in-string "/" "." (file-name-sans-extension yas-text))}'
+    // arguments to pass to the application
+    // args ''
+}
