@@ -137,16 +137,21 @@
 (with-eval-after-load 'flycheck
   (flycheck-gradle-setup))
 
-(defun gradle-get-java-main-classes ()
-  (interactive)
-  "Return package list (\"PACKAGE/CLASSNAME.java\")"
-  (let ((dir (cu-join-path default-directory "src/main/java"))
-        (files (directory-files-recursively "src/main/java" ".java" nil)))
+(defun gradle-get-main-class (srcdir suffix)
+  "Return package list (\"PACKAGE/CLASSNAME.SUFFIX\")"
+  (let ((dir (cu-join-path default-directory srcdir))
+        (files (directory-files-recursively srcdir suffix nil)))
     (when files
       (mapcar (lambda (file) (substring file (1+ (length dir))))
               files))))
 
-(defun gradle-choose-main-class ()
+(defun gradle-choose-java-main-class ()
   (interactive)
-  (ido-completing-read "Choose a class:" (gradle-get-java-main-classes)))
+  (ido-completing-read "Choose a class:"
+                       (gradle-get-main-class "src/main/java" ".java")))
+
+(defun gradle-choose-kotlin-main-class ()
+  (interactive)
+  (ido-completing-read "Choose a class:"
+                       (gradle-get-main-class "src/main/kotlin" ".kt")))
 (provide 'init-gradle)
