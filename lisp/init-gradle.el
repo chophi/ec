@@ -9,7 +9,9 @@
 (defun gradle-q-run ()
   (interactive)
   (gradle-kill-compilation-buffer)
-  (let ((choices (list (gradle-make-command "-q run"))))
+  (let ((choices (list (gradle-make-command
+                        (concat "-q " (if (boundp 'local-gradle-target)
+                                          local-gradle-target "run"))))))
     (let ((exe-dir "build/exe"))
       (when (file-exists-p exe-dir)
         (setq choices (append
