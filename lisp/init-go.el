@@ -71,8 +71,12 @@
     (add-go-guru-features))
   ;; (add-go-flymake-features)
   (when (go-gocode-exists-p)
-    (add-go-gocode-features)))
+    (add-go-gocode-features))
+  ;; Requires errcheck newer than commit 8515d34 (Aug 28th, 2015).
+  ;; Disable for now.
+  (with-eval-after-load "flycheck"
+    (setq flycheck-checkers (remove 'go-errcheck flycheck-checkers))
+    (setq flycheck-checkers (remove 'go-unconvert flycheck-checkers))))
 
 (add-hook 'go-mode-hook 'cu-set-skeleton-pair-indent t)
-
 (provide 'init-go)
