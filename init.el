@@ -9,4 +9,6 @@
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
 
+(setq debug-on-error t)
 (require 'init-emacs)
+(setq debug-on-error nil)
