@@ -57,7 +57,10 @@
 (require 'init-google-translate)
 
 (require 'init-recentf)
+(setq custom-prefer-ivy nil)
 (require 'init-ido)
+(when custom-prefer-ivy
+  (require 'init-ivy))
 
 (require 'init-sessions)
 
