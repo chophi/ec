@@ -20,10 +20,10 @@
   (let* ((check-file-command (format "ls %s/%s.*" save-dir problem-id))
          (check-language-supports (format "leetcode show %s -gx -l %s -o /tmp/leetcode && rm -rf /tmp/leetcode"
                                           problem-id language)))
-    (unless (equal (shell-command check-language-supports) 0)
-      (error "unsupported language(%s) for (%s)" language problem-id))
     (if (equal (shell-command check-file-command) 0)
         (cu-strip-string (shell-command-to-string check-file-command) t t)
+      (unless (equal (shell-command check-language-supports) 0)
+        (error "unsupported language(%s) for (%s)" language problem-id))
       (cu-strip-string
        (shell-command-to-string
         (format
@@ -41,8 +41,6 @@
            (dir (cu-join-path (getenv "HOME") "work/lc" (symbol-name problem-type))))
       (dolist (id problem-list)
         (lc-fetch-source-for-problem id language dir)))))
-
-(lc-fetch-all-unsolved-problems)
 
 (defun lc-test-current-buffer ()
   (interactive)
