@@ -1,28 +1,48 @@
-(defun lc-get-next-unsolved-problem ()
-  (interactive)
-  (cu-strip-string
-   (shell-command-to-string
-    "leetcode list -q LhD | tac | head -8 | tail -1 | cut -d \"[\" -f 2 | cut -d \"]\" -f 1")
-   t t))
-
-(defvar lc-home-dir (format "%s/work/lc" (getenv "HOME")))
 (defvar lc-default-output "*[leetcode output]*")
 
-(defun lc-get-source-for-next-problem ()
+(defun lc-get-all-unsolved-problem ()
   (interactive)
-  (let* ((next-p (lc-get-next-unsolved-problem))
-         (check-file-command (format "ls %s/%s.*" lc-home-dir next-p)))
+  (let ((cmdline-get-hard "leetcode list -q LhD | tac | cut -d \"[\" -f 2 | cut -d \"]\" -f 1 | xargs")
+        (cmdline-get-medium "leetcode list -q LmD | tac | cut -d \"[\" -f 2 | cut -d \"]\" -f 1 | xargs")
+        ret)
+    (dolist (name-cmd-pair `((hard . ,cmdline-get-hard)
+                             (medium . ,cmdline-get-medium)) ret)
+      (add-to-list
+       'ret
+       (cons (car name-cmd-pair)
+             (split-string
+              (cu-strip-string
+               (shell-command-to-string
+                (cdr name-cmd-pair))
+               t t) " "))))))
+
+(defun lc-fetch-source-for-problem (problem-id language save-dir)
+  (let* ((check-file-command (format "ls %s/%s.*" save-dir problem-id))
+         (check-language-supports (format "leetcode show %s -gx -l %s -o /tmp/leetcode && rm -rf /tmp/leetcode"
+                                          problem-id language)))
+    (unless (equal (shell-command check-language-supports) 0)
+      (error "unsupported language(%s) for (%s)" language problem-id))
     (if (equal (shell-command check-file-command) 0)
         (cu-strip-string (shell-command-to-string check-file-command) t t)
       (cu-strip-string
        (shell-command-to-string
-        (format "leetcode show %s -gx -l cpp -o %s | grep \"Source Code\" | cut -d \":\" -f 2"
-                next-p lc-home-dir))
+        (format
+         "leetcode show %s -gx -l %s -o %s | grep \"Source Code\" | cut -d \":\" -f 2"
+         problem-id language save-dir))
        t t))))
 
-(defun lc-open-next-problem ()
+(defun lc-fetch-all-unsolved-problems (&optional language)
   (interactive)
-  (find-file-other-window (lc-get-source-for-next-problem)))
+  (unless language
+    (setq language "java"))
+  (dolist (problems (lc-get-all-unsolved-problem))
+    (let* ((problem-type (car problems))
+           (problem-list (cdr problems))
+           (dir (cu-join-path (getenv "HOME") "work/lc" (symbol-name problem-type))))
+      (dolist (id problem-list)
+        (lc-fetch-source-for-problem id language dir)))))
+
+(lc-fetch-all-unsolved-problems)
 
 (defun lc-test-current-buffer ()
   (interactive)
