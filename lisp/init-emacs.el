@@ -172,6 +172,7 @@
 (require 'init-rust)
 (require 'init-lsp-mode)
 (require 'init-haskell)
+(require 'init-epa)
 (require 'init-keybind)
 (require 'init-keybind-no-freq)
 (setq sanityinc/require-times
