@@ -1,3 +1,4 @@
+(require 'cl)
 (defconst global-use-theme
   (case os
     ('macos "zenburn")
@@ -30,7 +31,16 @@
          (setq global-background-color
                (cdr (assoc "zenburn-bg" zenburn-default-colors-alist))
                global-foreground-color
-               (cdr (assoc "zenburn-fg" zenburn-default-colors-alist))))
+               (cdr (assoc "zenburn-fg" zenburn-default-colors-alist)))
+         (with-eval-after-load "isearch"
+           (set-face-background 'isearch "yellow")
+           (set-face-foreground 'isearch "black")
+           (set-face-background 'lazy-highlight "black")
+           (set-face-foreground 'lazy-highlight "yellow")
+           (custom-set-faces '(isearch-fail
+                               ((((class color))
+                                 (:background "green")
+                                 (:foreground "black")))))))
         ((equal color-theme "dracula")
          (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/themes")
          (load-theme 'dracula t)

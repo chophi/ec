@@ -807,4 +807,9 @@ NDIM is the dimentions of the choice items.
                            ,(cu-make-commands-map-with-help-msg
                              binding-lists mode-list show-message)))))))))))
 
+(defun cu-toggle-debug-on-error ()
+  (interactive)
+  (and (y-or-n-p (message "%s debug-on-error"
+                          (if debug-on-error "Turn off" "Turn on")))
+       (setq debug-on-error (not debug-on-error))))
 (provide 'init-common-utils)
