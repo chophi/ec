@@ -84,6 +84,14 @@
   (cu-set-key-bindings global-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap)
   (cu-set-key-bindings org-mode-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap))
 
+(defun my-toggle-treemacs (&optional switch-back)
+  (interactive)
+  (let ((curbuf (current-buffer)))
+    (treemacs)
+    (if switch-back
+        (switch-to-buffer curbuf))))
+
+(global-set-key "\C-ct" 'my-treemacs)
 ;; google translate
 (dolist (map (list org-mode-map global-map))
   (cu-set-key-bindings map "\C-c\C-t"

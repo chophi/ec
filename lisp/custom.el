@@ -3,11 +3,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(epa-pinentry-mode (quote loopback))
  '(fci-rule-color "#515151")
  '(line-number-mode t)
  '(package-selected-packages
    (quote
-    (ivy-rich counsel swiper "swiper" "counsel" auctex haskell-mode pfuture poly-org dap-mode lsp-ui company-lsp use-package lsp-java modern-cpp-font-lock ensime flycheck-rust rust-mode go-autocomplete go-guru go-imports go-mode go-projectile go-rename go-snippets groovy-mode flycheck-gradle gradle-mode ob-kotlin flycheck-kotlin kotlin-mode rainbow-mode helm-ag flycheck-plantuml plantuml-mode graphviz-dot-mode ag helm-notmuch notmuch ido-gnus flycheck-swift helm-flycheck exec-path-from-shell flycheck undo-tree scratch project-local-variables pointback org-fstree openwith noflet mwe-log-commands multi-term maxframe markdown-mode+ jedi idomenu ido-ubiquitous helm-pydoc glsl-mode ggtags fill-column-indicator expand-region eopengrok elpy edit-server-htmlize dired-narrow dired+ diminish cpputils-cmake confluence color-theme-sanityinc-tomorrow cmake-mode clang-format browse-kill-ring apples-mode anything ace-jump-mode ac-inf-ruby ac-helm)))
+    (treemacs-projectile teemacs-projectile ivy-rich counsel swiper "swiper" "counsel" auctex haskell-mode pfuture poly-org dap-mode lsp-ui company-lsp use-package lsp-java modern-cpp-font-lock ensime flycheck-rust rust-mode go-autocomplete go-guru go-imports go-mode go-projectile go-rename go-snippets groovy-mode flycheck-gradle gradle-mode ob-kotlin flycheck-kotlin kotlin-mode rainbow-mode helm-ag flycheck-plantuml plantuml-mode graphviz-dot-mode ag helm-notmuch notmuch ido-gnus flycheck-swift helm-flycheck exec-path-from-shell flycheck undo-tree scratch project-local-variables pointback org-fstree openwith noflet mwe-log-commands multi-term maxframe markdown-mode+ jedi idomenu ido-ubiquitous helm-pydoc glsl-mode ggtags fill-column-indicator expand-region eopengrok elpy edit-server-htmlize dired-narrow dired+ diminish cpputils-cmake confluence color-theme-sanityinc-tomorrow cmake-mode clang-format browse-kill-ring apples-mode anything ace-jump-mode ac-inf-ruby ac-helm)))
  '(safe-local-variable-values
    (quote
     ((bug-reference-bug-regexp . "#\\(?2:[0-9]+\\)")
@@ -72,4 +73,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(isearch-fail ((((class color)) (:background "green") (:foreground "black")))))

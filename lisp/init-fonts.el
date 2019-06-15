@@ -116,7 +116,6 @@ by the :height face attribute."
          (fconf-list (nth index preferred-font-config-list)))
     (setq selected-font-config fconf-list)
     (set-font-for-current-frame selected-font-config)
-    (setq-default line-spacing 0.05)
     (setq selected-font-index index)))
 
 ;; The first call to use the first font in preferred-font-config-list

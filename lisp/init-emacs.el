@@ -102,7 +102,7 @@
 (require 'init-dired)
 (require 'init-uniform-env)
 
-(require 'init-neotree)
+(require 'init-treemacs)
 (require 'init-smali)
 (require 'init-cc-format)
 

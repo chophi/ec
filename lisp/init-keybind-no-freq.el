@@ -25,8 +25,7 @@
 
 ;; ;; neo-tree
 ;; (cu-set-key-bindings global-map "\C-c\C-n"
-;;                      `((?t . neotree-toggle)
-;;                        (?O . open-nanoc-private-site)
+;;                      `((?O . open-nanoc-private-site)
 ;;                        (?D . nanoc-daemon-private)
 ;;                        (?o . open-nanoc-public-site)
 ;;                        (?d . nanoc-daemon-public)
