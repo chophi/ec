@@ -744,6 +744,16 @@ NDIM is the dimentions of the choice items.
           (indent-according-to-mode))
       (newline-and-indent))))
 
+(defun* cu-insert-semicolon ()
+  (interactive "*")
+  (let ((is-last-char (equal (line-end-position) (point))))
+    (if is-last-char
+        (progn
+          (self-insert-command 1)
+          (newline)
+          (indent-according-to-mode))
+      (self-insert-command 1))))
+
 (defun cu-set-skeleton-pair-indent ()
   (setq skeleton-pair t)
   (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)

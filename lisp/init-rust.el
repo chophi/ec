@@ -1,5 +1,13 @@
+(require-package 'rust-mode)
+(require-package 'flycheck-rust)
+(require-package 'cargo)
+(require-package 'ob-rust)
+(require-package 'rust-playground)
+(custom-set-variables '(rust-playground-basedir "~/rust-playground"))
+
 (require 'rust-mode)
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+
 (with-eval-after-load 'rust-mode
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
@@ -11,4 +19,5 @@
                  (when (file-directory-p dir)
                    (add-to-path dir))))))
 (add-hook 'rust-mode-hook 'cu-set-skeleton-pair-indent t)
+(define-key rust-mode-map (kbd ";") 'cu-insert-semicolon)
 (provide 'init-rust)

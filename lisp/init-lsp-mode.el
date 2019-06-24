@@ -40,4 +40,10 @@
 (use-package dap-java :after (lsp-java))
 (use-package lsp-java-treemacs :after (treemacs))
 
+;; Replace completing-read with ido-completing-read
+(defadvice lsp
+    (around use-ido-when-possible activate)
+  (cl-letf (((symbol-function 'completing-read) 'ido-completing-read))
+    ad-do-it))
+
 (provide 'init-lsp-mode)
