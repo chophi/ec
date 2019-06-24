@@ -174,6 +174,9 @@
   (cu-set-key-bindings c-mode-base-map
                        "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
 
+(cu-set-key-bindings rust-mode-map
+                     "\C-c\C-s"
+                     '((?e . cu-toggle-lsp)))
 ;; grok keybindings from init-grok.el
 (defconst my-opengrok-map
   '((?d . eopengrok-find-definition)
