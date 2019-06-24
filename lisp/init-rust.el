@@ -19,4 +19,5 @@
                  (when (file-directory-p dir)
                    (add-to-path dir))))))
 (add-hook 'rust-mode-hook 'cu-set-skeleton-pair-indent t)
+(define-key rust-mode-map (kbd ";") 'cu-insert-semicolon)
 (provide 'init-rust)
