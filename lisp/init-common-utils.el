@@ -822,4 +822,37 @@ NDIM is the dimentions of the choice items.
   (and (y-or-n-p (message "%s debug-on-error"
                           (if debug-on-error "Turn off" "Turn on")))
        (setq debug-on-error (not debug-on-error))))
+
+(defun cu-get-or-select-buffer-local-terminal (&optional enforce-reselect)
+  "Get project local terminal or select one from the existed terminal if no
+terminal was selected before or ENFORCE-RESELECT is not nil"
+  (interactive "P")
+  (when (or (not (boundp 'buffer-local-terminal))
+            (not (buffer-live-p buffer-local-terminal))
+            enforce-reselect)
+    (set (if (not (boundp 'buffer-local-terminal))
+             (make-local-variable 'buffer-local-terminal)
+           'buffer-local-terminal)
+         (let ((buffer-list '()))
+           (dolist (term multi-term-buffer-list)
+             (add-to-list 'buffer-list (buffer-name term)))
+           (get-buffer
+            (ido-completing-read "Select a terminal: " buffer-list)))))
+  buffer-local-terminal)
+
+(defun cu-send-command-to-terminal (term command)
+  "Send the COMMAND to the TERMINAL"
+  (with-current-buffer term
+    (term-send-raw-string (concat command "\n"))
+    (when (or (not (get-buffer-window term))
+              (not (eq (window-frame (get-buffer-window term)) (selected-frame))))
+      (switch-to-buffer-other-window (current-buffer))
+      (end-of-buffer))))
+
+(defun cu-send-command-to-buffer-local-terminal
+    (command &optional enforce-reselect)
+  (cu-send-command-to-terminal
+   (cu-get-or-select-buffer-local-terminal enforce-reselect)
+   command))
+
 (provide 'init-common-utils)

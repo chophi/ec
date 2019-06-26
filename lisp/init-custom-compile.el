@@ -20,39 +20,6 @@
 ;;          (run "adb push libs/armeabi/test-libstl /data/")
 ;;          (run "adb shell /data/test-libstl"))))
 
-(defun get-or-select-buffer-local-terminal (&optional enforce-reselect)
-  "Get project local terminal or select one from the existed terminal if no
-terminal was selected before or ENFORCE-RESELECT is not nil"
-  (interactive "P")
-  (when (or (not (boundp 'buffer-local-terminal))
-            (not (buffer-live-p buffer-local-terminal))
-            enforce-reselect)
-    (set (if (not (boundp 'buffer-local-terminal))
-             (make-local-variable 'buffer-local-terminal)
-           'buffer-local-terminal)
-         (let ((buffer-list '()))
-           (dolist (term multi-term-buffer-list)
-             (add-to-list 'buffer-list (buffer-name term)))
-           (get-buffer
-            (ido-completing-read "Select a terminal: " buffer-list)))))
-  buffer-local-terminal)
-
-(defun _send-command-to-terminal (term command)
-  "Send the COMMAND to the TERMINAL"
-  (with-current-buffer term
-    (term-send-raw-string (concat command "\n"))
-    (when (or (not (get-buffer-window term))
-              (not (eq (window-frame (get-buffer-window term)) (selected-frame))))
-      (switch-to-buffer-other-window (current-buffer))
-      (end-of-buffer))))
-
-(defun send-command-to-terminal (&optional enforce-reselect)
-  "Send the COMMAND to the TERMINAL, will reselect a terminal if
-ENFORCE-RESELECT is not nil"
-  (interactive "P")
-  (_send-command-to-terminal (get-or-select-project-terminal enforce-reselect)
-                             (read-string "Input the Command: ")))
-
 (defun get-custom-compile-log-buffer (dir &optional switch-to)
   "Get custom compile log buffer for DIR, also switch to the buffer if
 SWITCH-TO is not nil"
@@ -192,8 +159,8 @@ to '((program-name project-root compilation-configuration expression) ...)"
             ('compile (compile command))
             ('shell (shell-command command))
             ('term
-             (_send-command-to-terminal
-              (get-or-select-buffer-local-terminal enforce-reselect)
+             (cu-send-command-to-terminal
+              (cu-get-or-select-buffer-local-terminal enforce-reselect)
               (format "cd %s &&\\\n %s" project-root command)))
             ('elisp (let ((in-custom-compile-environment t)
                           (current-custom-compile-log-buffer compile-log))
