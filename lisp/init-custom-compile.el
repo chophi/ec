@@ -149,7 +149,7 @@ to '((program-name project-root compilation-configuration expression) ...)"
         (when (and relative-path (not (equal relative-path "")) (not (eq command-type 'elisp)))
           (setq command (concat "cd " relative-path " && " command)))
 
-        (message "Run: %S" command)
+        ;; (message "Run: %S" command)
         ;; Run the command.
         (with-current-buffer (get-buffer-create compile-log)
           (setq-local custom-compile-project-root project-root)
