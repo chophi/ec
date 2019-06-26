@@ -823,13 +823,13 @@ NDIM is the dimentions of the choice items.
                           (if debug-on-error "Turn off" "Turn on")))
        (setq debug-on-error (not debug-on-error))))
 
-(defun cu-get-or-select-buffer-local-terminal (&optional enforce-reselect)
+(defun cu-get-or-select-buffer-local-terminal (&optional reselect-terminal)
   "Get project local terminal or select one from the existed terminal if no
-terminal was selected before or ENFORCE-RESELECT is not nil"
+terminal was selected before or RESELECT-TERMINAL is not nil"
   (interactive "P")
   (when (or (not (boundp 'buffer-local-terminal))
             (not (buffer-live-p buffer-local-terminal))
-            enforce-reselect)
+            reselect-terminal)
     (set (if (not (boundp 'buffer-local-terminal))
              (make-local-variable 'buffer-local-terminal)
            'buffer-local-terminal)
@@ -850,9 +850,9 @@ terminal was selected before or ENFORCE-RESELECT is not nil"
       (end-of-buffer))))
 
 (defun cu-send-command-to-buffer-local-terminal
-    (command &optional enforce-reselect)
+    (command &optional reselect-terminal)
   (cu-send-command-to-terminal
-   (cu-get-or-select-buffer-local-terminal enforce-reselect)
+   (cu-get-or-select-buffer-local-terminal reselect-terminal)
    command))
 
 (provide 'init-common-utils)

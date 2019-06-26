@@ -1,6 +1,6 @@
 (progn
   (require 'cargo-process)
-  (defun my-cargo-run(&optional enforce-select)
+  (defun my-cargo-run(&optional reselect-terminal)
     (interactive "P")
     (let* ((root (cargo-process--project-root))
            (toml-file (cu-join-path root "Cargo.toml")))
@@ -8,7 +8,8 @@
         (cu-send-command-to-buffer-local-terminal
          (format "%s run -q --manifest-path %s"
                  cargo-process--custom-path-to-bin
-                 toml-file)))))
+                 toml-file)
+         reselect-terminal))))
   (append
    ;; For graphviz-dot-mode
    (cu-make-mode-specific-custom-compile-rule-map

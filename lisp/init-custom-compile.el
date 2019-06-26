@@ -92,7 +92,7 @@ to '((program-name project-root compilation-configuration expression) ...)"
             (add-to-list 'ret-exprs (list prog-name proot compile-file e))))))
     ret-exprs))
 
-(defun* cp-custom-compile (enforce-reselect)
+(defun* cp-custom-compile (reselect-terminal)
   (interactive "P")
   (let* ((path default-directory)
          (run-on-file (buffer-file-name))
@@ -160,7 +160,7 @@ to '((program-name project-root compilation-configuration expression) ...)"
             ('shell (shell-command command))
             ('term
              (cu-send-command-to-terminal
-              (cu-get-or-select-buffer-local-terminal enforce-reselect)
+              (cu-get-or-select-buffer-local-terminal reselect-terminal)
               (format "cd %s &&\\\n %s" project-root command)))
             ('elisp (let ((in-custom-compile-environment t)
                           (current-custom-compile-log-buffer compile-log))
