@@ -41,7 +41,9 @@
                        (setq-local cmake--compile-mode 'debug)
                        ))))
         (unit "all"
-              (compile (cmake--compile-string "make all")))
+              (compile
+               (with-current-buffer (find-file-noselect ,cmake-file)
+                 (cmake--compile-string "make all"))))
         (unit "clean"
               (compile (cmake--compile-string "make clean")))
         (unit "dist-clean"
