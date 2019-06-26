@@ -5,7 +5,7 @@
            (toml-file (cu-join-path root "Cargo.toml")))
       (with-current-buffer (find-file-noselect toml-file)
         (cu-send-command-to-buffer-local-terminal
-         (format "%s run --manifest-path %s"
+         (format "%s run -q --manifest-path %s"
                  cargo-process--custom-path-to-bin
                  toml-file)))))
   (append
