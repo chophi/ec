@@ -1,4 +1,5 @@
 (progn
+  (require 'cargo-process)
   (defun my-cargo-run(&optional enforce-select)
     (interactive "P")
     (let* ((root (cargo-process--project-root))
