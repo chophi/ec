@@ -35,7 +35,6 @@
                      choice))
      "/")))
 
-;;;###autoload
 (defun my-rust-playground ()
   "Run playground for Rust language in a new buffer."
   (interactive)
@@ -65,6 +64,7 @@
       (backward-char 27)
       (rust-playground-mode))))
 
-(fset 'rust-playground 'my-rust-playground)
+(with-eval-after-load "rust-playground"
+  (fset 'rust-playground (symbol-function 'my-rust-playground)))
 
 (provide 'init-rust)
