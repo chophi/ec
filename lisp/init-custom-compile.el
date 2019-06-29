@@ -10,7 +10,6 @@
 ;;         (run "add remount")
 ;;         (run "adb push libs/armeabi/test-libstl /data/")
 ;;         (run "adb shell /data/test-libstl")))
-;; ;; Sample compile files in ~/vif/elisp-compile-files
 ;; '("project-root"
 ;;   ((unit "compile"
 ;;          (compile "ndk-build" "jni"))
@@ -29,8 +28,7 @@ SWITCH-TO is not nil"
     (when switch-to (switch-to-buffer log-buffer))
     log-buffer))
 
-(defvar g-compile-rule-dirlist '("~/vif/elisp-compile-files"
-                              "~/.emacs.d/compile-rules/")
+(defvar g-compile-rule-dirlist '("~/.emacs.d/compile-rules/")
   "The directories where the global compile rule files locates.")
 
 (require 'cl-lib)
