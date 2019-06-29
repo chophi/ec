@@ -15,7 +15,7 @@ echo "PATH is [$PATH]"
 echo "JAVA is from: `which java`"
 echo "Memory limit: $memory_setting"
 
-opengrok_lib=$HOME/opengrok/packages/opengrok-1.1-rc18/lib/opengrok.jar
+opengrok_lib=$HOME/repo/public/opengrok-bin/opengrok-1.1-rc18/lib/opengrok.jar
 ctags=/usr/local/bin/ctags
 class=org.opensolaris.opengrok.search.Search
 
