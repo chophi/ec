@@ -802,8 +802,8 @@ NDIM is the dimentions of the choice items.
                               (cu-join-path (getenv "HOME") ".py-vir-env"))))
   (unless (file-exists-p python-home)
     (error "%s not exist" python-home))
-  (setenv "PYTHONHOME" python-home)
-  (setenv "VIRTUAL_ENV" python-home)
+  ;; (setenv "PYTHONHOME" python-home)
+  ;; (setenv "VIRTUAL_ENV" python-home)
   (add-to-path (cu-join-path python-home "bin") t))
 
 (defun cu-make-mode-specific-custom-compile-rule-map
