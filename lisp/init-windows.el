@@ -71,4 +71,66 @@
 
 (setq focus-follows-mouse t)
 
+(defvar my-windows-mode nil)
+(with-eval-after-load "treemacs"
+  (require 'array)
+  (defun my-delete-treemacs-window ()
+    (interactive)
+    (when (eq 'visible (treemacs-current-visibility))
+      (delete-window (treemacs-get-local-window))))
+
+  (defun my-only-one-window ()
+    (interactive)
+    (delete-other-windows)
+    (my-delete-treemacs-window))
+
+  (defun split-treemacs-with-other-window ()
+    (interactive)
+    (let ((curbuf (current-buffer)))
+      (my-only-one-window)
+      (treemacs)
+      (setq my-windows-mode 'treemacs-with-other-one)
+      (switch-to-buffer curbuf)))
+
+  (defun split-treemacs-with-other-two-windows ()
+    (interactive)
+    (let ((curbuf (current-buffer)))
+      (my-only-one-window)
+      (treemacs)
+      (setq my-windows-mode 'treemacs-with-other-two)
+      (switch-to-buffer curbuf)
+      (split-window-vertically-instead)
+      (switch-to-buffer curbuf)))
+
+  (defun select-treemacs-from-split-windows ()
+    (interactive)
+    (pcase my-windows-mode
+      ((or 'treemacs-with-other-one 'treemacs-with-other-two)
+       (select-window (treemacs-get-local-window)))))
+
+  (defun select-first-window-with-pred (pred)
+    (let ((wins (copy-list (window-list))))
+      (select-window
+       (car (sort wins pred)))))
+
+  (defun select-right-up-window-from-split-windows ()
+    (interactive)
+    (select-first-window-with-pred
+     (lambda (w0 w1)
+       (let ((pos1 (window-edges w0))
+             (pos2 (window-edges w1)))
+         (or (> (nth 2 pos1) (nth 2 pos2))
+             (< (nth 1 pos1) (nth 1 pos2)))))))
+
+  (defun select-right-down-window-from-split-windows ()
+    (interactive)
+    (select-first-window-with-pred
+     (lambda (w0 w1)
+       (let ((pos1 (window-edges w0))
+             (pos2 (window-edges w1)))
+         (or (> (nth 2 pos1) (nth 2 pos2))
+             (> (nth 1 pos1) (nth 1 pos2)))))))
+
+  (add-hook 'treemacs-mode-hook (lambda () (toggle-truncate-lines 1)) t))
+
 (provide 'init-windows)

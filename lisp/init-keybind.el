@@ -339,4 +339,18 @@
              (?r . projectile-ripgrep)
              (?s . projectile-ag))))))
 
+(let ((key-binding
+       '((?1 . my-only-one-window)
+         (?2 . split-treemacs-with-other-window)
+         (?3 . split-treemacs-with-other-two-windows)
+         (?a . select-treemacs-from-split-windows)
+         (?q . select-treemacs-from-split-windows)
+         (?e . select-right-up-window-from-split-windows)
+         (?d . select-right-down-window-from-split-windows))))
+  (cu-set-key-bindings global-map "\C-xx" key-binding)
+  (cu-set-key-bindings global-map "\C-x\C-x" key-binding)
+  nil ;; mode-list
+  nil ;; show-message
+  )
+
 (provide 'init-keybind)
