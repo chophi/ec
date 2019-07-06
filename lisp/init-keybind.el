@@ -347,10 +347,13 @@
          (?q . select-treemacs-from-split-windows)
          (?e . select-right-up-window-from-split-windows)
          (?d . select-right-down-window-from-split-windows))))
-  (cu-set-key-bindings global-map "\C-xx" key-binding)
-  (cu-set-key-bindings global-map "\C-x\C-x" key-binding)
-  nil ;; mode-list
-  nil ;; show-message
-  )
+  (cu-set-key-bindings global-map "\C-xx" key-binding
+                       nil ;; mode-list
+                       -1 ;; show-message
+                       )
+  (cu-set-key-bindings global-map "\C-x\C-x" key-binding
+                       nil ;; mode-list
+                       -1 ;; show-message
+                       ))
 
 (provide 'init-keybind)
