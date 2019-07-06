@@ -131,6 +131,11 @@
          (or (> (nth 2 pos1) (nth 2 pos2))
              (> (nth 1 pos1) (nth 1 pos2)))))))
 
-  (add-hook 'treemacs-mode-hook (lambda () (toggle-truncate-lines 1)) t))
+  (add-hook 'treemacs-mode-hook
+            (lambda ()
+              (toggle-truncate-lines 1)
+              ;; (with-current-buffer (treemacs-get-local-buffer)
+              ;;   (face-remap-add-relative 'default '(:family "Consolas")))
+              ) t))
 
 (provide 'init-windows)
