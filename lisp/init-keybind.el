@@ -286,7 +286,7 @@
  projectile-mode-map "\C-cf"
  `((?v . projectile-vc)
    (?r . projectile-recentf)
-   (?s . projectile-replace)
+   (?p . projectile-replace)
    (?d . projectile-dired)
    (?g . projectile-multi-occur)
    (?o . projectile-project-buffers-other-buffer)
@@ -294,7 +294,7 @@
    (?b . projectile-switch-to-buffer)
    (?k . projectile-kill-buffers)
    (?m . projectile-commander)
-   (?p . projectile-switch-project)
+   (?f . projectile-switch-project)
    (?q . projectile-switch-open-project)
    (?! . projectile-run-shell-command-in-root)
    (?& . projectile-run-async-shell-command-in-root)
