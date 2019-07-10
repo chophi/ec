@@ -102,34 +102,55 @@
       (split-window-vertically-instead)
       (switch-to-buffer curbuf)))
 
+  (defun split-treemacs-with-other-two-windows-vertical ()
+    (interactive)
+    (let ((curbuf (current-buffer)))
+      (my-only-one-window)
+      (treemacs)
+      (setq my-windows-mode 'treemacs-with-other-two-vertical)
+      (switch-to-buffer curbuf)
+      (split-window-horizontally-instead)
+      (switch-to-buffer curbuf)))
+
   (defun select-treemacs-from-split-windows ()
     (interactive)
-    (pcase my-windows-mode
-      ((or 'treemacs-with-other-one 'treemacs-with-other-two)
-       (select-window (treemacs-get-local-window)))))
+    (select-window (treemacs-get-local-window)))
 
-  (defun select-first-window-with-pred (pred)
+  (defun select-nth-window-with-pred (n pred)
     (let ((wins (copy-list (window-list))))
       (select-window
-       (car (sort wins pred)))))
+       (nth n (sort wins pred)))))
+
+  (defun select-first-window-with-pred (pred)
+    (select-nth-window-with-pred 0 pred))
+
+  (defun window-right-up-first (w0 w1)
+    (let ((pos1 (window-edges w0))
+          (pos2 (window-edges w1)))
+      (or (> (nth 2 pos1) (nth 2 pos2))
+          (< (nth 1 pos1) (nth 1 pos2)))))
+
+  (defun window-right-down-first (w0 w1)
+    (let ((pos1 (window-edges w0))
+          (pos2 (window-edges w1)))
+      (or (> (nth 2 pos1) (nth 2 pos2))
+          (> (nth 1 pos1) (nth 1 pos2)))))
 
   (defun select-right-up-window-from-split-windows ()
     (interactive)
     (select-first-window-with-pred
-     (lambda (w0 w1)
-       (let ((pos1 (window-edges w0))
-             (pos2 (window-edges w1)))
-         (or (> (nth 2 pos1) (nth 2 pos2))
-             (< (nth 1 pos1) (nth 1 pos2)))))))
+     #'window-right-up-first))
+
+  (defun select-middle-window-from-split-windows ()
+    (interactive)
+    (select-nth-window-with-pred
+     1
+     #'window-right-up-first))
 
   (defun select-right-down-window-from-split-windows ()
     (interactive)
     (select-first-window-with-pred
-     (lambda (w0 w1)
-       (let ((pos1 (window-edges w0))
-             (pos2 (window-edges w1)))
-         (or (> (nth 2 pos1) (nth 2 pos2))
-             (> (nth 1 pos1) (nth 1 pos2)))))))
+     #'window-right-down-first))
 
   (add-hook 'treemacs-mode-hook
             (lambda ()

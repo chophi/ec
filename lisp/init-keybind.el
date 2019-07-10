@@ -343,8 +343,11 @@
        '((?1 . my-only-one-window)
          (?2 . split-treemacs-with-other-window)
          (?3 . split-treemacs-with-other-two-windows)
+         (?| . split-treemacs-with-other-two-windows-vertical)
          (?a . select-treemacs-from-split-windows)
          (?q . select-treemacs-from-split-windows)
+         (?w . select-middle-window-from-split-windows)
+         (?s . select-middle-window-from-split-windows)
          (?e . select-right-up-window-from-split-windows)
          (?d . select-right-down-window-from-split-windows))))
   (cu-set-key-bindings global-map "\C-xx" key-binding
