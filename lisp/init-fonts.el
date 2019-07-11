@@ -77,7 +77,7 @@ by the :height face attribute."
 ;; useful variables and functions:
 ;; charset-script-alist charset-list =C-u + (what-cursor-position)=
 ;; Test here for macos non-company:
-;; (set-font-for-current-frame '("test" (han "STFangsong" 24) (ascii "Monaco" 20)))
+;; (set-font-for-current-frame '("test" (han "STFangsong" 26) (ascii "Monaco" 22)))
 ;; (set-face-attribute 'default (selected-frame) :font (font-spec :family "Monaco" :registry "gb2312" :size 10))
 (defconst preferred-font-config-list
   (cond
@@ -164,4 +164,13 @@ by the :height face attribute."
 
   (ad-activate 'other-frame))
 
+(defun my-adjust-font-size-for-current-frame ()
+  (interactive)
+  (let ((outer-size (cdr (assoc 'outer-size (frame-geometry)))))
+    (cond
+     ((> (car outer-size) 3000)
+      (set-font-for-current-frame '("large(34 inch)" (han "STFangsong" 26) (ascii "Monaco" 22))))
+     ((> (car outer-size) 1200)
+      (set-font-for-current-frame '("mac" (han "STFangsong" 22) (ascii "Monaco" 19))))
+     (t (error "unknown display")))))
 (provide 'init-fonts)
