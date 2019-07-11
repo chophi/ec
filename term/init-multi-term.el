@@ -8,12 +8,7 @@
       )
     )
 
-(setq multi-term-program "/bin/bash")
-
-(when (and (eq os 'macos) (not (company-computer-p)))
-  (when (file-exists-p "/usr/local/bin/bash")
-    (setq multi-term-program "/usr/local/bin/bash")
-    )
-  )
+(cond ((and shell-file-name (file-exists-p shell-file-name))
+       (setq multi-term-program shell-file-name)))
 
 (provide 'init-multi-term)
