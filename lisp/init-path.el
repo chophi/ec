@@ -5,8 +5,11 @@
 ;; use interactive shell, and no startup file check.
 (setq exec-path-from-shell-check-startup-files nil)
 ;;; For mac, use /usr/local/bin/bash, which is brew installed bash.
-(when (and (equal system-type 'darwin) (file-exists-p "/usr/local/bin/bash"))
-  (setq shell-file-name "/usr/local/bin/bash"))
+(cond
+ ((company-computer-p) (setq shell-file-name "/bin/zsh"))
+ ((and (equal system-type 'darwin) (file-exists-p "/usr/local/bin/bash"))
+  (setq shell-file-name "/usr/local/bin/bash")))
+
 (setq exec-path-from-shell-variables
       '("PATH" "MANPATH" "INFOPATH"
         "LDFLAGS" "CPPFLAGS"            ; for clang
