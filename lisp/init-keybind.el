@@ -170,13 +170,28 @@
     (?e . cu-toggle-lsp))
   "Key bindings for semantic")
 
-(with-eval-after-load "cc-mode"
-  (cu-set-key-bindings c-mode-base-map
-                       "\C-c\C-s" `(,semantic-key-bindings ,eassist-key-bindings)))
+(defun control-s-control-s ()
+  (interactive)
+  (cond
+   ;; In lsp mode
+   ((and (boundp 'lsp-mode) lsp-mode)
+    (call-interactively
+     (cu-make-commands-map-with-help-msg
+      '((?e . cu-toggle-lsp)
+        (?u . lsp-ui-mode)
+        (?c . cu-lsp-execute-command)
+        (?D . lsp-describe-thing-at-point)
+        (?f . lsp-format-buffer)
+        (?d . lsp-find-declaration)
+        (?i . lsp-find-implementation)
+        (?r . lsp-find-references)))
+     ))
+   (t (call-interactively
+       (cu-make-commands-map-with-help-msg
+        `(,@semantic-key-bindings ,@eassist-key-bindings))))))
 
-(cu-set-key-bindings rust-mode-map
-                     "\C-c\C-s"
-                     '((?e . cu-toggle-lsp)))
+(global-set-key "\C-c\C-s" 'control-s-control-s)
+
 ;; grok keybindings from init-grok.el
 (defconst my-opengrok-map
   '((?d . eopengrok-find-definition)

@@ -855,4 +855,21 @@ terminal was selected before or RESELECT-TERMINAL is not nil"
    (cu-get-or-select-buffer-local-terminal reselect-terminal)
    command))
 
+(with-eval-after-load "lsp-mode"
+  (defun cu-lsp-execute-command ()
+    (interactive)
+    (let* ((commands
+            (seq-filter
+             (lambda (title-action-cons) (car title-action-cons))
+             (mapcar
+              (lambda (action)
+                (cons (ht-get action "title" nil) action))
+              (lsp-get-or-calculate-code-actions))))
+           (choices
+            (mapcar
+             (lambda (command) (car command))
+             commands)))
+      (lsp-execute-code-action
+       (cdr (assoc (ido-completing-read "Choose your action: " choices) commands))))))
+
 (provide 'init-common-utils)
