@@ -99,9 +99,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
       (setq old-list (cdr old-list)))
     (add-to-list 'temp-list cur-buf t)
     (setq temp-list (append temp-list old-list))
-    (setq multi-term-buffer-list temp-list)
-    
-    ))
+    (setq multi-term-buffer-list temp-list)))
 
 (defun move-terminal-as-first ()
   (interactive)
@@ -133,9 +131,12 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (defun term-prefix (buf)
   (substring (buffer-name buf) 0 (length term-name-template)))
 
-(defun uf-send-command-to-term (command &optional switch-to-buffer-p)
+(defun uf-send-command-to-term (command &optional switch-to-buffer-p term-buffer)
   (let ((term-buf nil))
     (catch 'found
+      (when (and term-buffer (buffer-live-p term-buffer))
+        (setq term-buf term-buffer)
+        (throw 'found term-buffer))
       (dolist (buf-win (window-list))
         (when (and (eq 'term-mode (with-current-buffer (window-buffer buf-win)
                                     major-mode))
@@ -154,6 +155,13 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (interactive)
   (let ((cwd default-directory))
     (uf-send-command-to-term (format "cd %s\n" cwd) t)))
+
+(defun uf-change-cwd-to ()
+  (interactive)
+  (when (not (eq 'term-mode major-mode))
+    (error "only use this command with term-mode buffer"))
+  (uf-send-command-to-term
+   (format "cd %s\n" (ido-read-directory-name "CD to: ")) nil (current-buffer)))
 
 (defun compile-with-term ()
   (interactive)
@@ -321,7 +329,6 @@ if it's add, then field-str-table must be specified, these fields will be added,
 
 
 (global-unset-key "\C-z")
-;; TODO: make the uf-switch-to-term-x invisible
 (cu-set-key-bindings global-map "\C-z"
                      '((?c . multi-term)
                        (?n . multi-term-next)
@@ -336,6 +343,7 @@ if it's add, then field-str-table must be specified, these fields will be added,
                        (?j . cu-open-link)
                        (?d . duplicate-term-and-switch)
                        (?k . uf-term-toggle-char-mode)
+                       (?t . uf-change-cwd-to)
                        (?1 . uf-switch-to-term-1)
                        (?2 . uf-switch-to-term-2)
                        (?3 . uf-switch-to-term-3)
