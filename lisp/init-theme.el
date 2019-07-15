@@ -56,7 +56,13 @@
          (load-theme 'paper t))
         (t nil)))
 
-(choose-color-theme global-use-theme)
+(cond
+ ((company-computer-p)
+  (require-package 'leuven-theme)
+  (load-theme 'leuven t))
+ (t
+  (choose-color-theme global-use-theme)))
+
 
 (when global-background-color
   (set-background-color global-background-color))
