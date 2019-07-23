@@ -84,8 +84,8 @@ by the :height face attribute."
    ;; for non-company macos
    ((eq os 'macos)
     (if (company-computer-p)
-        '(("large(23-inch)" (han "STFangsong" 30) (ascii "Monaco for Powerline" 25)) ;; 23-inch display
-          ("small(13.3-inch)" (han "STFangsong" 24) (ascii "Monaco for Powerline" 20))) ;; 13.3-inch display
+        '(("large(34 inch)" (han "STFangsong" 24) (ascii "Monaco" 20))
+          ("mac" (han "STFangsong" 20) (ascii "Monaco" 16))) ;; 13.3-inch display
         '(("large" (han "STFangsong" 22) (ascii "Monaco for Powerline" 19))
           ("small(13.3-inch)" (han "STFangsong" 24) (ascii "Monaco for Powerline" 20)))))
    ;; for company computer

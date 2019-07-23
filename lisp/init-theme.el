@@ -1,9 +1,10 @@
 (require 'cl)
 (defconst global-use-theme
-  (case os
-    ('macos "zenburn")
-    ('linux "zenburn")
-    (t "sanityinc-tommorrow"))
+  (cond
+   ((company-computer-p) "leuven")
+   ((equal os 'macos) "zenburn")
+   ((equal os 'linux) "zenburn")
+   (t "sanityinc-tommorrow"))
   "theme selection")
 
 (defvar global-background-color nil "global background color")
@@ -14,7 +15,7 @@
   (setq color-theme
         (or color-theme
             (ido-completing-read "Choose a theme: "
-                                 '("zenburn" "sanityinc-tommorrow" "dracula"))))
+                                 '("zenburn" "leuven" "sanityinc-tommorrow" "dracula"))))
   (cond ((equal color-theme "sanityinc-tommorrow")
          (require-package 'color-theme-sanityinc-tomorrow)
          (load-theme 'sanityinc-tomorrow-eighties t)
@@ -41,6 +42,9 @@
                                ((((class color))
                                  (:background "green")
                                  (:foreground "black")))))))
+        ((equal color-theme "leuven")
+         (require-package 'leuven-theme)
+         (load-theme 'leuven t))
         ((equal color-theme "dracula")
          (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/themes")
          (load-theme 'dracula t)
@@ -56,13 +60,7 @@
          (load-theme 'paper t))
         (t nil)))
 
-(cond
- ((company-computer-p)
-  (require-package 'leuven-theme)
-  (load-theme 'leuven t))
- (t
-  (choose-color-theme global-use-theme)))
-
+(choose-color-theme global-use-theme)
 
 (when global-background-color
   (set-background-color global-background-color))
