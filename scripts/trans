@@ -178,7 +178,7 @@ gsub(/"/, "\\\"", string)
 return string
 }
 function unescape(string) {
-gsub(/\\\"/, "\"", string)
+gsub(/\\"/, "\"", string)
 gsub(/\\\\/, "\\", string)
 return string
 }
