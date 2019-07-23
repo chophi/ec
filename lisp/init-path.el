@@ -6,6 +6,7 @@
 (setq exec-path-from-shell-check-startup-files nil)
 ;;; For mac, use /usr/local/bin/bash, which is brew installed bash.
 (cond
+ ((file-exists-p "/apollo/env/envImprovement/var/bin/zsh") (setq shell-file-name "/apollo/env/envImprovement/var/bin/zsh"))
  ((file-exists-p "/bin/zsh") (setq shell-file-name "/bin/zsh"))
  ((and (equal system-type 'darwin) (file-exists-p "/usr/local/bin/bash"))
   (setq shell-file-name "/usr/local/bin/bash")))
