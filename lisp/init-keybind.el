@@ -105,7 +105,9 @@
 ;; path utils
 (with-eval-after-load "cc-mode"
   (define-key c-mode-base-map "\C-c\C-l" nil)
-  (define-key java-mode-map "\C-c\C-l" nil))
+  (define-key java-mode-map "\C-c\C-l" nil)
+  (define-key java-mode-map "\C-c\C-s" nil))
+
 (with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-l" nil))
 (defconst cu-path-util-map
   '((?i . cu-insert-path-replace-home)
@@ -114,6 +116,7 @@
     (?o . cu-save-current-file-path-org-style)
     (?O . org-store-link)
     (?j . cu-open-link)
+    (?e . cu-open-current-file-with-external-app)
     (?f . cu-visit-file-follow-symlink)
     (?n . find-name-dired)
     (?T . lc-test-current-buffer)

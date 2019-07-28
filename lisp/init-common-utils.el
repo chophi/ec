@@ -872,4 +872,11 @@ terminal was selected before or RESELECT-TERMINAL is not nil"
       (lsp-execute-code-action
        (cdr (assoc (ido-completing-read "Choose your action: " choices) commands))))))
 
+(defun cu-open-current-file-with-external-app (&optional choose-app)
+  (interactive)
+  (let ((app (if choose-app
+                 (read-string "Input command: ")
+               "open")))
+    (shell-command (format "%s %s" app (buffer-file-name)))))
+
 (provide 'init-common-utils)
