@@ -121,14 +121,12 @@ end of the line."
 
 ;; Prevent issues with the Windows null device (NUL)
 ;; when using cygwin find with rgrep.
-(defadvice zrgrep (around no-null-filename-separator activate)
-  "old zrgrep doesn't support the --null option"
-  (let ((grep-use-null-filename-separator nil))
-    ad-do-it))
-
 (defadvice grep-compute-defaults (around set-null-device activate)
-  "Use cygwin's /dev/null as the null-device."
-  (let ((null-device "/dev/null"))
+  "Solve two problems:
+null-device: Use cygwin's /dev/null as the null-device
+grep-use-null-filename-separator: the old zgrep doesn't support the --null option"
+  (let ((null-device "/dev/null")
+        (grep-use-null-filename-separator nil))
     ad-do-it))
 
 (add-hook
