@@ -41,8 +41,6 @@
    (matlab . t)
    (C . t)
    (perl . t)
-   ,(when (< emacs-major-version 27)
-      '(sh . t))
    (ditaa . t)
    (python . t)
    (haskell . t)
