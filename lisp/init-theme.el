@@ -2,7 +2,7 @@
 (defconst global-use-theme
   (cond
    ((company-computer-p) "leuven")
-   ((equal os 'macos) "zenburn")
+   ((equal os 'macos) "leuven")
    ((equal os 'linux) "zenburn")
    (t "sanityinc-tommorrow"))
   "theme selection")
