@@ -173,6 +173,7 @@
 (require 'init-lsp-mode)
 (require 'init-haskell)
 (require 'init-epa)
+(require 'init-org-to-xwiki)
 (require 'init-keybind)
 (require 'init-keybind-no-freq)
 (setq sanityinc/require-times
