@@ -81,8 +81,11 @@
             (confluence-view-the-wiki (or (org-get-wiki-page-id)
                                           (error "wiki page id is empty"))))
           '(("o" . org-confluence-view-the-wiki)))))
-  (cu-set-key-bindings global-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap)
-  (cu-set-key-bindings org-mode-map "\C-c\C-p" publish-org-to-confluence-wiki-keymap))
+  (defconst publish-org-to-xwiki-keymap
+    `(("p" . org-to-xwiki)
+      ("o" . org-open-xwiki)))
+  (cu-set-key-bindings global-map "\C-c\C-p" publish-org-to-xwiki-keymap)
+  (cu-set-key-bindings org-mode-map "\C-c\C-p" publish-org-to-xwiki-keymap))
 
 (defun my-toggle-treemacs (&optional switch-back)
   (interactive)
