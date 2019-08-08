@@ -42,7 +42,6 @@
                             filename
                             tmpfile)) 0)
       (error "Fail to convert to markdown!"))
-    (when (y-or-n-p (format "Run: %s" command))
-      (cu-send-command-to-buffer-local-terminal command))))
+    (cu-send-command-to-buffer-local-terminal command)))
 
 (provide 'init-org-to-xwiki)
