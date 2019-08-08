@@ -1,10 +1,15 @@
 (require 'ox-md)
+(require 'ox-pandoc)
+
 (defun org-get-xwiki-path()
   (interactive)
   (save-excursion
     (goto-char (point-min))
     (re-search-forward "#\\+\\([xX][wW][iI][kK][iI]_[pP][aA][tT][hH]\\):\s*\\([-_0-9a-zA-Z/]+\\)\s*$" nil t)
-    (match-string-no-properties 2)))
+    (let ((path (match-string-no-properties 2)))
+      (if (and path (cu-seq-ends-with path "/"))
+          (substring path 0 -1)
+        path))))
 
 (defun org-open-xwiki ()
   (interactive)
@@ -30,9 +35,13 @@
          (name (file-name-nondirectory filename))
          (wiki-path-from-property (org-get-xwiki-path))
          (wiki-name (or wiki-path-from-property (file-name-sans-extension name)))
-         (tmpfile (cu-join-path "/tmp" (concat (file-name-nondirectory wiki-name) ".md")))
+         (tmpfile (cu-join-path "/tmp" (concat (file-name-nondirectory (file-name-sans-extension filename)) ".md")))
          (command (format "amzn-wiki-wrapper.sh %s %s %s" (if wiki-path-from-property "--no-api-testing" "")  tmpfile wiki-name)))
-    (org-export-to-file 'md tmpfile)
+    (unless (equal (shell-command
+                    (format "pandoc --mathjax -f org -t markdown < %s > %s"
+                            filename
+                            tmpfile)) 0)
+      (error "Fail to convert to markdown!"))
     (when (y-or-n-p (format "Run: %s" command))
       (cu-send-command-to-buffer-local-terminal command))))
 
