@@ -138,7 +138,7 @@
   :group 'eopngrok
   :type 'string)
 
-(defcustom eopengrok-ignore-list
+(defconst eopengrok-ignore-list
   '("d:.opengrok"
     "d:out"
     "d:.out"
@@ -147,6 +147,7 @@
     "d:.repo"
     "d:.log"
     "d:.git"
+    "d:build"
     "f:*.so"
     "f:*.a"
     "f:*.o"
@@ -160,9 +161,7 @@
     "f:*.elc"
     "f:*.bin"
     "f:*.elf")
-  "Ignore file or directory list."
-  :group 'eopngrok
-  :type 'string)
+  "Ignore file or directory list.")
 
 (defface eopengrok-file-face
   '((t :inherit font-lock-function-name-face))
