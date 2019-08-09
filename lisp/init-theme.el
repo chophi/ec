@@ -44,7 +44,9 @@
                                  (:foreground "black")))))))
         ((equal color-theme "leuven")
          (require-package 'leuven-theme)
-         (load-theme 'leuven t))
+         (load-theme 'leuven t)
+         (setq global-background-color "#FFFFFF"
+               global-foreground-color "#333333"))
         ((equal color-theme "dracula")
          (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/themes")
          (load-theme 'dracula t)
