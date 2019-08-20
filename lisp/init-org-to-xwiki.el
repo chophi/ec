@@ -11,6 +11,14 @@
           (substring path 0 -1)
         path))))
 
+(defun org-get-export-format()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "#\\+\\([Xx][Ww][Ii][Kk][Ii]_[Ff][Oo][Rr][Mm][Aa][Tt]\\):\s*\\([a-zA-Z]+\\)\s*$" nil t)
+    (let ((format (match-string-no-properties 2)))
+      format)))
+
 (defun org-open-xwiki ()
   (interactive)
   (unless (equal major-mode 'org-mode)
@@ -35,13 +43,19 @@
          (name (file-name-nondirectory filename))
          (wiki-path-from-property (org-get-xwiki-path))
          (wiki-name (or wiki-path-from-property (file-name-sans-extension name)))
-         (tmpfile (cu-join-path "/tmp" (concat (file-name-nondirectory (file-name-sans-extension filename)) ".md")))
+         (export-format (or (org-get-export-format) "md"))
+         (tmpfile (cu-join-path "/tmp" (concat (file-name-nondirectory (file-name-sans-extension filename)) (concat "." export-format))))
          (command (format "amzn-wiki-wrapper.sh %s %s %s" (if wiki-path-from-property "--no-api-testing" "")  tmpfile wiki-name)))
-    (unless (equal (shell-command
-                    (format "pandoc --mathjax -f org -t markdown < %s > %s"
-                            filename
-                            tmpfile)) 0)
-      (error "Fail to convert to markdown!"))
+    (message "Export format is %s" export-format)
+    (cond ((equal export-format "md")
+           (unless (equal (shell-command
+                           (format "pandoc --mathjax -f org -t markdown < %s > %s"
+                                   filename
+                                   tmpfile)) 0)
+             (error "Fail to convert to markdown!")))
+          ((equal export-format "xwiki")
+           (unless (require 'ox-xwiki nil t)
+             (error "Need ox-xwiki to export org file to xwiki!"))
+           (org-export-to-file 'xw tmpfile nil nil nil)))
     (cu-send-command-to-buffer-local-terminal command)))
-
 (provide 'init-org-to-xwiki)

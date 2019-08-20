@@ -8,6 +8,8 @@
 
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
+(when (file-exists-p "~/repo/amazon/tools/EmacsAmazonLibs/lisp")
+  (add-to-list 'load-path "~/repo/amazon/tools/EmacsAmazonLibs/lisp"))
 
 (setq debug-on-error t)
 (require 'init-emacs)
