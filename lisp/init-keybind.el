@@ -29,6 +29,9 @@
          (remove "--graph" (remove "--decorate" magit-log-arguments))))
     (magit-log-head)))
 
+(with-eval-after-load "nxml-mode"
+  (define-key nxml-mode-map "\C-c\C-v" nil))
+
 (setq-default magit-blame-echo-style 'headlines)
 (defun my-toggle-magit-blame-mode ()
   (interactive)
@@ -113,11 +116,12 @@
 
 (with-eval-after-load "sh-script" (define-key sh-mode-map "\C-c\C-l" nil))
 (defconst cu-path-util-map
-  '((?i . cu-insert-path-replace-home)
-    (?I . cu-insert-path-absolute-home)
+  '((?p . cu-insert-path-replace-home)
+    (?P . cu-insert-path-absolute-home)
     (?s . cu-save-current-file-path)
     (?o . cu-save-current-file-path-org-style)
     (?O . org-store-link)
+    (?i . cu-open-with-idea)
     (?j . cu-open-link)
     (?e . cu-open-current-file-with-external-app)
     (?f . cu-visit-file-follow-symlink)

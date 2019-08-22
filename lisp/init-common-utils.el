@@ -879,4 +879,9 @@ terminal was selected before or RESELECT-TERMINAL is not nil"
                "open")))
     (shell-command (format "%s %s" app (buffer-file-name)))))
 
+(defun cu-open-with-idea ()
+  "Open current buffer at current line in IntelliJ"
+  (interactive)
+  (shell-command (format "idea -l %d %s" (line-number-at-pos) (buffer-file-name))))
+
 (provide 'init-common-utils)
