@@ -46,4 +46,10 @@
   (cl-letf (((symbol-function 'completing-read) 'ido-completing-read))
     ad-do-it))
 
+;; (when-let* ((dir (format "%s/tools/lsp-intellij" (getenv "REPO_PUBLIC_ROOT")))
+;;           (file (cu-join-path dir "lsp-intellij.el"))
+;;           (exists-p (file-exists-p file)))
+;;   (add-to-list 'load-path dir)
+;;   (require 'lsp-intellij))
+
 (provide 'init-lsp-mode)
