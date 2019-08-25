@@ -64,16 +64,16 @@
     (lsp)
     (lsp-java-boot-lens-mode)))
 
-(defun my-make-jdt-project-configuration ()
-  (interactive)
-  (let ((script-path "~/repo/fba/NinjaUtilsClojure/src/NinjaUtilsClojure/build/bin/generate-brazil-jdt-project"))
-    (if (not (and (file-exists-p script-path)
-                  (featurep 'projectile) (projectile-project-p)))
-        (error "no script found"))
+(setq generate-brazil-jdt-project-script-path "~/repo/fba/NinjaUtilsClojure/src/NinjaUtilsClojure/build/bin/generate-brazil-jdt-project")
+(when (file-exists-p generate-brazil-jdt-project-script-path)
+  (defun my-make-jdt-project-configuration ()
+    (interactive)
+    (unless (and (featurep 'projectile) (projectile-project-p))
+      (error "no script found"))
     (let ((default-directory (projectile-project-root)))
       (start-file-process "generate-brazil-jdt-project"
                           (get-buffer-create "*generate-brazil-jdt-project*")
-                          script-path))))
+                          generate-brazil-jdt-project-script-path))))
 
 ;; to enable the lenses
 (add-hook 'lsp-mode-hook #'lsp-lens-mode)
