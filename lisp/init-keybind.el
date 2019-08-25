@@ -177,33 +177,52 @@
     (?m . semantic-ia-complete-symbol-menu)
     (?c . semantic-ia-complete-symbol)
     (?t . semantic-ia-complete-tip)
-    (?e . cu-toggle-lsp))
+    (?T . cu-toggle-lsp))
   "Key bindings for semantic")
 
-(defun control-s-control-s ()
+(defun control-c-control-s ()
   (interactive)
   (cond
    ;; In lsp mode
    ((and (boundp 'lsp-mode) lsp-mode)
     (call-interactively
      (cu-make-commands-map-with-help-msg
-      '((?e . cu-toggle-lsp)
+      `((?T . cu-toggle-lsp)
         (?u . lsp-ui-mode)
-        (?c . cu-lsp-execute-command)
-        (?D . lsp-describe-thing-at-point)
+        (?e . cu-lsp-execute-command)
         (?f . lsp-format-buffer)
+        (?d . lsp-describe-thing-at-point)
         (?t . lsp-goto-type-definition)
         (?i . lsp-goto-implementation)
-        (?n . lsp-ui-find-next-reference)
-        (?p . lsp-ui-find-prev-reference)
-        (?d . lsp-find-declaration)
-        (?r . lsp-find-references)))
-     ))
+        (?b . lsp-java-build-project)
+        (?I . lsp-java-organize-imports)
+        (?r . ,(cu-make-keymap-func
+                "lsp-java-refactor"
+                '((?r . lsp-rename)
+                  (?e . lsp-java-extract-to-constant)
+                  (?u . lsp-java-add-unimplemented-methods)
+                  (?p . lsp-java-create-parameter)
+                  (?f . lsp-java-create-field)
+                  (?l . lsp-java-create-local)
+                  (?m . lsp-java-extract-method)
+                  (?i . lsp-java-add-import))))
+        (?g . ,(cu-make-keymap-func
+                "lsp-generate-commands"
+                '((?s . lsp-java-generate-to-string)
+                  (?e . lsp-java-generate-equals-and-hash-code)
+                  (?o . lsp-java-generate-overrides)
+                  (?g . lsp-java-generate-getters-and-setters))))
+        (?w . ,(cu-make-keymap-func
+                "lsp-workspace-commands"
+                '((?a . lsp-workspace-folders-add)
+                  (?d . lsp-workspace-folders-remove)
+                  (?r . lsp-restart-workspace)
+                  (?s . lsp-workspace-folders-switch))))))))
    (t (call-interactively
        (cu-make-commands-map-with-help-msg
         `(,@semantic-key-bindings ,@eassist-key-bindings))))))
 
-(global-set-key "\C-c\C-s" 'control-s-control-s)
+(global-set-key "\C-c\C-s" 'control-c-control-s)
 
 ;; grok keybindings from init-grok.el
 (defconst my-opengrok-map

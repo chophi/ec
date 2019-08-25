@@ -30,7 +30,8 @@
   :custom
   (lsp-ui-flycheck-live-reporting nil)
   (lsp-ui-sideline-enable nil)
-  (lsp-ui-sideline-show-diagnostics nil))
+  (lsp-ui-sideline-show-diagnostics nil)
+  (lsp-ui-doc-enable nil))
 
 (use-package lsp-java :ensure t :after lsp)
 
