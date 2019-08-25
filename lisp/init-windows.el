@@ -66,8 +66,10 @@
   (global-set-key [mouse-5] (lambda ()
                               (interactive)
                               (scroll-up 1))))
-(unless window-system
-  (enable-xterm-mouse-scroll))
+
+;; Don't enable this, this will disable the selection on iterm + SSH
+;; (unless window-system
+;;   (enable-xterm-mouse-scroll))
 
 (setq focus-follows-mouse t)
 
