@@ -29,8 +29,8 @@
          (remove "--graph" (remove "--decorate" magit-log-arguments))))
     (magit-log-head)))
 
-(with-eval-after-load "nxml-mode"
-  (define-key nxml-mode-map "\C-c\C-v" nil))
+(add-hook
+ 'nxml-mode-hook (lambda ()  (define-key nxml-mode-map "\C-c\C-v" nil)))
 
 (setq-default magit-blame-echo-style 'headlines)
 (defun my-toggle-magit-blame-mode ()
@@ -192,8 +192,11 @@
         (?c . cu-lsp-execute-command)
         (?D . lsp-describe-thing-at-point)
         (?f . lsp-format-buffer)
+        (?t . lsp-goto-type-definition)
+        (?i . lsp-goto-implementation)
+        (?n . lsp-ui-find-next-reference)
+        (?p . lsp-ui-find-prev-reference)
         (?d . lsp-find-declaration)
-        (?i . lsp-find-implementation)
         (?r . lsp-find-references)))
      ))
    (t (call-interactively

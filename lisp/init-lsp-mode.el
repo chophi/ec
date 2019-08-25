@@ -26,10 +26,13 @@
 (use-package lsp-mode :ensure t)
 (use-package hydra :ensure t)
 (use-package company-lsp :ensure t)
-(use-package lsp-ui :ensure t)
-(use-package lsp-java :ensure t :after lsp
-  ;;:config (add-hook 'java-mode-hook 'lsp)
-  )
+(use-package lsp-ui :ensure t
+  :custom
+  (lsp-ui-flycheck-live-reporting nil)
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-sideline-show-diagnostics nil))
+
+(use-package lsp-java :ensure t :after lsp)
 
 (use-package dap-mode
   :ensure t :after lsp-mode
@@ -51,5 +54,29 @@
 ;;           (exists-p (file-exists-p file)))
 ;;   (add-to-list 'load-path dir)
 ;;   (require 'lsp-intellij))
+
+(require 'lsp-java-boot)
+
+(defun my-check-enable-lsp-for-java-hook ()
+  (interactive)
+  (when (and (featurep 'projectile) (projectile-project-p)
+             (file-exists-p (cu-join-path (projectile-project-root ".classpath"))))
+    (lsp)
+    (lsp-java-boot-lens-mode)))
+
+(defun my-make-jdt-project-configuration ()
+  (interactive)
+  (let ((script-path "~/repo/fba/NinjaUtilsClojure/src/NinjaUtilsClojure/build/bin/generate-brazil-jdt-project"))
+    (if (not (and (file-exists-p script-path)
+                  (featurep 'projectile) (projectile-project-p)))
+        (error "no script found"))
+    (let ((default-directory (projectile-project-root)))
+      (start-file-process "generate-brazil-jdt-project"
+                          (get-buffer-create "*generate-brazil-jdt-project*")
+                          script-path))))
+
+;; to enable the lenses
+(add-hook 'lsp-mode-hook #'lsp-lens-mode)
+(add-hook 'java-mode-hook #'my-check-enable-lsp-for-java-hook)
 
 (provide 'init-lsp-mode)

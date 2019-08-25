@@ -15,7 +15,6 @@
   (dolist (hook
            '(c++-mode-hook
              c-mode-hook
-             java-mode-hook
              python-mode-hook
 	         cv-mode-hook
              js-mode-hook
