@@ -170,6 +170,7 @@
 (require 'init-dash)
 (require 'init-go)
 (require 'init-rust)
+(require 'init-scala)
 (require 'init-lsp-mode)
 (require 'init-haskell)
 (require 'init-epa)
