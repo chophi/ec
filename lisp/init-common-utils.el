@@ -882,6 +882,12 @@ terminal was selected before or RESELECT-TERMINAL is not nil"
 (defun cu-open-with-idea ()
   "Open current buffer at current line in IntelliJ"
   (interactive)
-  (shell-command (format "idea -l %d %s" (line-number-at-pos) (buffer-file-name))))
+  (let ((idea-executable
+         (cond
+          ((equal (shell-command "which idea 2>/dev/null") 0) "idea")
+          ((file-executable-p "/Applications/IntelliJ IDEA CE.app/Contents/MacOS/idea")
+           "/Applications/IntelliJ IDEA CE.app/Contents/MacOS/idea")
+          (t (error "idea not exist")))))
+    (shell-command (format "%s -l %d %s &>/dev/null" (shell-quote-argument idea-executable) (line-number-at-pos) (buffer-file-name)))))
 
 (provide 'init-common-utils)
