@@ -1,21 +1,20 @@
 (require 'cl)
-(defconst global-use-theme
-  (cond
-   ((company-computer-p) "leuven")
-   ((equal os 'macos) "leuven")
-   ((equal os 'linux) "zenburn")
-   (t "sanityinc-tommorrow"))
-  "theme selection")
 
 (defvar global-background-color nil "global background color")
 (defvar global-foreground-color nil "global foreground color")
 
-(defun choose-color-theme (&optional color-theme)
+(defun select-color-theme (&optional color-theme)
   (interactive)
   (setq color-theme
         (or color-theme
             (ido-completing-read "Choose a theme: "
                                  '("zenburn" "leuven" "sanityinc-tommorrow" "dracula"))))
+  ;; Disable the previous theme
+  (when global-use-theme
+    (disable-theme (intern global-use-theme)))
+  
+  (setq global-use-theme color-theme)
+  
   (cond ((equal color-theme "sanityinc-tommorrow")
          (require-package 'color-theme-sanityinc-tomorrow)
          (load-theme 'sanityinc-tomorrow-eighties t)
@@ -52,7 +51,7 @@
          (load-theme 'dracula t)
          (setq global-background-color "#282a36"
                global-foreground-color "#f8f8f2"))
-        ((equal global-use-theme "paper")
+        ((equal color-theme "paper")
          (require-package 'paper-theme)
          ;; It's not necessary to modify these variables, they all have sane
          ;; defaults.
@@ -60,13 +59,41 @@
                paper-tint-factor 45) ; Tint factor for org-level-* faces
          ;; Activate the theme.
          (load-theme 'paper t))
-        (t nil)))
+        (t nil))
+  (post-select-color-theme))
 
-(choose-color-theme global-use-theme)
+(defconst global-use-theme nil "theme selection")
+(select-color-theme "leuven")
 
-(when global-background-color
-  (set-background-color global-background-color))
-(when global-foreground-color
-  (set-foreground-color global-foreground-color))
+(defun _my-set-or-append (alist key value)
+  (if (assoc key alist)
+      (setf (cdr (assoc key alist)) value)
+    (setq alist (append alist `(,key . ,value)))))
+
+(defun post-select-color-theme ()
+  (interactive)
+  (when global-background-color
+    (set-background-color global-background-color))
+  (when global-foreground-color
+    (set-foreground-color global-foreground-color))
+  ;; hide the extra org mode stars perfectly
+  (with-eval-after-load "org-faces"
+    (set-face-background 'org-hide global-background-color)
+    (set-face-foreground 'org-hide global-background-color))
+  (setq initial-frame-alist
+        (delete (assoc 'background-color initial-frame-alist)
+                initial-frame-alist))
+  (add-to-list 'initial-frame-alist
+               `(background-color . ,(if global-background-color
+                                         global-background-color
+                                       (frame-parameter nil 'background-color))))
+  (_my-set-or-append default-frame-alist 'background-color
+                     (if global-background-color
+                         global-background-color
+                       (frame-parameter nil 'background-color)))
+  (_my-set-or-append default-frame-alist 'foreground-color
+                     (if global-foreground-color
+                         global-foreground-color
+                       (frame-parameter nil 'foreground-color))))
 
 (provide 'init-theme)

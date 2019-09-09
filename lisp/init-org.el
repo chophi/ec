@@ -24,10 +24,8 @@
 (add-hook 'org-mode-hook
           (lambda ()
             (linum-mode -1)
-            (visual-line-mode 1)
-            ;; hide the extra org mode stars perfectly
-            (set-face-background 'org-hide global-background-color)
-            (set-face-foreground 'org-hide global-background-color)) t)
+            (visual-line-mode 1))
+          t)
 
 (add-hook 'org-src-mode-hook
           (lambda ()
