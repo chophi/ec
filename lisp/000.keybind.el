@@ -453,4 +453,32 @@
                        -1 ;; show-message
                        ))
 
+;;; Terminal
+(global-unset-key "\C-z")
+(cu-set-key-bindings global-map "\C-z"
+                     '((?c . multi-term)
+                       (?n . multi-term-next)
+                       (?p . multi-term-prev)
+                       (?g . uf-send-cwd-to-term)
+                       (?w . uf-watch-current-directory)
+                       (?r . uf-term-rename-buffer)
+                       (?s . uf-switch-to-term-buffer)
+                       (?p . uf-clear-prompt-command)
+                       (?l . uf-send-current-line-command-to-term)
+                       (?a . uf-toggle-active-status)
+                       (?j . cu-open-link)
+                       (?d . duplicate-term-and-switch)
+                       (?k . uf-term-toggle-char-mode)
+                       (?t . uf-change-cwd-to)
+                       (?1 . uf-switch-to-term-1)
+                       (?2 . uf-switch-to-term-2)
+                       (?3 . uf-switch-to-term-3)
+                       (?4 . uf-switch-to-term-4)
+                       (?5 . uf-switch-to-term-5)
+                       (?6 . uf-switch-to-term-6)
+                       (?7 . uf-switch-to-term-7)
+                       (?8 . uf-switch-to-term-8)
+                       (?9 . uf-switch-to-term-9))
+                     nil -1)
+
 (provide '000.keybind)

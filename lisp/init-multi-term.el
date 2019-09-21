@@ -1,43 +1,24 @@
 (require 'multi-term)
-(defun disabled-return()
-  (interactive)
-  (message "disabled return key"))
 
-(defvar-local term--uuid nil "Terminal UUID")
+;;; Override some keybind in multi-term mode
+(dolist (override '(("M-w" . kill-ring-save)
+                    ("C-u" . universal-argument)
+                    ("C-c C-k" . term-line-mode)
+                    ("C-c C-z" . term-quit-subjob)
+                    ([(return)] . (lambda()(interactive) (term-send-raw-string "\C-j")))))
+  (add-to-list 'term-bind-key-alist override))
 
-(defun generate-random-uuid ()
-  "Generate a random UUID.
-Example of a UUID: 1df63142-a513-c850-31a3-535fc3520c3d
+;;; update all terminal names
+(defun update-terms-name ()
+  "update all terminal names"
+  (dotimes (i (length multi-term-buffer-list))
+    (let* ((buf (nth i multi-term-buffer-list))
+           (bufname (buffer-name buf))
+           (order  (1+ i)))
+      (with-current-buffer buf
+        (rename-buffer (replace-regexp-in-string "<[0-9]*>" (format "<%d>" order) bufname))))))
 
-WARNING: this is a simple implementation. The chance of generating the same UUID is much higher than a robust algorithm.."
-  (interactive)
-  (format "%04x%04x-%04x-%04x-%04x-%06x%06x"
-          (random (expt 16 4))
-          (random (expt 16 4))
-          (random (expt 16 4))
-          (random (expt 16 4))
-          (random (expt 16 4))
-          (random (expt 16 6))
-          (random (expt 16 6)) ) )
-
-(setq my-extra-needed-key
-      '(
-        ;; ("C-a" . move-beginning-of-line)
-        ;; ("C-e" . move-end-of-line)
-        ;; ("C-@" . set-mark-command)
-        ("M-w" . kill-ring-save)
-        ;; ("C-k" . kill-line)
-        ;; ("C-b" . term-send-left)
-        ;; ("C-f" . term-send-right)
-        ("C-u" . universal-argument)
-        ("C-c C-k" . term-line-mode)
-        ("C-c C-z" . term-quit-subjob)
-        ([(return)] . (lambda()(interactive) (term-send-raw-string "\C-j")))
-        ))
-
-(dolist (pair my-extra-needed-key)
-  (add-to-list 'term-bind-key-alist pair))
-
+;;; switch to one of the terminal
 ;; setting keys \C-z + i(which from 0 to max-terminal-count) to switch to the the ith term frame
 (defconst max-terminal-count 9)
 (defun uf-switch-to-term-i (&optional num)
@@ -48,8 +29,8 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
     (let (tn)
       (when
           (setq tn (nth (1- num) (if (fboundp 'multi-term-list)
-                                (multi-term-list)
-                              multi-term-buffer-list)))
+                                     (multi-term-list)
+                                   multi-term-buffer-list)))
         (switch-to-buffer tn)))))
 
 ;; TODO: make it a loop to define the functions.
@@ -64,6 +45,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (defun uf-switch-to-term-9 () (interactive) (uf-switch-to-term-i 9))
 
 (setq multi-term-buffer-name "TM")
+(defvar-local term--uuid nil "Terminal UUID")
 (defvar term-name-template "*TM<1>*")
 
 (defun send-to-all-terminal ()
@@ -73,14 +55,6 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
       (with-current-buffer term-buf
         (term-send-raw-string (format "%s\n" comm))))))
 
-(defun update-terms-name ()
-  "update all terminal names"
-  (dotimes (i (length multi-term-buffer-list))
-    (let* ((buf (nth i multi-term-buffer-list))
-           (bufname (buffer-name buf))
-           (order  (1+ i)))
-      (with-current-buffer buf
-        (rename-buffer (replace-regexp-in-string "<[0-9]*>" (format "<%d>" order) bufname))))))
 
 (defun move-terminal-as-nth ()
   (interactive)
@@ -112,7 +86,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
 (defadvice multi-term (around multi-term-ad)
   (when (>= (length multi-term-buffer-list) max-terminal-count)
     (error "too many terminal now, try to reuse!"))
-  (let* ((random-uuid (generate-random-uuid))
+  (let* ((random-uuid (cu-uuid))
          (process-environment
           (nconc
            (list (format "TERM_UUID=%s" random-uuid))
@@ -144,11 +118,12 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
           (setq term-buf (window-buffer buf-win))
           (throw 'found term-buf))))
     (when (not term-buf)
-      (setq term-buf (get-buffer (ido-completing-read "Choose A Term Buffer: " (mapcar (lambda (para) (buffer-name para)) multi-term-buffer-list)))))
+      (let ((choices (mapcar (lambda (para) (buffer-name para)) multi-term-buffer-list)))
+        (setq term-buf (get-buffer (ido-completing-read "Choose A Term Buffer: " choices)))))
     (with-current-buffer term-buf
       (term-send-raw-string command))
     (when switch-to-buffer-p
-        (switch-to-buffer-other-window term-buf)
+      (switch-to-buffer-other-window term-buf)
       (end-of-buffer))))
 
 (defun uf-send-cwd-to-term ()
@@ -171,7 +146,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
     (catch 'compile-file-generated
       (dotimes (time 10)
         (if (file-exists-p "compile.log")
-          (throw 'compile-file-generated t)
+            (throw 'compile-file-generated t)
           (sleep-for 0.1))))
     (find-file-other-window "compile.log")
     (compilation-mode)))
@@ -189,7 +164,7 @@ WARNING: this is a simple implementation. The chance of generating the same UUID
   (interactive)
   (let ((buffer-list '()))
     (dolist (term multi-term-buffer-list)
-             (add-to-list 'buffer-list (buffer-name term)))
+      (add-to-list 'buffer-list (buffer-name term)))
     (switch-to-buffer (get-buffer  (ido-completing-read "Switch to Term: " buffer-list)))))
 
 (defun uf-clear-prompt-command ()
@@ -262,10 +237,10 @@ if it's add, then field-str-table must be specified, these fields will be added,
     (when (not term-buf)
       (error "terminal %s doesn't exist" term-id))
     (with-current-buffer term-buf
-        (let ((hash-table (make-hash-table :test 'equal)))
-          (puthash key val hash-table)
-          (rename-buffer (_make_buffer_name
-                          'add term-id hash-table))))))
+      (let ((hash-table (make-hash-table :test 'equal)))
+        (puthash key val hash-table)
+        (rename-buffer (_make_buffer_name
+                        'add term-id hash-table))))))
 
 (defun uf-term-rename-buffer (clear)
   (interactive "P")
@@ -314,7 +289,7 @@ if it's add, then field-str-table must be specified, these fields will be added,
   (if (or (not (boundp 'term--status)) (eq term--status 'active))
       (progn (setq-local term--status 'deactive)
              (setq multi-term-buffer-list
-              (delete (current-buffer) multi-term-buffer-list))
+                   (delete (current-buffer) multi-term-buffer-list))
              (update-terms-name))
     (setq-local term--status 'active)
     (add-to-list 'multi-term-buffer-list (current-buffer))
@@ -327,33 +302,25 @@ if it's add, then field-str-table must be specified, these fields will be added,
     (term-line-mode))
   (message "Switched terminal to %s mode" (if (term-in-line-mode) "Line" "Char")))
 
+;;; Set fonts for term-mode
+(defun set-term-mode-face ()
+  "Set face for Term mode"
+  (defface term-mode-face
+    '((t :family "Monaco for Powerline"
+         :size 16))
+    "Buffer local face for term mode")
+  (buffer-face-set 'term-mode-face))
+(add-hook 'term-mode-hook 'set-term-mode-face)
 
-(global-unset-key "\C-z")
-(cu-set-key-bindings global-map "\C-z"
-                     '((?c . multi-term)
-                       (?n . multi-term-next)
-                       (?p . multi-term-prev)
-                       (?g . uf-send-cwd-to-term)
-                       (?w . uf-watch-current-directory)
-                       (?r . uf-term-rename-buffer)
-                       (?s . uf-switch-to-term-buffer)
-                       (?p . uf-clear-prompt-command)
-                       (?l . uf-send-current-line-command-to-term)
-                       (?a . uf-toggle-active-status)
-                       (?j . cu-open-link)
-                       (?d . duplicate-term-and-switch)
-                       (?k . uf-term-toggle-char-mode)
-                       (?t . uf-change-cwd-to)
-                       (?1 . uf-switch-to-term-1)
-                       (?2 . uf-switch-to-term-2)
-                       (?3 . uf-switch-to-term-3)
-                       (?4 . uf-switch-to-term-4)
-                       (?5 . uf-switch-to-term-5)
-                       (?6 . uf-switch-to-term-6)
-                       (?7 . uf-switch-to-term-7)
-                       (?8 . uf-switch-to-term-8)
-                       (?9 . uf-switch-to-term-9))
-                     nil -1)
+(add-hook 'term-mode-hook
+          (lambda ()
+            (yas-minor-mode -1)
+            (define-key term-raw-map "\C-y" 'term-send-raw)
+            (define-key term-raw-map "\M-y" 'term-paste)))
 
-(provide 'init-term-keys)
+(modify-syntax-entry ?_ "w" term-mode-syntax-table)
+(modify-syntax-entry ?- "w" term-mode-syntax-table)
+(modify-syntax-entry ?. "w" term-mode-syntax-table)
+(modify-syntax-entry ?/ "w" term-mode-syntax-table)
 
+(provide 'init-multi-term)

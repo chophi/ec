@@ -66,8 +66,6 @@
       (message "Loading init file: %s" file)
       (require (intern (file-name-nondirectory (file-name-sans-extension file)))))))
 
-(require 'term-inside-ide-init)
-
 (require '000.keybind)
 (require '000.postload)
 
