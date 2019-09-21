@@ -46,3 +46,4 @@ url/
 /transient/
 /cache
 /lisp/000.private.*.el
+/ede-projects.el
