@@ -913,4 +913,20 @@ UUID is much higher than a robust algorithm.."
           (random (expt 16 6))
           (random (expt 16 6))))
 
+(defun cu-search-file-under (dir name min-depth max-depth)
+  (let* ((command (format
+                  "find %s -name %s -maxdepth %d -mindepth %d 2>/dev/null"
+                  dir name max-depth min-depth))
+         (output (shell-command-to-string command)))
+    (seq-filter
+     (lambda (dir) (and (not (string-empty-p dir)) (file-exists-p dir)))
+     (split-string output "\n"))))
+
+(defun cu-normalize-filename (filename)
+  (let ((dup-slash-removed (string-join (seq-filter (lambda (sub) (not (string-empty-p sub)))
+                                                   (split-string filename "/")) "/")))
+    (if (string-prefix-p "/" filename)
+        (concat "/" dup-slash-removed)
+      dup-slash-removed)))
+
 (provide '000.utils)
