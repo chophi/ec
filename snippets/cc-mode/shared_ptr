@@ -1,0 +1,4 @@
+# key: sp
+# name: shared_ptr
+# --
+std::shared_ptr<${1:TYPE}> ${2:NAME}(${3:FROM});

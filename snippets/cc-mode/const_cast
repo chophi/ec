@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: const_cast
+# key: cc
+# binding: direct-keybinding
+# --
+const_cast<${1:Cast To Type}*>($0)

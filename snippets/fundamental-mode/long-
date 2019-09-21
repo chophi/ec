@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: long-
+# key: long-
+# binding: direct-keybinding
+# --
+`(let ((num (string-to-int (read-input "Input A Number: ")))) (make-string num ?-))`

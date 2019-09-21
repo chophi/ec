@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: header
+# key: header
+# --
+graph [bgcolor=white, fontname=TimesNewRoman, fontsize=18, fontcolor="#ff0000", overlap=false, splines=true];
+node [style=filled, color=lightgray, fontname=Monaco, fontsize=12, fontcolor=blue];
+edge [fontname=Consolas, fontsize=12, fontcolor="#af5fff"];

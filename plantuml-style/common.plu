@@ -1,0 +1,38 @@
+skinparam roundcorner 20
+skinparam backgroundColor #e0eee0
+skinparam handwritten false
+skinparam dpi 300
+
+/' Skin for sequence '/
+skinparam sequence {
+ArrowColor black
+ArrowThickness 1
+ArrowFontName Consolas
+
+LifeLineBorderColor black
+LifeLineBackgroundColor #2E8B57
+
+ParticipantBorderColor #458B74
+ParticipantBackgroundColor DarkSeaGreen
+ParticipantFontName Consolas
+ParticipantFontColor black
+
+ActorBorderColor orange
+ActorFontColor black
+ActorFontName Consolas
+}
+
+/' Skin for class '/
+skinparam class {
+BackgroundColor #c6e2ff              /' github background '/
+ArrowColor      #6f42c1              /' github aqua '/
+BorderColor     #68838b              /' github selection'/
+}
+skinparam ClassFontColor                           #000000 /' github foreground'/
+skinparam stereotypeCBackgroundColor               #00cdcd /' github current-line '/
+skinparam stereotypeABackgroundColor               #00bcbc /' sanityinc-tomorrow day current-line '/
+skinparam defaultFontName                          Monaco
+skinparam defaultMonospacedFontName                Monaco
+skinparam ClassFontName                            Consolas
+skinparam ClassFontStyle                           Bold
+

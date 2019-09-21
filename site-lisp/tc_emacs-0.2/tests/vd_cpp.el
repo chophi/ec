@@ -1,0 +1,11 @@
+(topcoder-set-problem
+ '((language . cpp)
+   (statement . "return a;")
+   (class-name . "TestVD")
+   (method-name . "testMethod")
+   (params (("double" . 1) . "a"))
+   (return "double" . 1)
+   (signature . "vector<double> testMethod(vector<double> a)")
+   (test-cases (("{1.2, 3.4}") . "{1.2, 3.4}")
+	       (("{8.2, 3.4}") . "{8.2, 3.4}")
+	       (("{}") . "{}"))))

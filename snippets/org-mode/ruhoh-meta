@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ruhoh-meta
+# key: ruhoh-meta
+# binding: direct-keybinding
+# --
+
+# ruhoh blog metadata
+# catetories and tags should be wrapped with "" and seperate with comma
+# ----
+#+OPTIONS: ^:{} num:nil
+#+CATEGORIES: []
+#+TAGS: []
+#+LAYOUT: post
+#+DESCRIPTION:
+# ----

@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: elisp-script
+# key: elisp-script
+# binding: direct-keybinding
+# --
+
+:;exec emacs -batch -Q -l "\$0" -f main "$@"
+(require 'cl)
+(toggle-debug-on-error)
+(defun main ()
+  (interactive)
+  (destructuring-bind ($1) command-line-args-left
+    $0
+    ))
+

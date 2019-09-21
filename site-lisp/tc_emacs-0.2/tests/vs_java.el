@@ -1,0 +1,10 @@
+(topcoder-set-problem
+ '((language . java)
+   (statement . "return a;")
+   (class-name . "TestVS")
+   (method-name . "testMethod")
+   (params (("String" . 1) . "a"))
+   (return "String" . 1)
+   (signature . "String[] testMethod(String[] a)")
+   (test-cases (("{\"a\", \"b\", \"c\"}") . "{\"a\", \"b\", \"c\"}")
+	       (("{\"a\", \"b\", \"\"}") . "{\"a\", \"b\", \"\"}"))))

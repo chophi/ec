@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: wiki-head
+# key: wiki-head
+# binding: direct-keybinding
+# --
+#+OPTIONS: \n:t ^:nil num:nil toc:nil

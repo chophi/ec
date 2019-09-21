@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: common-header
+# key: common-header
+# --
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <memory>
+#include <queue>
+
+using namespace std;

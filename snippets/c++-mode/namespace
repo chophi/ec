@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: namespace
+# key: ns
+# --
+// `(make-string 76 ?-)`
+namespace ${1:Namespace} {
+// `(make-string 76 ?-)`
+
+   $0
+
+// `(make-string 76 ?-)`
+}; // namespace $1
+// `(make-string 76 ?-)`

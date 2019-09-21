@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: LOCAL_PATH
+# key: lp
+# --
+LOCAL_PATH := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))

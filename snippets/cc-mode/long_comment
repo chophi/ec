@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: long_comment
+# key: long_comment
+# binding: direct-keybinding
+# --
+
+// `(make-string 76 ?-)`
+// $0
+// `(make-string 76 ?-)`
