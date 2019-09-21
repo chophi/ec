@@ -174,4 +174,12 @@
       (setq name frame-default-name))
     (set-frame-parameter (selected-frame) 'title name)))
 
+;; maximize-frame
+(require 'maxframe)
+(autoload 'mf-max-display-pixel-width "maxframe" "" nil)
+(autoload 'mf-max-display-pixel-height "maxframe" "" nil)
+(autoload 'maximize-frame "maxframe" "" t)
+(autoload 'restore-frame "maxframe" "" t)
+
+
 (provide 'init-frame-utils)
