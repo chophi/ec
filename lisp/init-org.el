@@ -7,6 +7,9 @@
 
 (require-package 'org-fstree)
 
+;;; Get easy template back
+(require 'org-tempo)
+
 ;; Various preferences
 (setq org-log-done t
       org-src-fontify-natively t
