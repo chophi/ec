@@ -166,12 +166,13 @@ by the :height face attribute."
 
 (defun my-adjust-font-size-for-current-frame (&optional frame)
   (interactive)
-  (let ((outer-size (cdr (assoc 'outer-size (frame-geometry)))))
-    (cond
-     ((> (car outer-size) 3000)
-      (set-font-for-current-frame '("large(34 inch)" (han "STFangsong" 24) (ascii "Monaco" 20))))
-     ((> (car outer-size) 1200)
-      (set-font-for-current-frame '("mac" (han "STFangsong" 20) (ascii "Monaco" 16))))
-     (t (error "unknown display")))))
+  (with-selected-frame (or frame (selected-frame))
+    (let ((outer-size (cdr (assoc 'outer-size (frame-geometry)))))
+      (cond
+       ((> (car outer-size) 3000)
+        (set-font-for-current-frame '("large(34 inch)" (han "STFangsong" 24) (ascii "Monaco" 20))))
+       ((> (car outer-size) 1200)
+        (set-font-for-current-frame '("mac" (han "STFangsong" 20) (ascii "Monaco" 16))))
+       (t (error "unknown display"))))))
 
 (provide 'init-fonts)
