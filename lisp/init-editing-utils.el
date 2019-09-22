@@ -94,10 +94,6 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-
-;;; Rectangle selections, and overwrite text when the selection is active
-(cua-selection-mode t)
-
 ;;; Some editing functions will be bind in init-keybind.el
 (defun duplicate-line ()
   "Insert a copy of the current line after the current line."
@@ -231,6 +227,9 @@
 (whole-line-or-region-mode t)
 (diminish 'whole-line-or-region-mode)
 (make-variable-buffer-local 'whole-line-or-region-mode)
+
+;;; Cua Rectangle selections, and overwrite text when the selection is active
+(cua-selection-mode t)
 
 (defun suspend-mode-during-cua-rect-selection (mode-name)
   "Add an advice to suspend `MODE-NAME' while selecting a CUA rectangle."
@@ -496,5 +495,12 @@ by using nxml's indentation rules."
   (setq ispell-program-name (executable-find "hunspell")
         ispell-dictionary "en_US")
   (defconst my-ispell-is-enabled t "Whether ispell is enabled"))
+
+;;; Show the kill ring
+(require 'helm-ring)
+(defadvice yank-pop (around show-key-ring () activate)
+  (if (equal last-command 'yank)
+      ad-do-it
+    (helm-show-kill-ring)))
 
 (provide 'init-editing-utils)
