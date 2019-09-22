@@ -61,23 +61,78 @@
 (defun my-check-enable-lsp-for-java-hook ()
   (interactive)
   (when (and (featurep 'projectile) (projectile-project-p)
-             (file-exists-p (cu-join-path (projectile-project-root ".classpath"))))
-    (lsp)
-    (lsp-java-boot-lens-mode)))
+             (file-exists-p (cu-join-path (projectile-project-root) ".classpath")))
+    (let ((lsp-auto-guess-root t))
+      (lsp)
+      (lsp-java-boot-lens-mode 1))))
 
-(setq generate-brazil-jdt-project-script-path "~/repo/fba/NinjaUtilsClojure/src/NinjaUtilsClojure/build/bin/generate-brazil-jdt-project")
-(when (file-exists-p generate-brazil-jdt-project-script-path)
-  (defun my-make-jdt-project-configuration ()
-    (interactive)
-    (unless (and (featurep 'projectile) (projectile-project-p))
-      (error "no script found"))
-    (let ((default-directory (projectile-project-root)))
-      (start-file-process "generate-brazil-jdt-project"
-                          (get-buffer-create "*generate-brazil-jdt-project*")
-                          generate-brazil-jdt-project-script-path))))
+(require 's)
+(require 'f)
+(defun my-make-jdt-project-configuration ()
+  (interactive)
+  (unless (executable-find "brazil-path")
+    (error "Can't find exectuable brazil-path"))
+  (let ((default-directory (projectile-project-root))
+        (libs nil)
+        (lib-str nil)
+        (package-name nil))
 
-;; to enable the lenses
-(add-hook 'lsp-mode-hook #'lsp-lens-mode)
+    ;; get classpaths
+    (setq libs (shell-command-to-string "brazil-path testrun.classpath 2>/dev/null"))
+    (setq libs (seq-filter (lambda (lib) (not (string-empty-p lib)))
+                           (mapcar (lambda (path) (cu-strip-string path t t))
+                                   (split-string libs ":"))))
+    (unless libs (error "No libs found"))
+
+    ;; get package-name
+    (setq package-name (shell-command-to-string "brazil-path package-name 2>/dev/null"))
+    (setq package-name (cu-strip-string package-name t t))
+    (unless (and package-name (not (string-empty-p package-name)))
+      (error "No package found"))
+
+    ;; generate the lib list string
+    (dolist (lib libs lib-str)
+      (setq lib-str (concat lib-str (s-lex-format "\t<classpathentry kind=\"lib\" path=\"${lib}\"/>\n"))))
+
+    ;; write the .classpath
+    (f-write-text
+     (s-lex-format "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<classpath>
+	<classpathentry kind=\"src\" path=\"src\"/>
+	<classpathentry kind=\"src\" path=\"tst\"/>
+${lib-str}
+	<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>
+	<classpathentry kind=\"output\" path=\"eclipse-bin\"/>
+</classpath>") 'utf-8 (cu-join-path default-directory ".classpath"))
+
+    ;; write the .project
+    (f-write-text
+     (s-lex-format
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<projectDescription>
+	<name>${package-name}</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>amazon.devtools.brazil.eclipse.BrazilEclipsePlugin.brazilNature</nature>
+	</natures>
+</projectDescription>")
+     'utf-8 (cu-join-path default-directory ".project"))
+
+    ;; cheers
+    (message "Successfully create configuration for %s" default-directory)))
+
+;; check and enable lsp conditionally
+(add-hook 'lsp-java-mode #'lsp-lens-mode)
 (add-hook 'java-mode-hook #'my-check-enable-lsp-for-java-hook)
 
 (provide 'init-lsp-mode)

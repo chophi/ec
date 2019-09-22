@@ -235,15 +235,15 @@
     (call-interactively
      (cu-make-commands-map-with-help-msg
       `((?T . cu-toggle-lsp)
+        (?d . lsp-find-definition)
+        (?r . lsp-find-references)
         (?u . lsp-ui-mode)
         (?e . cu-lsp-execute-command)
         (?f . lsp-format-buffer)
-        (?d . lsp-describe-thing-at-point)
-        (?t . lsp-goto-type-definition)
-        (?i . lsp-goto-implementation)
+        (?t . lsp-describe-thing-at-point)
         (?b . lsp-java-build-project)
-        (?I . lsp-java-organize-imports)
-        (?r . ,(cu-make-keymap-func
+        (?i . lsp-java-organize-imports)
+        (?R . ,(cu-make-keymap-func
                 "lsp-java-refactor"
                 '((?r . lsp-rename)
                   (?e . lsp-java-extract-to-constant)
