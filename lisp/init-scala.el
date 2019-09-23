@@ -1,6 +1,9 @@
+(require 'init-lsp)
+
 ;; Enable scala-mode and sbt-mode
 (use-package scala-mode
-  :mode "\\.s\\(cala\\|bt\\)$")
+  :mode "\\.s\\(cala\\|bt\\)$" :ensure t
+  :hook (scala-mode . lsp))
 
 (use-package sbt-mode
   :commands sbt-start sbt-command

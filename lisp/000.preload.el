@@ -77,4 +77,6 @@ but can also be added to head if AS-HEAD is not nil"
 
 (add-to-path (concat (getenv "HOME") "/.emacs.d/scripts"))
 
+(require 'use-package)
+
 (provide '000.preload)
