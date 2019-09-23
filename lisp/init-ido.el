@@ -4,9 +4,11 @@
 (setq ido-auto-merge-work-directories-length -1)
 (setq ido-use-virtual-buffers t)
 
+(require 'smex)
 ;; Allow the same buffer to be open in different frames
 (setq ido-default-buffer-method 'selected-window)
 
+(require 'ido-completing-read+)
 (ido-ubiquitous-mode t)
 (ido-mode t)
 (ido-everywhere t)

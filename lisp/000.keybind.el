@@ -1,3 +1,20 @@
+;;; Remap some command
+(defconst my-remap-command-list
+  '((query-replace-regexp . vr/query-replace)
+    (replace-regexp . vr/replace)
+    (describe-function . counsel-describe-function)
+    (describe-face . counsel-describe-face)
+    (describe-variable . counsel-describe-variable)
+    (backward-up-list . backward-up-sexp))
+  "Remap comand list")
+
+(dolist (pair my-remap-command-list)
+  (global-set-key `[remap ,(car pair)] (cdr pair)))
+
+(global-set-key (kbd "C-x vq") 'vr/query-replace)
+(global-set-key (kbd "C-x vr") 'vr/replace)
+(global-set-key (kbd "C-x vc") 'vr/mc-mark)
+
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "M-Z") 'zap-up-to-char)
 (global-set-key (kbd "C-=") 'er/expand-region)
@@ -16,11 +33,6 @@
 
 (define-key apples-mode-map "\C-c\C-e" 'my-run)
 
-(global-set-key [remap query-replace-regexp] 'vr/query-replace)
-(global-set-key [remap replace-regexp] 'vr/replace)
-(global-set-key (kbd "C-x vq") 'vr/query-replace)
-(global-set-key (kbd "C-x vr") 'vr/replace)
-
 (global-unset-key (kbd "C-x o"))
 
 (global-set-key (kbd "C-c p") 'duplicate-line)
@@ -28,7 +40,6 @@
 
 (global-set-key [M-S-up] 'move-text-up)
 (global-set-key [M-S-down] 'move-text-down)
-(global-set-key [remap backward-up-list] 'backward-up-sexp)
 
 (global-set-key (kbd "C-!") 'shell-command)
 (global-set-key (kbd "\C-xf") 'other-frame)
