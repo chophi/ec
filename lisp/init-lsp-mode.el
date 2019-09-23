@@ -58,11 +58,18 @@
 
 (require 'lsp-java-boot)
 
+(defun my-set-extra-jdt-ls-vmargs ()
+  (let ((lombok (cu-list-files-recursively "~/.jdt-extra-packages/" "lombok.*jar" 2)))
+        (when (and lombok (file-exists-p (car lombok)))
+          (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" (car lombok)))
+          (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" (car lombok))))))
+
 (defun my-check-enable-lsp-for-java-hook ()
   (interactive)
   (when (and (featurep 'projectile) (projectile-project-p)
              (file-exists-p (cu-join-path (projectile-project-root) ".classpath")))
     (let ((lsp-auto-guess-root t))
+      (my-set-extra-jdt-ls-vmargs)
       (lsp)
       (lsp-java-boot-lens-mode 1))))
 
@@ -91,7 +98,8 @@
       (error "No package found"))
 
     ;; generate the lib list string
-    (dolist (lib libs lib-str)
+    ;; Some extra libs in ~/.jdt-extra-packages/ will also be added
+    (dolist (lib (append libs (cu-list-files-recursively "~/.jdt-extra-packages/" ".*jar" 2) lib-str))
       (setq lib-str (concat lib-str (s-lex-format "\t<classpathentry kind=\"lib\" path=\"${lib}\"/>\n"))))
 
     ;; write the .classpath
