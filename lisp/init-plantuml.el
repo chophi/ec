@@ -81,8 +81,8 @@
   (interactive)
   (setq plantuml-convert-to-latex (not plantuml-convert-to-latex)))
 
-(defun plantuml-execute ()
-  (interactive)
+(defun plantuml-execute (&optional show)
+  (interactive "P")
   (when (buffer-modified-p)
     (map-y-or-n-p (format "Save this buffer (%s) before executing PlantUML?"
                           (current-buffer))
@@ -115,11 +115,11 @@
     (message "%s done" cmd)
     (if plantuml-convert-to-latex
         (funcall #'compile-tikz-to-svg out-file)
-      (if (and (equal graphviz-dot-preview-extension "svg")
+      (when (and (equal graphviz-dot-preview-extension "svg")
                plantuml-svg-text-to-path
                (inkscape-exist-p))
-          (find-file-other-window (convert-svg-to-svg-no-font out-file))
-        (find-file-other-window out-file)))))
+        (setq out-file (convert-svg-to-svg-no-font out-file))))
+    (when show (find-file-other-window out-file))))
 
 (setq plantuml-java-options "")
 (setq plantuml-options "-charset UTF-8")
