@@ -39,9 +39,12 @@
 (setq server-socket-dir (format "%s/.emacs.d/server" (getenv "HOME")))
 (server-start)
 
-(add-hook 'window-setup-hook 'my-maximize-frame t)
-(add-hook 'window-setup-hook 'my-adjust-font-size-for-current-frame t)
-(add-hook 'after-init-hook (lambda () (dolist (f (frame-list))
-                                              (with-selected-frame f
-                                                (my-adjust-font-size-for-current-frame)))) t)
+(when (window-system)
+  (add-hook 'window-setup-hook 'my-maximize-frame t)
+  (add-hook 'window-setup-hook 'my-adjust-font-size-for-current-frame t)
+  (add-hook 'after-init-hook
+            (lambda () (dolist (f (frame-list))
+                         (with-selected-frame f
+                           (my-adjust-font-size-for-current-frame))))
+            t))
 (provide '000.postload)
