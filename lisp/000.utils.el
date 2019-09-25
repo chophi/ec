@@ -929,4 +929,14 @@ UUID is much higher than a robust algorithm.."
         (concat "/" dup-slash-removed)
       dup-slash-removed)))
 
+(require 'f)
+(defun cu-save-expr-to-file (filename expr)
+  (f-write-text (prin1-to-string expr) 'utf-8 filename))
+
+(defun cu-load-expr-from-file (filename)
+  (let ((content (cu-strip-string (f-read-text filename) t t)))
+    (if (string-empty-p content)
+        nil
+      (read content))))
+
 (provide '000.utils)

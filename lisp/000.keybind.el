@@ -390,7 +390,7 @@
 (cu-set-key-bindings
  projectile-mode-map "\C-cf"
  `((?v . projectile-vc)
-   (?r . projectile-recentf)
+   (?r . prj-switch-to-recent-visited-projects)
    (?p . projectile-replace)
    (?d . projectile-dired)
    (?g . projectile-multi-occur)
