@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cr
+# key: cr
+# --
+${2:upclass} `(cu-choose-from-list "Choose a relationship:" '(("extension" . "<|--") ("composition" . "*--") ("aggregation" . "o--") ("association" . "--")))` ${3:downclass} ${4::description}

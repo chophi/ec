@@ -197,21 +197,18 @@
                        `(,cu-path-util-map ((?l . org-insert-link)))))
 
 ;; yasnippet keymap and spell-check
-(defvar spell-and-snippet-key-binding
+(defconst spell-and-snippet-key-binding
   `((?i . yas-insert-snippet)
     (?n . yas-new-snippet)
     (?t . yas-tryout-snippet)
     (?v . yas-visit-snippet-file)
-    (?r . yas-reload-all))
-  "keymap for ctrl-c-ctrl-i")
+    (?r . yas-reload-all)
+    (?w . ispell-word)
+    (?b . ispell-buffer)
+    (?f . flyspell-mode)
+    (?c . flyspell-auto-correct-word)))
 
-(when (and (boundp 'my-ispell-is-enabled) my-ispell-is-enabled)
-  (append spell-and-snippet-key-binding
-    `((?w . ispell-word)
-      (?b . ispell-buffer)
-      (?f . flyspell-mode)
-      (?c . flyspell-auto-correct-word)))
-  (cu-set-key-bindings global-map "\C-cs" spell-and-snippet-key-binding))
+(cu-set-key-bindings global-map "\C-cs" spell-and-snippet-key-binding)
 
 ;; from init-cc-misc-support
 (defconst eassist-key-bindings
@@ -491,5 +488,10 @@
                        (?8 . uf-switch-to-term-8)
                        (?9 . uf-switch-to-term-9))
                      nil -1)
+
+;;; Tab is taken by auto complete
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
 
 (provide '000.keybind)

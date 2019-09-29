@@ -939,4 +939,8 @@ UUID is much higher than a robust algorithm.."
         nil
       (read content))))
 
+(defun cu-choose-from-list (prompt list)
+  (interactive)
+  (cdr (assoc (ido-completing-read prompt (mapcar 'car list)) list)))
+
 (provide '000.utils)
