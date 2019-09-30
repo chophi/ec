@@ -242,7 +242,7 @@ And return t if equals, compare the item with `equal'."
              (msg "")
              (choices nil))
          (when ',mode-list
-             (setq help-msg (concat help-msg (cu-generate-mode-list-string ',mode-list))))
+           (setq help-msg (concat help-msg (cu-generate-mode-list-string ',mode-list))))
          (dolist (key (reverse ',list-copy))
            (setq help-msg (concat help-msg (format "%c [%s] => %-70s %c\n"
                                                    ?│ (car key) (cdr key) ?│)))
@@ -340,10 +340,10 @@ Return a list that a supported"
 otherwise, return nil"
   (interactive)
   (let* ((line
-         (cu-strip-string
-          (buffer-substring-no-properties
-           (line-beginning-position) (point))
-          t t))
+          (cu-strip-string
+           (buffer-substring-no-properties
+            (line-beginning-position) (point))
+           t t))
          (len (length line)))
     (dotimes (beg len)
       (let ((substr (substring line beg len)))
@@ -491,12 +491,14 @@ otherwise, return nil"
       (add-to-list 'exec-path path append)
     (message "WARNING: %s is not a directory" path)))
 
-(defun cu-strip-string (str beforep afterp)
-    "Strip STR of any leading (if BEFOREP) and/or trailing (if AFTERP) space."
-    (string-match (concat "\\`" (if beforep "\\s-*")
+(defun cu-strip-string (str &optional beforep afterp)
+  "Strip STR of any leading (if BEFOREP) and/or trailing (if AFTERP) space."
+  (unless beforep (setq beforep t))
+  (unless afterp (setq afterp t))
+  (string-match (concat "\\`" (if beforep "\\s-*")
                         "\\(.*?\\)" (if afterp "\\s-*\n?")
                         "\\'") str)
-    (match-string 1 str))
+  (match-string 1 str))
 
 (defun cu-search-brew-executable (program)
   (let* ((command
@@ -721,7 +723,7 @@ NDIM is the dimentions of the choice items.
     (mapc (lambda (c)
             (when (equal c ?\n)
               (setq count (1+ count))))
-     string)
+          string)
     count))
 
 (defun cu-read-word-or-region ()
@@ -895,6 +897,7 @@ terminal was selected before or RESELECT-TERMINAL is not nil"
           ((file-executable-p "/Applications/IntelliJ IDEA CE.app/Contents/MacOS/idea")
            "/Applications/IntelliJ IDEA CE.app/Contents/MacOS/idea")
           (t (error "idea not exist")))))
+
     (shell-command (format "%s -l %d %s &>/dev/null" (shell-quote-argument idea-executable) (line-number-at-pos) (buffer-file-name)))))
 
 (defun cu-uuid ()
@@ -915,8 +918,8 @@ UUID is much higher than a robust algorithm.."
 
 (defun cu-search-file-under (dir name min-depth max-depth)
   (let* ((command (format
-                  "find %s -name %s -maxdepth %d -mindepth %d 2>/dev/null"
-                  dir name max-depth min-depth))
+                   "find %s -name %s -maxdepth %d -mindepth %d 2>/dev/null"
+                   dir name max-depth min-depth))
          (output (shell-command-to-string command)))
     (seq-filter
      (lambda (dir) (and (not (string-empty-p dir)) (file-exists-p dir)))
@@ -924,7 +927,7 @@ UUID is much higher than a robust algorithm.."
 
 (defun cu-normalize-filename (filename)
   (let ((dup-slash-removed (string-join (seq-filter (lambda (sub) (not (string-empty-p sub)))
-                                                   (split-string filename "/")) "/")))
+                                                    (split-string filename "/")) "/")))
     (if (string-prefix-p "/" filename)
         (concat "/" dup-slash-removed)
       dup-slash-removed)))
@@ -939,8 +942,79 @@ UUID is much higher than a robust algorithm.."
         nil
       (read content))))
 
-(defun cu-choose-from-list (prompt list)
+(defun cu-choose-from-list (prompt list &optional use-helm)
   (interactive)
-  (cdr (assoc (ido-completing-read prompt (mapcar 'car list)) list)))
+  (cdr (assoc (if use-helm
+                  (helm-comp-read prompt (mapcar 'car list))
+                (ido-completing-read prompt (mapcar 'car list))) list)))
+
+(defun cu-get-zsh-config-dir (public-or-private)
+  "Return the zsh config directory PUBLIC-OR-PRIVATE should be literaly 'public or 'private"
+  (unless (or (equal public-or-private 'public) (equal public-or-private 'private))
+    (message "Should be public or private"))
+  (let ((init-file (file-symlink-p (format "~/.zsh.%s.symlink" (symbol-name public-or-private)))))
+    (and init-file (dotimes (time 3 init-file)
+                     (setq init-file (substring (file-name-directory init-file) 0 -1))))))
+
+(require 'f)
+
+(defun* cu-get-non-empty-lines (file)
+  (unless (file-exists-p file)
+    (return-from cu-get-non-empty-lines nil))
+  (let* ((content (f-read-text file))
+         (lines (seq-filter (lambda (l) (and (not (string-empty-p l)) (not (s-prefix-p "#" l))))
+                            (mapcar
+                             (lambda (line) (cu-strip-string line t t))
+                             (split-string content "\n")))))
+    lines))
+
+
+(defun cu-read-command-output (command)
+  (seq-filter (lambda (l) (not (string-empty-p l)))
+              (mapcar (lambda (line) (cu-strip-string line t t))
+                      (split-string (shell-command-to-string (concat (s-replace-all '(("`" . "")) command) " 2>/dev/null"))
+                                    "\n"))))
+
+(defun* cu-parse-link-file (file)
+  (unless (file-exists-p file)
+    (return-from cu-parse-link-file nil))
+  (let ((result nil))
+    (dolist (line (cu-get-non-empty-lines file))
+      (let ((try-split (split-string line " ")))
+        (cond
+         ((= (length try-split) 1)
+          (setq result (append result `((,(car try-split) . ,(car try-split))))))
+         ((> (length try-split) 1)
+          (let* ((key (cu-strip-string (car try-split)))
+                 (val (cu-strip-string (string-join (cdr try-split) " "))))
+            (if (s-matches-p "|" val)
+                (let* ((full (split-string line "|"))
+                       (part-1 (cu-strip-string (car full)))
+                       (part-2 (cu-strip-string (cadr full))))
+                  (setq result (append result `((,(cu-join-path key part-1) . ,part-2)))))
+              (if (s-matches-p "`" val)
+                  (dolist (name (cu-read-command-output val))
+                    (setq result (append result `((,(cu-join-path key (file-name-nondirectory name)) . ,name)))))
+                (setq result (append result `((,(cu-join-path key (file-name-nondirectory val)) . ,val)))))))))))
+    result))
+
+(defun cu-get-zsh-config-files (filename)
+  (let ((files nil))
+    (dolist (dir `(,(cu-get-zsh-config-dir 'public) ,(cu-get-zsh-config-dir 'private)))
+      (when dir
+        (dolist (possible-name `(,(cu-join-path "config/common" filename)
+                                 ,(cu-join-path (format "config/%s" os) filename)))
+          (message "test %s" possible-name)
+          (when (file-exists-p (cu-join-path dir possible-name))
+            (setq files (append files `(,(cu-join-path dir possible-name))))))))
+    files))
+
+(defun cu-choose-link-and-browse ()
+  (interactive)
+  (let ((choices nil))
+    (dolist (file (cu-get-zsh-config-files "links"))
+      (setq choices (append choices (cu-parse-link-file file))))
+    (when choices
+      (browse-url-of-file (cu-choose-from-list "Choose a link: " choices t)))))
 
 (provide '000.utils)

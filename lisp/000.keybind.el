@@ -181,6 +181,7 @@
     (?O . org-store-link)
     (?i . cu-open-with-idea)
     (?j . cu-open-link)
+    (?b . cu-choose-link-and-browse)
     (?e . cu-open-current-file-with-external-app)
     (?f . cu-visit-file-follow-symlink)
     (?n . find-name-dired)
