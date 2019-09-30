@@ -4,7 +4,7 @@
 ;; (delete 'SVN vc-handled-backends)
 (setq vc-handled-backends nil)
 
-;; (when (eq os 'macos)
+;; (when (eq os 'darwin)
 ;;   (setq magit-git-executable "/opt/local/bin/git"))
 
 ;; (setq magit-last-seen-setup-instructions "1.4.0")

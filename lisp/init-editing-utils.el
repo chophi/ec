@@ -482,7 +482,7 @@ by using nxml's indentation rules."
 ;;; Spell check
 ;; 1. brew install hunspell
 ;; 2. Copy the en_US.aff and en_US.dic to ~/Library/Setting
-(when (equal os 'macos)
+(when (equal os 'darwin)
   (let ((possible-spell-program (cu-search-brew-executable "hunspell")))
     (when possible-spell-program
       (setenv "DICTIONARY" "en_US")

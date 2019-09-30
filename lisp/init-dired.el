@@ -2,7 +2,7 @@
 (define-key dired-mode-map (kbd "F") 'dired-narrow)
 
 ;;; be available
-(if (eq os 'macos)
+(if (eq os 'darwin)
     ;; installed by brew install coreutils
     (let ((possible-ls-program "/usr/local/opt/coreutils/libexec/gnubin/ls"))
       (when (file-exists-p possible-ls-program)

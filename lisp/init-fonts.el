@@ -82,7 +82,7 @@ by the :height face attribute."
 (defconst preferred-font-config-list
   (cond
    ;; for non-company macos
-   ((eq os 'macos)
+   ((eq os 'darwin)
     (if (company-computer-p)
         '(("large(34 inch)" (han "STFangsong" 24) (ascii "Monaco" 20))
           ("mac" (han "STFangsong" 20) (ascii "Monaco" 16))) ;; 13.3-inch display

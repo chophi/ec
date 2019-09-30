@@ -88,7 +88,7 @@
       ("\\.CHM$\\|\\.chm$" "chmsee"  (file))
       ("\\.\\(?:jp?g\\|png\\|svg\\|pdf\\)\\'" "remote-show-image"
        (file))))
-   ('macos
+   ('darwin
     '(("\\.pdf\\|svg$" "open" (file))))))
 
 ;;; yasnippet

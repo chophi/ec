@@ -1,11 +1,11 @@
 ;;; Identify the OS and computer emacs runs
 ;;; and provide the variable *os* for condition checking
 (defconst os
-  (cond ((eq system-type 'darwin) 'macos)
+  (cond ((or (eq system-type 'darwin) (eq system-type 'macos)) 'darwin)
         ((eq system-type 'gnu/linux) 'linux)
         ((eq system-type 'windows-nt) 'windows)
         (t nil))
-  "Operating System, can be 'macos, 'linux or 'windows")
+  "Operating System, can be 'darwin, 'linux or 'windows")
 
 (defun company-computer-p ()
   (file-exists-p "~/.COMPANY_COMPUTER"))

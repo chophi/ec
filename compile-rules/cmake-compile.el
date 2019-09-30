@@ -68,7 +68,7 @@
                             "Executable: "
                             (split-string (shell-command-to-string
                                            (format
-                                            (if (equal os 'mac)
+                                            (if (equal os 'darwin)
                                                 "cd %s && find ./bin -type f -perm +111"
                                               "cd %s && find ./bin -type f -executable")
                                                    ,project-root))))))

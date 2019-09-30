@@ -7,7 +7,7 @@
 (defconst tikz-error-buffer "*Generate tikz[Error]*")
 
 (defun dvisvgm-extra-gs-args ()
-  (if (and (equal os 'macos)
+  (if (and (equal os 'darwin)
            (file-exists-p "/usr/local/lib/libgs.dylib"))
       (format "--libgs=\"%s\"" "/usr/local/lib/libgs.dylib")
     ""))

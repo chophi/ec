@@ -74,7 +74,7 @@
   ;; Publish all the org files in the preview root.
   (publish-org-files-in-dir org-preview-root)
   ;; Open the html file in browser
-  (when (eq os 'macos)
+  (when (eq os 'darwin)
     (shell-command
      (format "open %s/www/%s.%s" org-preview-root
              (if file
@@ -85,7 +85,7 @@
 (defun org-update-blog ()
   (interactive)
   (publish-org-files-in-dir org-blog-root)
-  (when (eq os 'macos)
+  (when (eq os 'darwin)
     (shell-command (format "open %s/www/index.html" org-blog-root))))
 
 (with-eval-after-load "org-mode"

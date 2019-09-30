@@ -50,7 +50,7 @@
             (define-key scheme-mode-map (kbd "<f6>")
               'scheme-send-definition-split-window)))
 
-(when (eq os 'macos)
+(when (eq os 'darwin)
   (cu-add-exec-path-maybe
    (cu-join-path "/Applications"
                  (file-name-completion "Racket" "/Applications") "bin")))
