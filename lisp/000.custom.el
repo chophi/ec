@@ -8,7 +8,7 @@
  '(line-number-mode t)
  '(package-selected-packages
    (quote
-    (sbt-mode scala-mode leuven-theme emacs-leuven-theme lsp-rust rust-playground ob-rust cargo ivy-rich counsel swiper "swiper" "counsel" auctex haskell-mode pfuture poly-org dap-mode lsp-ui company-lsp use-package modern-cpp-font-lock ensime flycheck-rust rust-mode go-autocomplete go-guru go-imports go-mode go-projectile go-rename go-snippets groovy-mode flycheck-gradle gradle-mode ob-kotlin flycheck-kotlin kotlin-mode rainbow-mode helm-ag flycheck-plantuml plantuml-mode graphviz-dot-mode ag helm-notmuch notmuch ido-gnus flycheck-swift helm-flycheck exec-path-from-shell flycheck undo-tree scratch project-local-variables pointback org-fstree openwith noflet mwe-log-commands multi-term maxframe markdown-mode+ jedi idomenu ido-ubiquitous helm-pydoc glsl-mode ggtags fill-column-indicator expand-region eopengrok elpy edit-server-htmlize dired-narrow dired+ diminish cpputils-cmake confluence color-theme-sanityinc-tomorrow cmake-mode clang-format browse-kill-ring apples-mode anything ace-jump-mode ac-inf-ruby ac-helm)))
+    (es-mode sbt-mode scala-mode leuven-theme emacs-leuven-theme lsp-rust rust-playground ob-rust cargo ivy-rich counsel swiper "swiper" "counsel" auctex haskell-mode pfuture poly-org dap-mode lsp-ui company-lsp use-package modern-cpp-font-lock ensime flycheck-rust rust-mode go-autocomplete go-guru go-imports go-mode go-projectile go-rename go-snippets groovy-mode flycheck-gradle gradle-mode ob-kotlin flycheck-kotlin kotlin-mode rainbow-mode helm-ag flycheck-plantuml plantuml-mode graphviz-dot-mode ag helm-notmuch notmuch ido-gnus flycheck-swift helm-flycheck exec-path-from-shell flycheck undo-tree scratch project-local-variables pointback org-fstree openwith noflet mwe-log-commands multi-term maxframe markdown-mode+ jedi idomenu ido-ubiquitous helm-pydoc glsl-mode ggtags fill-column-indicator expand-region eopengrok elpy edit-server-htmlize dired-narrow dired+ diminish cpputils-cmake confluence color-theme-sanityinc-tomorrow cmake-mode clang-format browse-kill-ring apples-mode anything ace-jump-mode ac-inf-ruby ac-helm)))
  '(rust-playground-basedir "~/rust-playground")
  '(safe-local-variable-values
    (quote
@@ -45,6 +45,7 @@
             (quote inline-open)
             (quote 0)))
      (require-final-newline))))
+ '(session-use-package t nil (session))
  '(tramp-syntax (quote default) nil (tramp))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
