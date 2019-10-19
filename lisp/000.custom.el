@@ -45,7 +45,6 @@
             (quote inline-open)
             (quote 0)))
      (require-final-newline))))
- '(session-use-package t nil (session))
  '(tramp-syntax (quote default) nil (tramp))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
